@@ -11,7 +11,6 @@ public class GameBoard : MonoBehaviour, Ticable
     public IDictionary<Piece, (int, int)> enemyLocations;
 
     [SerializeField] private Tile tilePrefab;
-    [SerializeField] private Piece piecePrefab;
     [SerializeField] private int BOARD_SIZE;
 
     private void Awake()
@@ -21,16 +20,36 @@ public class GameBoard : MonoBehaviour, Ticable
         {
             for (int j = 0; j < GetBoardWidth(); j++)
             {
-                board[i, j] = Instantiate(tilePrefab.transform).GetComponent<Tile>();
+                board[i, j] = Instantiate(tilePrefab.gameObject,
+                                          new Vector3(j * GlobalManager.GAME_SCALE - 0.5f * j * GlobalManager.GAME_SCALE,
+                                                      i * GlobalManager.GAME_SCALE - 0.5f * i * GlobalManager.GAME_SCALE,
+                                                      transform.position.z),
+                                          Quaternion.identity)
+                                          .GetComponent<Tile>();
             }
         }
         movementBoard = new bool[BOARD_SIZE, BOARD_SIZE];
         enemyLocations = new Dictionary<Piece, (int, int)>();
     }
 
-    public void SpawnEnemy((int, int) index)
+    public Tile GetTile((int, int) index)
     {
-        Piece p = Instantiate(piecePrefab, 
+        return board[index.Item1, index.Item2];
+    }
+
+    public Tile GetTile(int i, int j)
+    {
+        return GetTile((i, j));
+    }
+
+    public Tile GetCenterTile()
+    {
+        return GetTile((BOARD_SIZE / 2, BOARD_SIZE / 2));
+    }
+
+    public void SpawnEnemy((int, int) index, Piece piecePrefab)
+    {
+        Piece p = Instantiate(piecePrefab.gameObject, 
                               board[index.Item1, index.Item2].transform.position, 
                               Quaternion.identity).GetComponent<Piece>();
         enemyLocations[p] = index;

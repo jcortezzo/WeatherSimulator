@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        SimpleMouseOver();
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             selectedWeather = (Weather) 0;
@@ -37,6 +39,23 @@ public class Player : MonoBehaviour
             if (selectedWeather == Weather.LIGHTNING)
             {
 
+            }
+        }
+    }
+
+    protected void SimpleMouseOver()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Debug.DrawRay(ray.GetPoint(0), ray.direction, Color.red);
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        if (hit.collider != null)
+        {
+            Debug.Log("Raycast hit!");
+            Tile t = hit.transform.GetComponent<Tile>();
+            if (t != null)
+            {
+                Debug.Log("Found Tile object");
+                t.Select();
             }
         }
     }

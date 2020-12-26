@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tile : MonoBehaviour
+public class Tile : MonoBehaviour, Ticable
 {
     private ISet<Piece> pieces;
     [SerializeField] private TileType type;
@@ -10,6 +10,7 @@ public class Tile : MonoBehaviour
     private void Awake()
     {
         pieces = new HashSet<Piece>();
+        type = TileType.DEFAULT;
     }
 
     // Start is called before the first frame update
@@ -44,7 +45,7 @@ public class Tile : MonoBehaviour
 
     public void Tic()
     {
-
+        Debug.Log(type);
     }
 
     // TODO: separate effects like tornados from base tiles like default

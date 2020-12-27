@@ -14,6 +14,8 @@ public class Tile : MonoBehaviour, Ticable
     private Dictionary<TileType, Sprite> tileSprites;
     public Vector2Int tornadoDir;
 
+    public int resetTic;
+
     private void Awake()
     {
         pieces = new HashSet<Piece>();
@@ -93,6 +95,8 @@ public class Tile : MonoBehaviour, Ticable
     {
         //Debug.Log(type);
         //ApplyEffect(this.type, this.effect);
+        if(resetTic > 0) resetTic--;
+        if (resetTic <= 0) ChangeType(Weather.NONE);
     }
 
     public void ChangeType(Weather weather)
@@ -100,20 +104,28 @@ public class Tile : MonoBehaviour, Ticable
         if (weather == Weather.LIGHTNING)
         {
             this.effect = TileEffect.ELECTRIC;
-            //Debug.Log("Lightning Tile");
-            GetComponent<SpriteRenderer>().color = Color.blue;
+            resetTic = 5;
         } else if (weather == Weather.RAIN)
         {
             type = TileType.WATER;
             sr.sprite = tileSprites[TileType.WATER];
+            resetTic = 5;
         } else if(weather == Weather.SNOW)
         {
             type = TileType.ICE;
             sr.sprite = tileSprites[TileType.ICE];
+            resetTic = 5;
         } else if(weather == Weather.SUN)
         {
             type = TileType.HOT;
             sr.sprite = tileSprites[TileType.HOT];
+            resetTic = 5;
+        } else
+        {
+            //Debug.Log("reset tile");
+            type = TileType.DEFAULT;
+            effect = TileEffect.NONE;
+            sr.sprite = tileSprites[TileType.DEFAULT];
         }
         //ApplyEffect(this.type, this.effect);
     }

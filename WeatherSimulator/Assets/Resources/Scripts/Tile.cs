@@ -77,7 +77,7 @@ public class Tile : MonoBehaviour, Ticable
     public void Tic()
     {
         //Debug.Log(type);
-        ApplyEffect(this.type, this.effect);
+        //ApplyEffect(this.type, this.effect);
     }
 
     public void ChangeType(Weather weather)
@@ -88,19 +88,11 @@ public class Tile : MonoBehaviour, Ticable
             Debug.Log("Lightning Tile");
             GetComponent<SpriteRenderer>().color = Color.blue;
         }
-        ApplyEffect(this.type, this.effect);
+        //ApplyEffect(this.type, this.effect);
     }
 
-    private void ApplyEffect(TileType type, TileEffect effect)
+    public (TileType, TileEffect) DescribeTile()
     {
-        IList<Piece> shallowCopy = new List<Piece>(pieces);
-        if (effect == TileEffect.ELECTRIC)
-        {
-            // Shock
-            for (int i = 0; i < shallowCopy.Count; i++)
-            {
-                Destroy(shallowCopy[i].gameObject);
-            }
-        }
+        return (type, effect);
     }
 }

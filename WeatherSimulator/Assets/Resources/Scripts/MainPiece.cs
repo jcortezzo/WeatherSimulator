@@ -48,9 +48,9 @@ public class MainPiece : Piece
     {
         ClearArrows();
         var nextPath = GetNextPath(numMoves);
-        for (int i = 0; i < nextPath.Count - 1; i++)
+        for (int i = 1; i < nextPath.Count - 1; i++)
         {
-            var arrow = GenerateArrow(nextPath[i], nextPath[i + 1]);
+            var arrow = GenerateArrow(nextPath[i], nextPath[i + 1], "Player");
             arrow.transform.position = GlobalManager.Instance.GetWorldPos(nextPath[i]);
             arrowPath.Add(arrow);
         }

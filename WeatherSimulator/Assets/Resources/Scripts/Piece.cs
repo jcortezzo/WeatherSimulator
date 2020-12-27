@@ -43,8 +43,13 @@ public abstract class Piece : MonoBehaviour, Ticable
         prevLocation = currLocation;
         currLocation = GetLocation();
 
-        if (tileMap.Count != 1)
+        if (tileMap == null || tileMap.Count < 1 || tileMap.Count != 1)
+        {
             Debug.Log($"ERR, currently standing on {tileMap.Count} tiles");
+            return null;
+        }
+            
+        
         var tile = new List<Tile>(tileMap)[0];
         var tileType = tile.DescribeTile().type;
 
@@ -140,15 +145,16 @@ public abstract class Piece : MonoBehaviour, Ticable
         return nextVisit;
     }
 
-    protected GameObject GenerateArrow(Vector2Int curr, Vector2Int next)
+    protected GameObject GenerateArrow(Vector2Int curr, Vector2Int next, string arrowType)
     {
         var diff = next - curr;
         // Idk why... but need to flip b/c our X, Y are actually backwards
         var maybeAngle = Arrow.GetAngle(new Vector2Int(diff.y, diff.x));
         if (!maybeAngle.HasValue)
             return null;
-        var arrow = Instantiate(arrowPrefab.gameObject, Vector3.zero, maybeAngle.Value)
+        Arrow arrow = Instantiate(arrowPrefab.gameObject, Vector3.zero, maybeAngle.Value)
             .GetComponent<Arrow>();
+        arrow.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + arrowType + "Arrow");
         return arrow.gameObject;
     }
 
@@ -226,6 +232,10 @@ public abstract class Piece : MonoBehaviour, Ticable
             moveCoroutine = StartCoroutine(
                 TornadoMove(t.position, GetLocation() + t.tornadoDir)
             );
+        }
+        else if (info.effect == TileEffect.FIRE)
+        {
+            Destroy(this.gameObject);
         }
     }
 

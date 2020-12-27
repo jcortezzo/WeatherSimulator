@@ -12,10 +12,10 @@ public class GameBoard : MonoBehaviour, Ticable
     public Vector2Int playerLocation;
 
     [SerializeField] private Tile tilePrefab;
-    
+
 
     [SerializeField] Piece playerPiece;
-    
+
     private void Awake()
     {
         board = new Tile[GlobalManager.Instance.BOARD_SIZE, GlobalManager.Instance.BOARD_SIZE];
@@ -56,8 +56,8 @@ public class GameBoard : MonoBehaviour, Ticable
         //Debug.Log(index);
         //Debug.Log(board.Length);
         Vector3 boardPos = board[index.x, index.y].transform.position;
-        Piece p = Instantiate(piecePrefab.gameObject, 
-                              new Vector3(boardPos.x, boardPos.y, boardPos.z - 2), 
+        Piece p = Instantiate(piecePrefab.gameObject,
+                              new Vector3(boardPos.x, boardPos.y, boardPos.z - 2),
                               Quaternion.identity).GetComponent<Piece>();
         enemyLocations[p] = index;
         occupiedBoard[index.x, index.y] = true;
@@ -84,7 +84,8 @@ public class GameBoard : MonoBehaviour, Ticable
 
     public void Tic()
     {
-        foreach (Tile t in board) {
+        foreach (Tile t in board)
+        {
             t.Tic();
         }
         ISet<Piece> copy = new HashSet<Piece>(enemyLocations.Keys);
@@ -104,6 +105,6 @@ public class GameBoard : MonoBehaviour, Ticable
 
     void DisplayBoard()
     {
-        Debug.Log(board);
+        // Debug.Log(board);
     }
 }

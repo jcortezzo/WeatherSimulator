@@ -4,34 +4,31 @@ using UnityEngine;
 
 public class DummyEnemy : Piece
 {
-    // Update is called once per frame
-    void Update()
+    //protected override void Update()
+    //{
+    //    base.Update();
+    //    //var finalDestination = new Vector2Int(GlobalManager.Instance.GameBoard.playerLocation.x,
+    //    //                                GlobalManager.Instance.GameBoard.playerLocation.y);
+    //}
+
+    public override Vector2Int GetLocation()
     {
-        finalDestination = new Vector2Int(GlobalManager.Instance.GameBoard.playerLocation.x,
-                                        GlobalManager.Instance.GameBoard.playerLocation.y);
+        return GlobalManager.Instance.GameBoard.enemyLocations[this];
     }
 
     public override void Tic()
     {
         base.Tic();
-        //Debug.LogFormat("play pos: {0}", finalDestination);
-        Vector2Int? maybeNextMove = GetNextMove(GlobalManager.Instance.GameBoard,
-                                        GlobalManager.Instance.GameBoard.enemyLocations[this],
-                                        finalDestination,
+        Vector2Int? maybeNextMove = GetNextMove(
+                                        GetLocation(),
+                                        GlobalManager.Instance.GameBoard.playerLocation,
                                         GlobalManager.Instance.GameBoard.occupiedBoard);
-
         if (maybeNextMove == null)
             return;
-        Vector2Int nextMove = maybeNextMove.Value;
-
-        //Debug.Log("piece tic");
-        Tile tile = GlobalManager.Instance.GameBoard.GetTile((int)nextMove.x, (int)nextMove.y);
-        //Debug.Log(tile.transform.position);
-
-        if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-        moveCoroutine = StartCoroutine(MovePiece(tile.transform.position));
-
-        //this.transform.position = tile.transform.position;
+        var nextMove = maybeNextMove.Value;
+        var newPos = GlobalManager.Instance.GetWorldPos(nextMove);
+        // if (moveCoroutine != null) StopCoroutine(moveCoroutine); Shouldn't need this
+        moveCoroutine = StartCoroutine(MovePiece(newPos));
         GlobalManager.Instance.GameBoard.enemyLocations[this] = nextMove;
     }
 }

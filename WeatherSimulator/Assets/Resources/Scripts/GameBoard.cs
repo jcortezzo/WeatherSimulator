@@ -14,7 +14,7 @@ public class GameBoard : MonoBehaviour, Ticable
     [SerializeField] private Tile tilePrefab;
 
 
-    [SerializeField] Piece playerPiece;
+    [SerializeField] public Piece playerPiece;
 
     private void Awake()
     {
@@ -99,8 +99,7 @@ public class GameBoard : MonoBehaviour, Ticable
             Vector2Int location = enemyLocations[piece];
             occupiedBoard[location.x, location.y] = true;
         }
-
-        playerPiece.Tic();
+        if(playerPiece != null) playerPiece.Tic();
     }
 
     void DisplayBoard()

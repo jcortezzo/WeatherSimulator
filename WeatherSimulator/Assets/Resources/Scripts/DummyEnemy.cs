@@ -39,6 +39,18 @@ public class DummyEnemy : Piece
         {
             Destroy(piece.gameObject);
         }
+
+        DummyEnemy dummy = collision.gameObject.GetComponent<DummyEnemy>();
+        if (dummy != null) { 
+
+            Destroy(this.gameObject);
+            Destroy(dummy.gameObject);
+        }
+    }
+
+    void OnDestroy()
+    {
+        GlobalManager.Instance.GameBoard.enemyLocations.Remove(this);
     }
 
 }

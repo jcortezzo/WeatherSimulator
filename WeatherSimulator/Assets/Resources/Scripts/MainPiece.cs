@@ -40,4 +40,9 @@ public class MainPiece : Piece
         moveCoroutine = StartCoroutine(MovePiece(GlobalManager.Instance.GetWorldPos(nextMove)));
         GlobalManager.Instance.GameBoard.playerLocation = nextMove;
     }
+
+    void OnDestroy()
+    {
+        Debug.Log("The player has DIED!!");
+    }
 }

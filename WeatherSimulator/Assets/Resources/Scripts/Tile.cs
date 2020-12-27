@@ -10,6 +10,8 @@ public class Tile : MonoBehaviour, Ticable
     public Vector2Int position;
     private bool selected;
     private GameObject selection;
+    private GameObject electric;
+
     private SpriteRenderer sr;
     private Dictionary<TileType, Sprite> tileSprites;
     public Vector2Int tornadoDir;
@@ -24,7 +26,7 @@ public class Tile : MonoBehaviour, Ticable
         tileSprites = new Dictionary<TileType, Sprite>
         {
             { TileType.DEFAULT, Resources.Load<Sprite>("Sprites/Grass")},
-            { TileType.HOT, Resources.Load<Sprite>("Sprites/Grass")}, // TODO
+            { TileType.HOT, Resources.Load<Sprite>("Sprites/SunTile")}, // TODO
             { TileType.ICE, Resources.Load<Sprite>("Sprites/Ice")},
             { TileType.WATER, Resources.Load<Sprite>("Sprites/Water")},
         };
@@ -37,6 +39,9 @@ public class Tile : MonoBehaviour, Ticable
         selection.transform.position = new Vector3(selection.transform.position.x,
                                                    selection.transform.position.y,
                                                    this.transform.position.z - 1);
+        electric = transform.Find("Electric").gameObject;
+        electric.SetActive(effect == TileEffect.ELECTRIC);
+
         selected = false;
         sr = GetComponent<SpriteRenderer>();
         sr.sortingLayerName = "Ground";
@@ -46,7 +51,8 @@ public class Tile : MonoBehaviour, Ticable
     void Update()
     {
         selection.gameObject.SetActive(selected);
-        
+        electric.SetActive(effect == TileEffect.ELECTRIC);
+
     }
 
     public void Select()
@@ -105,6 +111,15 @@ public class Tile : MonoBehaviour, Ticable
         {
             this.effect = TileEffect.ELECTRIC;
             resetTic = 5;
+            ISet<Tile> neighbors = GlobalManager.Instance.GameBoard.GetNeighbors(this);
+            foreach (Tile t in neighbors)
+            {
+                if (t.DescribeTile().type == TileType.WATER &&
+                    t.DescribeTile().effect != TileEffect.ELECTRIC)
+                {
+                    t.ChangeType(Weather.LIGHTNING);
+                }
+            }
         } else if (weather == Weather.RAIN)
         {
             type = TileType.WATER;

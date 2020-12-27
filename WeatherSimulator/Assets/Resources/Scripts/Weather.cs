@@ -8,4 +8,5 @@ public enum Weather
     RAIN,
     SUN,
     SNOW,
+    NONE
 }

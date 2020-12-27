@@ -10,9 +10,13 @@ public class Tile : MonoBehaviour, Ticable
     public Vector2Int position;
     private bool selected;
     private GameObject selection;
+    private GameObject electric;
+
     private SpriteRenderer sr;
     private Dictionary<TileType, Sprite> tileSprites;
     public Vector2Int tornadoDir;
+
+    public int resetTic;
 
     private void Awake()
     {
@@ -22,7 +26,7 @@ public class Tile : MonoBehaviour, Ticable
         tileSprites = new Dictionary<TileType, Sprite>
         {
             { TileType.DEFAULT, Resources.Load<Sprite>("Sprites/Grass")},
-            { TileType.HOT, Resources.Load<Sprite>("Sprites/Grass")}, // TODO
+            { TileType.HOT, Resources.Load<Sprite>("Sprites/SunTile")},
             { TileType.ICE, Resources.Load<Sprite>("Sprites/Ice")},
             { TileType.WATER, Resources.Load<Sprite>("Sprites/Water")},
         };
@@ -35,6 +39,9 @@ public class Tile : MonoBehaviour, Ticable
         selection.transform.position = new Vector3(selection.transform.position.x,
                                                    selection.transform.position.y,
                                                    this.transform.position.z - 1);
+        electric = transform.Find("Electric").gameObject;
+        electric.SetActive(effect == TileEffect.ELECTRIC);
+
         selected = false;
         sr = GetComponent<SpriteRenderer>();
         sr.sortingLayerName = "Ground";
@@ -44,7 +51,8 @@ public class Tile : MonoBehaviour, Ticable
     void Update()
     {
         selection.gameObject.SetActive(selected);
-        
+        electric.SetActive(effect == TileEffect.ELECTRIC);
+
     }
 
     public void Select()
@@ -93,6 +101,8 @@ public class Tile : MonoBehaviour, Ticable
     {
         //Debug.Log(type);
         //ApplyEffect(this.type, this.effect);
+        if(resetTic > 0) resetTic--;
+        if (resetTic <= 0) ChangeType(Weather.NONE);
     }
 
     public void ChangeType(Weather weather)
@@ -100,20 +110,37 @@ public class Tile : MonoBehaviour, Ticable
         if (weather == Weather.LIGHTNING)
         {
             this.effect = TileEffect.ELECTRIC;
-            //Debug.Log("Lightning Tile");
-            GetComponent<SpriteRenderer>().color = Color.blue;
+            resetTic = 5;
+            ISet<Tile> neighbors = GlobalManager.Instance.GameBoard.GetNeighbors(this);
+            foreach (Tile t in neighbors)
+            {
+                if (t.DescribeTile().type == TileType.WATER &&
+                    t.DescribeTile().effect != TileEffect.ELECTRIC)
+                {
+                    t.ChangeType(Weather.LIGHTNING);
+                }
+            }
         } else if (weather == Weather.RAIN)
         {
             type = TileType.WATER;
             sr.sprite = tileSprites[TileType.WATER];
+            resetTic = 5;
         } else if(weather == Weather.SNOW)
         {
             type = TileType.ICE;
             sr.sprite = tileSprites[TileType.ICE];
+            resetTic = 5;
         } else if(weather == Weather.SUN)
         {
             type = TileType.HOT;
             sr.sprite = tileSprites[TileType.HOT];
+            resetTic = 5;
+        } else
+        {
+            //Debug.Log("reset tile");
+            type = TileType.DEFAULT;
+            effect = TileEffect.NONE;
+            sr.sprite = tileSprites[TileType.DEFAULT];
         }
         //ApplyEffect(this.type, this.effect);
     }

@@ -16,9 +16,14 @@ public class GameBoard : MonoBehaviour, Ticable
 
     [SerializeField] public Piece playerPiece;
 
+    private IDictionary<Vector2Int, Tile> coordsToTile;
+    private IDictionary<Tile, Vector2Int> tileToCoords;
+
     private void Awake()
     {
         board = new Tile[GlobalManager.Instance.BOARD_SIZE, GlobalManager.Instance.BOARD_SIZE];
+        coordsToTile = new Dictionary<Vector2Int, Tile>();
+        tileToCoords = new Dictionary<Tile, Vector2Int>();
         for (int i = 0; i < GetBoardHeight(); i++)
         {
             for (int j = 0; j < GetBoardWidth(); j++)
@@ -30,10 +35,17 @@ public class GameBoard : MonoBehaviour, Ticable
                                           Quaternion.identity)
                                           .GetComponent<Tile>();
                 board[i, j].position = new Vector2Int(i, j);
+                coordsToTile[board[i, j].position] = board[i, j];
+                tileToCoords[board[i, j]] = board[i, j].position;
             }
         }
         occupiedBoard = new bool[GlobalManager.Instance.BOARD_SIZE, GlobalManager.Instance.BOARD_SIZE];
         enemyLocations = new Dictionary<Piece, Vector2Int>();
+    }
+
+    public Tile GetTile(Vector2Int index)
+    {
+        return board[index.x, index.y];
     }
 
     public Tile GetTile((int, int) index)
@@ -100,6 +112,35 @@ public class GameBoard : MonoBehaviour, Ticable
             occupiedBoard[location.x, location.y] = true;
         }
         if (playerPiece != null) playerPiece.Tic();
+    }
+
+    public ISet<Tile> GetNeighbors(Tile t)
+    {
+        ISet<Tile> ret = new HashSet<Tile>();
+        List<Vector2Int> dirs = new List<Vector2Int>()
+        {
+            Vector2Int.up,
+            Vector2Int.down,
+            Vector2Int.left,
+            Vector2Int.right,
+        };
+
+        foreach (Vector2Int dir in dirs)
+        {
+            Vector2Int coords = tileToCoords[t] + dir;
+            if (IsValidTile(coords))
+            {
+                ret.Add(coordsToTile[coords]);
+            }
+        }
+        return ret;
+    }
+
+    private bool IsValidTile(Vector2Int coords)
+    {
+        return coords.x >= 0 && coords.x < GetBoardHeight() &&
+               coords.y >= 0 && coords.y < GetBoardWidth();
+
     }
 
     void DisplayBoard()

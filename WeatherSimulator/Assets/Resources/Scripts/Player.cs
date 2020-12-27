@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     public LayerMask layerMask;
     [SerializeField] private GameObject lightning;
     private Animator lightningAnim;
+    private Coroutine lightingCoroutine;
 
     // Start is called before the first frame update
     void Start()
@@ -84,13 +85,15 @@ public class Player : MonoBehaviour
 
     private void Lightning()
     {
-        StartCoroutine(LightningZap());
+        
         RaycastHit2D hit = MouseRayCast();
         if (hit.collider != null)
         {
             Tile t = hit.transform.GetComponent<Tile>();
             if (t != null)
             {
+                if (lightingCoroutine != null) StopCoroutine(lightingCoroutine);
+                lightingCoroutine = StartCoroutine(LightningZap());
                 t.ChangeType(Weather.LIGHTNING);
             }
         }

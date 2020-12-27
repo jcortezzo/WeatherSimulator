@@ -9,7 +9,7 @@ public class MainPiece : Piece
     void Start()
     {
         base.Start();
-        playerBoard = new bool[GameBoard.BOARD_SIZE, GameBoard.BOARD_SIZE];
+        playerBoard = new bool[GlobalManager.Instance.BOARD_SIZE, GlobalManager.Instance.BOARD_SIZE];
         //GenerateFinalPosition(GlobalManager.Instance.GameBoard.GetBoardHeight(),
         //                         GlobalManager.Instance.GameBoard.GetBoardWidth());
     }

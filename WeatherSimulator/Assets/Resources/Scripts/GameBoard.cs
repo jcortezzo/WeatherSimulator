@@ -12,13 +12,13 @@ public class GameBoard : MonoBehaviour, Ticable
     public Vector2Int playerLocation;
 
     [SerializeField] private Tile tilePrefab;
-    [SerializeField] public static int BOARD_SIZE;
+    
 
     [SerializeField] Piece playerPiece;
-
+    
     private void Awake()
     {
-        board = new Tile[BOARD_SIZE, BOARD_SIZE];
+        board = new Tile[GlobalManager.Instance.BOARD_SIZE, GlobalManager.Instance.BOARD_SIZE];
         for (int i = 0; i < GetBoardHeight(); i++)
         {
             for (int j = 0; j < GetBoardWidth(); j++)
@@ -31,7 +31,7 @@ public class GameBoard : MonoBehaviour, Ticable
                                           .GetComponent<Tile>();
             }
         }
-        occupiedBoard = new bool[BOARD_SIZE, BOARD_SIZE];
+        occupiedBoard = new bool[GlobalManager.Instance.BOARD_SIZE, GlobalManager.Instance.BOARD_SIZE];
         enemyLocations = new Dictionary<Piece, Vector2Int>();
     }
 
@@ -47,11 +47,13 @@ public class GameBoard : MonoBehaviour, Ticable
 
     public Tile GetCenterTile()
     {
-        return GetTile((BOARD_SIZE / 2, BOARD_SIZE / 2));
+        return GetTile((GlobalManager.Instance.BOARD_SIZE / 2, GlobalManager.Instance.BOARD_SIZE / 2));
     }
 
     public void SpawnEnemy(Vector2Int index, Piece piecePrefab)
     {
+        Debug.Log(index);
+        Debug.Log(board.Length);
         Piece p = Instantiate(piecePrefab.gameObject, 
                               board[index.x, index.y].transform.position, 
                               Quaternion.identity).GetComponent<Piece>();
@@ -87,7 +89,7 @@ public class GameBoard : MonoBehaviour, Ticable
         {
             piece.Tic();
         }
-        occupiedBoard = new bool[BOARD_SIZE, BOARD_SIZE];
+        occupiedBoard = new bool[GlobalManager.Instance.BOARD_SIZE, GlobalManager.Instance.BOARD_SIZE];
         foreach (Piece piece in enemyLocations.Keys)
         {
             Vector2Int location = enemyLocations[piece];

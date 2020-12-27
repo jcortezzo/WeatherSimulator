@@ -44,8 +44,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   globalTimer: 0
+  BOARD_SIZE: 10
   TIC_TIME: 2
   gameBoard: {fileID: 5513934484955198149, guid: d88ae4da01d40ee47a6a3ab68f9470db,
     type: 3}
-  piece: {fileID: 368062944451653537, guid: e4f8cc4256808364c80d734c4fe87f2a, type: 3}
+  piece: {fileID: 2944299055601615967, guid: 7e729f6ca5dc3714887d9d674567c1b8, type: 3}
+  mainPiece: {fileID: 4225282151352948699, guid: 99be6775050f919469c695d5fba38e6e,
+    type: 3}
   cam: {fileID: 0}

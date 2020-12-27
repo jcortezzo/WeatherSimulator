@@ -7,7 +7,7 @@ public class GlobalManager : MonoBehaviour
     public static GlobalManager Instance;
     public float globalTimer;
     public const int GAME_SCALE = 2;
-
+    public int BOARD_SIZE;
     public GameBoard GameBoard { get { return gameBoard; } }
     [SerializeField] public float TIC_TIME = 2f;
     [SerializeField] private GameBoard gameBoard;
@@ -39,7 +39,7 @@ public class GlobalManager : MonoBehaviour
         //{
         //    gameBoard.SpawnEnemy((i, 0), piece);  // TODO: give piece prefab from Nguyen
         //}
-        //gameBoard.SpawnPlayerPiece((8, 8), mainPiece);
+        gameBoard.SpawnPlayerPiece((8, 8), mainPiece);
 
         gameBoard.SpawnEnemy(new Vector2Int(0,0), piece);
         gameBoard.SpawnEnemy(new Vector2Int(4,4), piece);

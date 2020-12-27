@@ -14,7 +14,7 @@ public class GameBoard : MonoBehaviour, Ticable
     [SerializeField] private Tile tilePrefab;
 
 
-    [SerializeField] Piece playerPiece;
+    [SerializeField] public Piece playerPiece;
 
     private void Awake()
     {

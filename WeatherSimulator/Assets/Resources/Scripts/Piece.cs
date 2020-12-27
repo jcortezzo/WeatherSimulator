@@ -223,7 +223,7 @@ public abstract class Piece : MonoBehaviour, Ticable
         }
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         Tile t = collision.GetComponent<Tile>();
         if (t != null)

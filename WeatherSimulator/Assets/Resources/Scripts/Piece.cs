@@ -5,6 +5,7 @@ using UnityEngine.Assertions;
 
 public abstract class Piece : MonoBehaviour, Ticable
 {
+    public Arrow arrowPrefab;
     public ISet<Tile> tileMap;
     public static float EPSILON = 0.1f;
     protected Coroutine moveCoroutine;
@@ -137,6 +138,18 @@ public abstract class Piece : MonoBehaviour, Ticable
             dest = backpointers[dest].Value;
         }
         return nextVisit;
+    }
+
+    protected GameObject GenerateArrow(Vector2Int curr, Vector2Int next)
+    {
+        var diff = next - curr;
+        // Idk why... but need to flip b/c our X, Y are actually backwards
+        var maybeAngle = Arrow.GetAngle(new Vector2Int(diff.y, diff.x));
+        if (!maybeAngle.HasValue)
+            return null;
+        var arrow = Instantiate(arrowPrefab.gameObject, Vector3.zero, maybeAngle.Value)
+            .GetComponent<Arrow>();
+        return arrow.gameObject;
     }
 
     private List<Vector2Int> GetNeighbours(Vector2Int current)

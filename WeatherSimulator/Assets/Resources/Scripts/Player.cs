@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKeyDown(kc))
             {
-                selectedWeather = (Weather) (kc - KeyCode.Alpha1);
+                selectedWeather = (Weather)(kc - KeyCode.Alpha1);
             }
         }
 
@@ -80,7 +80,7 @@ public class Player : MonoBehaviour
                 }
             }
         }
-       
+
     }
 
     private void Lightning()

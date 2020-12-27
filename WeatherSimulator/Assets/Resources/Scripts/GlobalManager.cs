@@ -9,6 +9,7 @@ public class GlobalManager : MonoBehaviour
     public const int GAME_SCALE = 2;
     public int BOARD_SIZE;
     public GameBoard GameBoard { get { return gameBoard; } }
+    public int enemyNumbers;
     [SerializeField] public float TIC_TIME = 2f;
     [SerializeField] private GameBoard gameBoard;
     [SerializeField] private Piece piece;
@@ -56,6 +57,10 @@ public class GlobalManager : MonoBehaviour
         {
             globalTimer = 0f;
             gameBoard.Tic();
+            if(gameBoard.enemyLocations.Count< enemyNumbers)
+            {
+                gameBoard.SpawnEnemy(new Vector2Int(Random.Range(0, BOARD_SIZE), Random.Range(0, BOARD_SIZE)), piece);
+            }
         }
     }
 

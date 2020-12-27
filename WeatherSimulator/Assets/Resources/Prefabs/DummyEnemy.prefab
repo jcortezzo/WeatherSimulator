@@ -98,6 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7f3a0b814b91ab46b72f331649483c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arrowPrefab: {fileID: 4838766552770054838, guid: 75eda312def0b784b846ddda758424d9,
+    type: 3}
 --- !u!58 &2064169947602477010
 CircleCollider2D:
   m_ObjectHideFlags: 0

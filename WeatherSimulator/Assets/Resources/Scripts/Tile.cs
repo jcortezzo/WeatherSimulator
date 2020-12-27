@@ -26,7 +26,7 @@ public class Tile : MonoBehaviour, Ticable
         tileSprites = new Dictionary<TileType, Sprite>
         {
             { TileType.DEFAULT, Resources.Load<Sprite>("Sprites/Grass")},
-            { TileType.HOT, Resources.Load<Sprite>("Sprites/SunTile")}, // TODO
+            { TileType.HOT, Resources.Load<Sprite>("Sprites/SunTile")},
             { TileType.ICE, Resources.Load<Sprite>("Sprites/Ice")},
             { TileType.WATER, Resources.Load<Sprite>("Sprites/Water")},
         };

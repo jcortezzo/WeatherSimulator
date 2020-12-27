@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MainPiece : Piece
 {
+    private List<GameObject> arrowPath = new List<GameObject>();
     private Vector2Int destination;
     private bool[,] playerBoard;
 
@@ -39,10 +40,53 @@ public class MainPiece : Piece
         // if (moveCoroutine != null) StopCoroutine(moveCoroutine);
         moveCoroutine = StartCoroutine(MovePiece(GlobalManager.Instance.GetWorldPos(nextMove)));
         GlobalManager.Instance.GameBoard.playerLocation = nextMove;
+        DrawNextDirections();
+    }
+
+    // This is SLOW! But there's no better way rn :(
+    private void DrawNextDirections(int numMoves = 7)
+    {
+        ClearArrows();
+        var nextPath = GetNextPath(numMoves);
+        for (int i = 0; i < nextPath.Count - 1; i++)
+        {
+            var arrow = GenerateArrow(nextPath[i], nextPath[i + 1]);
+            arrow.transform.position = GlobalManager.Instance.GetWorldPos(nextPath[i]);
+            arrowPath.Add(arrow);
+        }
+    }
+
+    private List<Vector2Int> GetNextPath(int maxLeng)
+    {
+        var path = new List<Vector2Int>();
+        var currPos = GetLocation();
+        path.Add(currPos);
+        for (int i = 0; i < maxLeng; i++)
+        {
+            var maybeNextMove = GetNextMove(currPos, destination, playerBoard);
+            if (!maybeNextMove.HasValue)
+                return path; // reached a deadend or dest
+            var nextPos = maybeNextMove.Value;
+            currPos = nextPos;
+            path.Add(currPos);
+        }
+        return path;
+    }
+
+    private void ClearArrows()
+    {
+        while (arrowPath.Count > 0)
+        {
+            var currArrow = arrowPath[0];
+            arrowPath.RemoveAt(0);
+            Destroy(currArrow);
+        }
+        // At the end our list should be fully cleared
     }
 
     void OnDestroy()
     {
+        ClearArrows();
         Debug.Log("The player has DIED!!");
     }
 }

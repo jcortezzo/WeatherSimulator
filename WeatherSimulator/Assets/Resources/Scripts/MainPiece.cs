@@ -10,14 +10,8 @@ public class MainPiece : Piece
     {
         base.Start();
         playerBoard = new bool[GlobalManager.Instance.BOARD_SIZE, GlobalManager.Instance.BOARD_SIZE];
-        //GenerateFinalPosition(GlobalManager.Instance.GameBoard.GetBoardHeight(),
-        //                         GlobalManager.Instance.GameBoard.GetBoardWidth());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        GenerateFinalPosition(GlobalManager.Instance.GameBoard.GetBoardHeight(),
+                                 GlobalManager.Instance.GameBoard.GetBoardWidth());
     }
 
     public void GenerateFinalPosition(int row, int col)
@@ -27,13 +21,12 @@ public class MainPiece : Piece
 
     public override void Tic()
     {
-        if (this.transform.position.Equals(finalDestination))
+        if (GlobalManager.Instance.GameBoard.playerLocation.Equals(finalDestination))
         {
             GenerateFinalPosition(GlobalManager.Instance.GameBoard.GetBoardHeight(),
                                  GlobalManager.Instance.GameBoard.GetBoardWidth());
         }
         Vector2Int playPos = GlobalManager.Instance.GameBoard.playerLocation;
-
         Vector2Int? maybeNextMove = GetNextMove(GlobalManager.Instance.GameBoard,
                                         playPos,
                                         finalDestination,
@@ -42,7 +35,7 @@ public class MainPiece : Piece
             return;
         Vector2Int nextMove = maybeNextMove.Value;
 
-        Debug.Log("piece tic");
+        //Debug.Log("piece tic");
         Tile tile = GlobalManager.Instance.GameBoard.GetTile(nextMove.x, nextMove.y);
         Debug.Log(tile.transform.position);
 

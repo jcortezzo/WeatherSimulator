@@ -61,12 +61,13 @@ public class GameBoard : MonoBehaviour, Ticable
         occupiedBoard[index.x, index.y] = true;
     }
 
-    public void SpawnPlayerPiece((int, int) index, Piece piecePrefab)
+    public void SpawnPlayerPiece(Vector2Int index, Piece piecePrefab)
     {
         Piece p = Instantiate(piecePrefab.gameObject,
-                              board[index.Item1, index.Item2].transform.position,
+                              board[index.x, index.y].transform.position,
                               Quaternion.identity).GetComponent<Piece>();
         playerPiece = p;
+        playerLocation = index;
     }
 
     public int GetBoardHeight()
@@ -96,7 +97,7 @@ public class GameBoard : MonoBehaviour, Ticable
             occupiedBoard[location.x, location.y] = true;
         }
 
-        //playerPiece.Tic();
+        playerPiece.Tic();
     }
 
     void DisplayBoard()

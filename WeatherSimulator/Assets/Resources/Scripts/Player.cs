@@ -8,6 +8,9 @@ public class Player : MonoBehaviour
     private List<System.Action> actions;
     private Tile previousSelected;
     public LayerMask layerMask;
+    [SerializeField] private GameObject lightning;
+    private Animator lightningAnim;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +22,7 @@ public class Player : MonoBehaviour
             Sun,
             Snow,
         };
+        lightningAnim = lightning.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -38,6 +42,11 @@ public class Player : MonoBehaviour
         {
             actions[(int)selectedWeather].Invoke();
         }
+
+        //if (lightningAnim.GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
+        //{
+        //    lightning.transform.position = new Vector3(0, 0, -1000);
+        //}
     }
 
     private RaycastHit2D MouseRayCast()
@@ -74,6 +83,9 @@ public class Player : MonoBehaviour
 
     private void Lightning()
     {
+        Vector3 mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        lightning.transform.position = new Vector3(mousePoint.x, mousePoint.y, 0);
+        lightningAnim.Play(0);
         RaycastHit2D hit = MouseRayCast();
         if (hit.collider != null)
         {

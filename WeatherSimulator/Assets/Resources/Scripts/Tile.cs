@@ -103,21 +103,4 @@ public class Tile : MonoBehaviour, Ticable
             }
         }
     }
-
-    // TODO: separate effects like tornados from base tiles like default
-    private enum TileType
-    {
-        DEFAULT,
-        WATER,
-        HOT,
-        ICE,
-    }
-
-    private enum TileEffect
-    {
-        NONE,
-        ELECTRIC,
-        TORNADO,
-        FIRE,
-    }
 }

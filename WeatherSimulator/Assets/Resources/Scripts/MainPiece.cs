@@ -38,5 +38,6 @@ public class MainPiece : Piece
         Vector2Int nextMove = maybeNextMove.Value;
         // if (moveCoroutine != null) StopCoroutine(moveCoroutine);
         moveCoroutine = StartCoroutine(MovePiece(GlobalManager.Instance.GetWorldPos(nextMove)));
+        GlobalManager.Instance.GameBoard.playerLocation = nextMove;
     }
 }

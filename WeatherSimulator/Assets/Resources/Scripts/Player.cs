@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
             Snow,
         };
         lightningAnim = lightning.GetComponent<Animator>();
+        lightning.SetActive(false);
     }
 
     // Update is called once per frame
@@ -83,9 +84,7 @@ public class Player : MonoBehaviour
 
     private void Lightning()
     {
-        Vector3 mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        lightning.transform.position = new Vector3(mousePoint.x, mousePoint.y, 0);
-        lightningAnim.Play(0);
+        StartCoroutine(LightningZap());
         RaycastHit2D hit = MouseRayCast();
         if (hit.collider != null)
         {
@@ -95,6 +94,16 @@ public class Player : MonoBehaviour
                 t.ChangeType(Weather.LIGHTNING);
             }
         }
+    }
+
+    public IEnumerator LightningZap()
+    {
+        lightning.SetActive(true);
+        Vector3 mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        lightning.transform.position = new Vector3(mousePoint.x, mousePoint.y, 0);
+        lightningAnim.Play(0);
+        yield return new WaitForSeconds(0.5f);
+        lightning.SetActive(false);
     }
 
     private void Rain()

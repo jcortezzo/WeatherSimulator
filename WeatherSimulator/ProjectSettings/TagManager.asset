@@ -50,3 +50,6 @@ TagManager:
   - name: Pieces
     uniqueID: 4092624269
     locked: 0
+  - name: Lightning
+    uniqueID: 2110618607
+    locked: 0

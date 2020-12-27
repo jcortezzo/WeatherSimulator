@@ -37,6 +37,6 @@ public class MainPiece : Piece
             return;
         Vector2Int nextMove = maybeNextMove.Value;
         // if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-        moveCoroutine = StartCoroutine(MovePiece(GlobalManager.Instance.GetWorldPos(nextMove)));
+        moveCoroutine = StartCoroutine(MovePiece(GlobalManager.Instance.GetWorldPos(nextMove), GlobalManager.Instance.TIC_TIME / 10));
     }
 }

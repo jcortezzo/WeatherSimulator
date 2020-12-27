@@ -28,7 +28,7 @@ public class DummyEnemy : Piece
         var nextMove = maybeNextMove.Value;
         var newPos = GlobalManager.Instance.GetWorldPos(nextMove);
         // if (moveCoroutine != null) StopCoroutine(moveCoroutine); Shouldn't need this
-        moveCoroutine = StartCoroutine(MovePiece(newPos));
+        moveCoroutine = StartCoroutine(MovePiece(newPos, GlobalManager.Instance.TIC_TIME / 10));
         GlobalManager.Instance.GameBoard.enemyLocations[this] = nextMove;
     }
 }

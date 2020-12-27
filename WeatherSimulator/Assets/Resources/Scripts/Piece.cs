@@ -32,23 +32,20 @@ public abstract class Piece : MonoBehaviour, Ticable
         {
             ReceiveEffects(shallowCopy[i]);
         }
-        //foreach (Tile t in this.tileMap)
-        //{
-        //    ReceiveEffects(t);
-        //}
     }
 
     public abstract Vector2Int GetLocation();
 
     public Vector2Int? GetNextMove(Vector2Int currentPos, Vector2Int dest, bool[,] occupiedBoard)
     {
-        // Assert.IsTrue(tiles.Count == 1);
-        // var tile = tiles.GetEnumerator().Current;
+        Assert.IsTrue(tileMap.Count == 1);
+        var tile = tileMap.GetEnumerator().Current;
 
-        // if (/* tile == ice*/ true)
-        // {
-        //     return GetLocation() - prevPosition; // continue in the same dir
-        // }
+        if (tile.DescribeTile().type == TileType.ICE)
+        {
+            // just slide, IE continue in the same dir
+            return GetLocation() - prevPosition;
+        }
 
         var bestPath = GetBestPath(currentPos, dest, occupiedBoard);
         if (bestPath.Count < 2)
@@ -145,21 +142,35 @@ public abstract class Piece : MonoBehaviour, Ticable
         return pos.x >= 0 && pos.x < col && pos.y >= 0 && pos.y < row && !movementBoard[pos.x, pos.y];
     }
 
-    public IEnumerator MovePiece(Vector2 newPos)
+    // given a value 0-1, smooths lerp via cos
+    private float SmoothLerp(float lerpVal)
+    {
+        // take cos from -pi -> pi
+        // add 1 to our cos and div by 2
+        float currRad = (1 - lerpVal) * -Mathf.PI + (lerpVal) * Mathf.PI;
+        return (Mathf.Cos(currRad) + 1) / 2;
+    }
+
+    public IEnumerator MovePiece(Vector2 newPos, float duration)
     {
         Vector2 oldPos = this.transform.position;
-        //Debug.Log("moving: " + oldPos + " " + newPos);
-
-        int numSteps = 10; // arbirtary, this is smooth though!
-        float stepLength = GlobalManager.Instance.TIC_TIME / numSteps / 10; // time leng of step
+        int numSteps = 20; // arbirtary, this is smooth though!
+        float stepLength = duration / numSteps; // time leng of step
 
         for (float i = 0; i < 1; i += (1f / numSteps))
         {
             // We can apply a sinuosoid to this as well!
-            this.transform.position = Vector2.Lerp(oldPos, newPos, i);
+            this.transform.position = Vector2.Lerp(oldPos, newPos, SmoothLerp(i));
             yield return new WaitForSeconds(stepLength);
         }
         this.transform.position = newPos;
+    }
+
+    public IEnumerator TornadoMove(Vector2Int tornadoPos, Vector2Int finalPos)
+    {
+        // Durations are arbitrary!
+        yield return MovePiece(tornadoPos, GlobalManager.Instance.TIC_TIME / 30);
+        yield return MovePiece(finalPos, GlobalManager.Instance.TIC_TIME / 10);
     }
 
     public virtual void Tic()
@@ -187,7 +198,9 @@ public abstract class Piece : MonoBehaviour, Ticable
             {
                 StopCoroutine(this.moveCoroutine);
             }
-            moveCoroutine = StartCoroutine(MovePiece(t.transform.position + new Vector3(t.tornadoDir.x, t.tornadoDir.y)));
+            moveCoroutine = StartCoroutine(
+                TornadoMove(t.position, GetLocation() + t.tornadoDir)
+            );
         }
     }
 

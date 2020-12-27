@@ -282,6 +282,12 @@ PrefabInstance:
       propertyPath: TIC_TIME
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 289645774549277727, guid: 9040fdc79672a8d4a81b691f9fa62f6d,
+        type: 3}
+      propertyPath: mainPiece
+      value: 
+      objectReference: {fileID: 4225282151352948699, guid: 99be6775050f919469c695d5fba38e6e,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9040fdc79672a8d4a81b691f9fa62f6d, type: 3}
 --- !u!1001 &1810077701

@@ -6,11 +6,16 @@ public class Piece : MonoBehaviour
 {
     ISet<Tile> tilemap;
     public static float EPSILON = 0.1f;
-    private Coroutine moveCoroutine; 
+
+    protected Coroutine moveCoroutine;
+    protected Vector2 finalPosition;
+
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
-        tilemap = new HashSet<Tile>();    
+        tilemap = new HashSet<Tile>();
+
+        
     }
 
     // Update is called once per frame
@@ -19,24 +24,31 @@ public class Piece : MonoBehaviour
         
     }
 
+    protected void GenerateFinalPosition(int row, int col)
+    {
+        finalPosition = new Vector2(Random.Range(0, row), Random.Range(0, col));
+    }
+
     /// <summary>
     /// Get a mutable gameboard and generate a next available move
     /// </summary>
     /// <param name="board">Mutable GameBoard</param>
     /// <returns></returns>
-    public Vector2 GetNextMove(GameBoard board)
+    public Vector2 GetNextMove(GameBoard board, Vector2 finalPosition)
     {
-        int row = board.occupiedBoard.GetLength(0);
-        int col = board.occupiedBoard.GetLength(1);
-        //Vector2 randomPos = new Vector2(Random.Range(0, row), Random.Range(0, col));
-        Vector2 randomPos = new Vector2(8, 8);
-
-        Debug.LogFormat("new random pos: {0}, {1}", randomPos.x, randomPos.y);
+        Debug.LogFormat("new random pos: {0}, {1}", finalPosition.x, finalPosition.y);
         // set up queue and set
         Queue<NextMove> queue = new Queue<NextMove>();
         ISet<Vector2> visited = new HashSet<Vector2>();
-
-        (int, int) pos = board.enemyLocations[this];
+        (int, int) pos = (2,2);
+        if (this.GetComponent<MainPiece>() != null)
+        {
+            pos = board.playerLocation;
+        } else
+        {
+            pos = board.enemyLocations[this];
+        }
+        
         NextMove currentPos = new NextMove() { prev = null, nextMove = new Vector2(pos.Item1, pos.Item2) };
         
         bool pathFound = false;
@@ -50,7 +62,7 @@ public class Piece : MonoBehaviour
         {
             NextMove pop = queue.Dequeue();
             //Debug.LogFormat("current move check: {0}", pop.nextMove);
-            if(pop.nextMove.Equals(randomPos))
+            if(pop.nextMove.Equals(finalPosition))
             {
                 Debug.Log("path found");
                 pathFound = true;
@@ -134,10 +146,9 @@ public class Piece : MonoBehaviour
         this.transform.position = newPos;
     }
 
-    public void Tic()
+    public virtual void Tic()
     {
-
-        Vector2 nextMove = GetNextMove(GlobalManager.Instance.GameBoard);
+        Vector2 nextMove = GetNextMove(GlobalManager.Instance.GameBoard, finalPosition);
         if (nextMove.Equals(Vector2.negativeInfinity)) { return; }
 
         Debug.Log("piece tic");
@@ -149,7 +160,6 @@ public class Piece : MonoBehaviour
         
         //this.transform.position = tile.transform.position;
         GlobalManager.Instance.GameBoard.enemyLocations[this] = ((int)nextMove.x, (int)nextMove.y);
-
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

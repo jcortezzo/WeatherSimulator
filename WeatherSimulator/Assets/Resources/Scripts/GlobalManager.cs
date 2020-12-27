@@ -12,6 +12,7 @@ public class GlobalManager : MonoBehaviour
     [SerializeField] public float TIC_TIME = 2f;
     [SerializeField] private GameBoard gameBoard;
     [SerializeField] private Piece piece;
+    [SerializeField] private Piece mainPiece;
 
     public Camera cam;
 
@@ -38,9 +39,11 @@ public class GlobalManager : MonoBehaviour
         //{
         //    gameBoard.SpawnEnemy((i, 0), piece);  // TODO: give piece prefab from Nguyen
         //}
-        gameBoard.SpawnEnemy((0, 0), piece);
+        gameBoard.SpawnPlayerPiece((8, 8), mainPiece);
 
-        gameBoard.SpawnEnemy((4, 4), piece);
+        //gameBoard.SpawnEnemy((0, 0), piece);
+        //gameBoard.SpawnEnemy((4, 4), piece);
+        
         Vector3 centerPos = gameBoard.GetCenterTile().transform.position;
         cam.transform.position = new Vector3(centerPos.x, centerPos.y, cam.transform.position.z);
     }

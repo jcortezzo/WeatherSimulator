@@ -9,9 +9,12 @@ public class GameBoard : MonoBehaviour, Ticable
     [Header("Used by Enemies to pathfind")]
     public bool[,] occupiedBoard;
     public IDictionary<Piece, (int, int)> enemyLocations;
+    public (int, int) playerLocation;
 
     [SerializeField] private Tile tilePrefab;
     [SerializeField] private int BOARD_SIZE;
+
+    [SerializeField] Piece playerPiece;
 
     private void Awake()
     {
@@ -56,6 +59,14 @@ public class GameBoard : MonoBehaviour, Ticable
         occupiedBoard[index.Item1, index.Item2] = true;
     }
 
+    public void SpawnPlayerPiece((int, int) index, Piece piecePrefab)
+    {
+        Piece p = Instantiate(piecePrefab.gameObject,
+                              board[index.Item1, index.Item2].transform.position,
+                              Quaternion.identity).GetComponent<Piece>();
+        playerPiece = p;
+    }
+
     public int GetBoardHeight()
     {
         return board.GetLength(0);
@@ -64,18 +75,6 @@ public class GameBoard : MonoBehaviour, Ticable
     public int GetBoardWidth()
     {
         return board.GetLength(1);
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void Tic()
@@ -94,6 +93,8 @@ public class GameBoard : MonoBehaviour, Ticable
             (int, int) location = enemyLocations[piece];
             occupiedBoard[location.Item1, location.Item2] = true;
         }
+
+        playerPiece.Tic();
     }
 
     void DisplayBoard()

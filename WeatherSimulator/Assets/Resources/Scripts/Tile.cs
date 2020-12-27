@@ -9,6 +9,7 @@ public class Tile : MonoBehaviour, Ticable
     [SerializeField] private TileEffect effect;
     private bool selected;
     private GameObject selection;
+    private SpriteRenderer sr;
 
     private void Awake()
     {
@@ -24,6 +25,8 @@ public class Tile : MonoBehaviour, Ticable
                                                    selection.transform.position.y,
                                                    this.transform.position.z - 1);
         selected = false;
+        sr = GetComponent<SpriteRenderer>();
+        sr.sortingLayerName = "Ground";
     }
 
     // Update is called once per frame

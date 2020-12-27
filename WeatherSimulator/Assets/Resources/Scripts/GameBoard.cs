@@ -54,8 +54,9 @@ public class GameBoard : MonoBehaviour, Ticable
     {
         Debug.Log(index);
         Debug.Log(board.Length);
+        Vector3 boardPos = board[index.x, index.y].transform.position;
         Piece p = Instantiate(piecePrefab.gameObject, 
-                              board[index.x, index.y].transform.position, 
+                              new Vector3(boardPos.x, boardPos.y, boardPos.z - 2), 
                               Quaternion.identity).GetComponent<Piece>();
         enemyLocations[p] = index;
         occupiedBoard[index.x, index.y] = true;

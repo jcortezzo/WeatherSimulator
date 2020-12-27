@@ -11,11 +11,14 @@ public class Piece : MonoBehaviour, Ticable
     protected Coroutine moveCoroutine;
     protected Vector2Int finalDestination;
 
+    private SpriteRenderer sr;
+
     // Start is called before the first frame update
     public void Start()
     {
         tilemap = new HashSet<Tile>();
-
+        sr = GetComponent<SpriteRenderer>();
+        sr.sortingLayerName = "Pieces";
     }
 
     // Update is called once per frame

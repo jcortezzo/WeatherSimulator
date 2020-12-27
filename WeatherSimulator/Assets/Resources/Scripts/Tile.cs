@@ -6,6 +6,7 @@ public class Tile : MonoBehaviour, Ticable
 {
     private ISet<Piece> pieces;
     [SerializeField] private TileType type;
+    [SerializeField] private TileEffect effect;
     private bool selected;
     private GameObject selection;
 
@@ -62,6 +63,34 @@ public class Tile : MonoBehaviour, Ticable
     public void Tic()
     {
         //Debug.Log(type);
+        ApplyEffect(this.type, this.effect);
+    }
+
+    public void ChangeType(Weather weather)
+    {
+        if (weather == Weather.LIGHTNING)
+        {
+            this.effect = TileEffect.ELECTRIC;
+            Debug.Log("Lightning Tile");
+            GetComponent<SpriteRenderer>().color = Color.blue;
+        }
+        ApplyEffect(this.type, this.effect);
+    }
+
+    private void ApplyEffect(TileType type, TileEffect effect)
+    {
+        ISet<Piece> deepCopy = new HashSet<Piece>();
+        if (effect == TileEffect.ELECTRIC)
+        {
+            // Shock
+            Debug.Log(deepCopy);
+            ISet<Piece> toDestroy = new HashSet<Piece>();
+            foreach (Piece p in deepCopy)
+            {
+                Destroy(p.gameObject);
+                Debug.Log("piece destroyed by lightning!");
+            }
+        }
     }
 
     // TODO: separate effects like tornados from base tiles like default
@@ -71,5 +100,12 @@ public class Tile : MonoBehaviour, Ticable
         WATER,
         HOT,
         ICE,
+    }
+
+    private enum TileEffect
+    {
+        ELECTRIC,
+        TORNADO,
+        FIRE,
     }
 }

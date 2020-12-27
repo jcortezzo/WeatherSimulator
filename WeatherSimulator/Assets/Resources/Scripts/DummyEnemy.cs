@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class DummyEnemy : Piece
 {
-    protected override void Update()
-    {
-        base.Update();
-        //var finalDestination = new Vector2Int(GlobalManager.Instance.GameBoard.playerLocation.x,
-        //                                GlobalManager.Instance.GameBoard.playerLocation.y);
-    }
+    //protected override void Update()
+    //{
+    //    base.Update();
+    //    //var finalDestination = new Vector2Int(GlobalManager.Instance.GameBoard.playerLocation.x,
+    //    //                                GlobalManager.Instance.GameBoard.playerLocation.y);
+    //}
 
     public override Vector2Int GetLocation()
     {
@@ -28,7 +28,7 @@ public class DummyEnemy : Piece
         var nextMove = maybeNextMove.Value;
         var newPos = GlobalManager.Instance.GetWorldPos(nextMove);
         // if (moveCoroutine != null) StopCoroutine(moveCoroutine); Shouldn't need this
-        moveCoroutine = StartCoroutine(MovePiece(newPos, GlobalManager.Instance.TIC_TIME / 10));
+        moveCoroutine = StartCoroutine(MovePiece(newPos));
         GlobalManager.Instance.GameBoard.enemyLocations[this] = nextMove;
     }
 }

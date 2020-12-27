@@ -26,6 +26,7 @@ public abstract class Piece : MonoBehaviour, Ticable
     // Update is called once per frame
     protected virtual void Update()
     {
+
         Debug.Log("piece " + this.tileMap.Count);
         IList<Tile> shallowCopy = new List<Tile>(tileMap);
         for (int i = 0; i < shallowCopy.Count; i++)
@@ -151,8 +152,11 @@ public abstract class Piece : MonoBehaviour, Ticable
         return (Mathf.Cos(currRad) + 1) / 2;
     }
 
-    public IEnumerator MovePiece(Vector2 newPos, float duration)
+    public IEnumerator MovePiece(Vector2 newPos, float duration = float.NegativeInfinity)
     {
+        // Default param val
+        if (duration == float.NegativeInfinity) duration = GlobalManager.Instance.TIC_TIME / 10;
+
         Vector2 oldPos = this.transform.position;
         int numSteps = 20; // arbirtary, this is smooth though!
         float stepLength = duration / numSteps; // time leng of step
@@ -175,7 +179,7 @@ public abstract class Piece : MonoBehaviour, Ticable
 
     public virtual void Tic()
     {
-        Debug.Log(this.tileMap.Count);
+        //Debug.Log(this.tileMap.Count);
         prevPosition = GetLocation();
     }
 
@@ -206,14 +210,14 @@ public abstract class Piece : MonoBehaviour, Ticable
 
     void OnTriggerStay2D(Collider2D collision)
     {
-        Debug.Log("on something");
+        //Debug.Log("on something");
         Tile t = collision.GetComponent<Tile>();
         if (t != null)
         {
-            Debug.Log("fucucucuck");
-            Debug.Log("it's nguyend outside");
+            //Debug.Log("fucucucuck");
+            //Debug.Log("it's nguyend outside");
             this.tileMap.Add(t);
-            Debug.Log("omg wtf " + tileMap.Count);
+            //Debug.Log("omg wtf " + tileMap.Count);
         }
     }
 

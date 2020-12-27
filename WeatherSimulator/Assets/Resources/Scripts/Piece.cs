@@ -140,6 +140,18 @@ public abstract class Piece : MonoBehaviour, Ticable
         return nextVisit;
     }
 
+    protected GameObject GenerateArrow(Vector2Int curr, Vector2Int next)
+    {
+        var diff = next - curr;
+        // Idk why... but need to flip b/c our X, Y are actually backwards
+        var maybeAngle = Arrow.GetAngle(new Vector2Int(diff.y, diff.x));
+        if (!maybeAngle.HasValue)
+            return null;
+        var arrow = Instantiate(arrowPrefab.gameObject, Vector3.zero, maybeAngle.Value)
+            .GetComponent<Arrow>();
+        return arrow.gameObject;
+    }
+
     private List<Vector2Int> GetNeighbours(Vector2Int current)
     {
         return new List<Vector2Int>{

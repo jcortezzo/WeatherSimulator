@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DummyEnemy : Piece
 {
-    
+    private GameObject arrow;
 
     public override Vector2Int GetLocation()
     {
@@ -20,7 +20,14 @@ public class DummyEnemy : Piece
                                         GlobalManager.Instance.GameBoard.occupiedBoard);
         if (maybeNextMove == null)
             return;
+
+        // Generate our nextup arrow:
         var nextMove = maybeNextMove.Value;
+        if (arrow != null) Destroy(arrow);
+        arrow = GenerateArrow(GetLocation(), nextMove);
+        arrow.transform.position = transform.position;
+        arrow.transform.parent = transform; // make that arrow a child of our enemy
+
         var newPos = GlobalManager.Instance.GetWorldPos(nextMove);
         // if (moveCoroutine != null) StopCoroutine(moveCoroutine); Shouldn't need this
         moveCoroutine = StartCoroutine(MovePiece(newPos));
@@ -36,7 +43,8 @@ public class DummyEnemy : Piece
         }
 
         DummyEnemy dummy = collision.gameObject.GetComponent<DummyEnemy>();
-        if (dummy != null) { 
+        if (dummy != null)
+        {
 
             Destroy(this.gameObject);
             Destroy(dummy.gameObject);

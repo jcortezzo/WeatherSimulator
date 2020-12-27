@@ -26,8 +26,8 @@ public class Arrow : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
-        sr.sortingLayerName = "Selection"; // TODO change this layer
-        sr.color = new Color(1f, 1f, 1f, .5f); // make transparent
+        sr.sortingLayerName = "Lightning"; // TODO change this layer
+        sr.color = new Color(1f, 1f, 1f, .3f); // make transparent
         // anim.SetInteger("id", 0);
     }
 }

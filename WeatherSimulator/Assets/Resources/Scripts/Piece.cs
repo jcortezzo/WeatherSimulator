@@ -8,7 +8,8 @@ public abstract class Piece : MonoBehaviour, Ticable
     public ISet<Tile> tileMap;
     public static float EPSILON = 0.1f;
     protected Coroutine moveCoroutine;
-    private Vector2Int prevPosition;
+    private Vector2Int prevLocation;
+    private Vector2Int currLocation;
     private SpriteRenderer sr;
 
     protected virtual void Awake()
@@ -20,7 +21,7 @@ public abstract class Piece : MonoBehaviour, Ticable
     {
         sr = GetComponent<SpriteRenderer>();
         sr.sortingLayerName = "Pieces";
-        prevPosition = GetLocation();
+        currLocation = GetLocation();
     }
 
     // Update is called once per frame
@@ -37,17 +38,23 @@ public abstract class Piece : MonoBehaviour, Ticable
 
     public Vector2Int? GetNextMove(Vector2Int currentPos, Vector2Int dest, bool[,] occupiedBoard)
     {
-        /*
-        Assert.IsTrue(tileMap.Count == 1);
-        var tile = tileMap.GetEnumerator().Current;
+        prevLocation = currLocation;
+        currLocation = GetLocation();
 
-        Debug.Log(tile);
-        if (tile.DescribeTile().type == TileType.ICE)
+        Debug.Log($"Last pos {prevLocation}, curr pos: {currLocation}");
+
+        if (tileMap.Count != 1)
+            Debug.Log($"ERR, currently standing on {tileMap.Count} tiles");
+        var tile = new List<Tile>(tileMap)[0];
+        // TODO: Change this to TileType.ICE
+        if (tile.DescribeTile().type == TileType.DEFAULT)
         {
-            // just slide, IE continue in the same dir
-            return GetLocation() - prevPosition;
+            Debug.Log("Sliding");
+            var slideDir = currLocation - prevLocation;
+            var newDest = currLocation + slideDir;
+            if (CanMove(newDest, occupiedBoard) && slideDir != Vector2Int.zero)
+                return currLocation + slideDir;
         }
-        */
 
         var bestPath = GetBestPath(currentPos, dest, occupiedBoard);
         if (bestPath.Count < 2)
@@ -181,7 +188,6 @@ public abstract class Piece : MonoBehaviour, Ticable
     public virtual void Tic()
     {
         //Debug.Log(this.tileMap.Count);
-        prevPosition = GetLocation();
     }
 
     private void OnDestroy()

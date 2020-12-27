@@ -23,7 +23,11 @@ public abstract class Piece : MonoBehaviour, Ticable
     // Update is called once per frame
     void Update()
     {
-
+        Debug.Log(tilemap.Count);
+        foreach (Tile t in tilemap)
+        {
+            ReceiveEffects(t);
+        }
     }
 
     public abstract Vector2Int GetLocation();
@@ -160,6 +164,70 @@ public abstract class Piece : MonoBehaviour, Ticable
         GlobalManager.Instance.GameBoard.enemyLocations.Remove(this);
     }
 
+    private void ReceiveEffects(Tile t)
+    {
+        var info = t.DescribeTile();
+        Debug.Log(info);
+        if (info.effect == TileEffect.ELECTRIC)
+        {
+            //Debug.Log(t.DescribeTile());
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Tile t = collision.gameObject.GetComponent<Tile>();
+        if (t != null)
+        {
+            if (tilemap != null)
+            {
+                tilemap.Add(t);
+            }
+            //ReceiveEffects(t);
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        Tile t = collision.gameObject.GetComponent<Tile>();
+        if (t != null)
+        {
+            if (tilemap != null)
+            {
+                tilemap.Add(t);
+            }
+            //ReceiveEffects(t);
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        Tile t = collision.gameObject.GetComponent<Tile>();
+        if (t != null)
+        {
+            if (tilemap != null)
+            {
+                tilemap.Remove(t);
+            }
+            //ReceiveEffects(t);
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        Debug.Log("on something");
+        Tile t = collision.GetComponent<Tile>();
+        if (t != null)
+        {
+            if (tilemap != null)
+            {
+                tilemap.Add(t);
+            }
+            //ReceiveEffects(t);
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Tile t = collision.GetComponent<Tile>();
@@ -169,6 +237,7 @@ public abstract class Piece : MonoBehaviour, Ticable
             {
                 tilemap.Add(t);
             }
+            //ReceiveEffects(t);
         }
     }
 
@@ -179,7 +248,7 @@ public abstract class Piece : MonoBehaviour, Ticable
         {
             if (tilemap != null)
             {
-                tilemap.Remove(t);
+                //tilemap.Remove(t);
             }
         }
     }

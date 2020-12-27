@@ -41,8 +41,8 @@ public class GlobalManager : MonoBehaviour
         //}
         //gameBoard.SpawnPlayerPiece((8, 8), mainPiece);
 
-        gameBoard.SpawnEnemy((0, 0), piece);
-        gameBoard.SpawnEnemy((4, 4), piece);
+        gameBoard.SpawnEnemy(new Vector2Int(0,0), piece);
+        gameBoard.SpawnEnemy(new Vector2Int(4,4), piece);
 
         Vector3 centerPos = gameBoard.GetCenterTile().transform.position;
         cam.transform.position = new Vector3(centerPos.x, centerPos.y, cam.transform.position.z);

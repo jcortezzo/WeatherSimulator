@@ -7,6 +7,7 @@ public class Tile : MonoBehaviour, Ticable
     private ISet<Piece> pieces;
     [SerializeField] private TileType type;
     [SerializeField] private TileEffect effect;
+    public Vector2Int position;
     private bool selected;
     private GameObject selection;
     private SpriteRenderer sr;
@@ -77,7 +78,7 @@ public class Tile : MonoBehaviour, Ticable
     public void Tic()
     {
         //Debug.Log(type);
-        ApplyEffect(this.type, this.effect);
+        //ApplyEffect(this.type, this.effect);
     }
 
     public void ChangeType(Weather weather)
@@ -85,22 +86,14 @@ public class Tile : MonoBehaviour, Ticable
         if (weather == Weather.LIGHTNING)
         {
             this.effect = TileEffect.ELECTRIC;
-            Debug.Log("Lightning Tile");
+            //Debug.Log("Lightning Tile");
             GetComponent<SpriteRenderer>().color = Color.blue;
         }
-        ApplyEffect(this.type, this.effect);
+        //ApplyEffect(this.type, this.effect);
     }
 
-    private void ApplyEffect(TileType type, TileEffect effect)
+    public (TileType type, TileEffect effect, Vector2Int position) DescribeTile()
     {
-        IList<Piece> shallowCopy = new List<Piece>(pieces);
-        if (effect == TileEffect.ELECTRIC)
-        {
-            // Shock
-            for (int i = 0; i < shallowCopy.Count; i++)
-            {
-                Destroy(shallowCopy[i].gameObject);
-            }
-        }
+        return (type, effect, position);
     }
 }

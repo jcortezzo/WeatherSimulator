@@ -7,7 +7,7 @@ public class GameBoard : MonoBehaviour, Ticable
     public Tile[,] board;
 
     [Header("Used by Enemies to pathfind")]
-    public bool[,] movementBoard;
+    public bool[,] occupiedBoard;
     public IDictionary<Piece, (int, int)> enemyLocations;
 
     [SerializeField] private Tile tilePrefab;
@@ -28,7 +28,7 @@ public class GameBoard : MonoBehaviour, Ticable
                                           .GetComponent<Tile>();
             }
         }
-        movementBoard = new bool[BOARD_SIZE, BOARD_SIZE];
+        occupiedBoard = new bool[BOARD_SIZE, BOARD_SIZE];
         enemyLocations = new Dictionary<Piece, (int, int)>();
     }
 
@@ -53,7 +53,7 @@ public class GameBoard : MonoBehaviour, Ticable
                               board[index.Item1, index.Item2].transform.position, 
                               Quaternion.identity).GetComponent<Piece>();
         enemyLocations[p] = index;
-        movementBoard[index.Item1, index.Item2] = true;
+        occupiedBoard[index.Item1, index.Item2] = true;
     }
 
     public int GetBoardHeight()
@@ -82,6 +82,10 @@ public class GameBoard : MonoBehaviour, Ticable
     {
         foreach (Tile t in board) {
             t.Tic();
+        }
+        foreach(Piece piece in enemyLocations.Keys)
+        {
+            piece.Tic();
         }
     }
 

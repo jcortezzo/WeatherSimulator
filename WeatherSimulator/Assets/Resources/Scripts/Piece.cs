@@ -5,7 +5,8 @@ using UnityEngine;
 public class Piece : MonoBehaviour
 {
     ISet<Tile> tilemap;
-
+    public static float EPSILON = 0.1f;
+    private Coroutine moveCoroutine; 
     // Start is called before the first frame update
     void Start()
     {
@@ -25,17 +26,19 @@ public class Piece : MonoBehaviour
     /// <returns></returns>
     public Vector2 GetNextMove(GameBoard board)
     {
-        int row = board.movementBoard.GetLength(0);
-        int col = board.movementBoard.GetLength(1);
-        Vector2 randomPos = new Vector2(Random.Range(0, row), Random.Range(0, col));
-
+        int row = board.occupiedBoard.GetLength(0);
+        int col = board.occupiedBoard.GetLength(1);
+        //Vector2 randomPos = new Vector2(Random.Range(0, row), Random.Range(0, col));
+        Vector2 randomPos = new Vector2(8, 8);
+        Debug.LogFormat("new random pos: {0}, {1}", randomPos.x, randomPos.y);
         // set up queue and set
         Queue<NextMove> queue = new Queue<NextMove>();
         ISet<Vector2> visited = new HashSet<Vector2>();
 
         (int, int) pos = board.enemyLocations[this];
         NextMove currentPos = new NextMove() { prev = null, nextMove = new Vector2(pos.Item1, pos.Item2) };
-        
+        board.occupiedBoard[pos.Item1, pos.Item2] = false;
+
         bool pathFound = false;
         NextMove lastMove = null;
 
@@ -46,15 +49,21 @@ public class Piece : MonoBehaviour
         while (queue.Count != 0)
         {
             NextMove pop = queue.Dequeue();
+            if(!CanMove(pop.nextMove, board.occupiedBoard)) {
+                continue;
+            }
 
-            if(pop.nextMove == randomPos)
+            Debug.LogFormat("current move check: {0}", pop.nextMove);
+            if(pop.nextMove.Equals(randomPos))
             {
+                Debug.Log("path found");
                 pathFound = true;
                 lastMove = pop;
                 break;
             }
-            List<Vector2> availableMove = GetNeighbour(currentPos.nextMove, board.movementBoard);
-            foreach(Vector2 nextMove in availableMove)
+            List<Vector2> availableMove = GetNeighbour(pop.nextMove, board.occupiedBoard);
+            Debug.LogFormat("neighbour {0}", availableMove.Count);
+            foreach (Vector2 nextMove in availableMove)
             {
                 if(!visited.Contains(nextMove)) {
                     NextMove newMove = new NextMove() { prev = pop, nextMove = nextMove };
@@ -64,15 +73,15 @@ public class Piece : MonoBehaviour
             }
         }
 
-        Vector2 result = Vector2.zero; // this might be a problem
+        Vector2 result = Vector2.negativeInfinity;
         if(pathFound)
         {
             //fence post
-            board.movementBoard[(int)lastMove.nextMove.x, (int)lastMove.nextMove.y] = false;
+            board.occupiedBoard[(int)lastMove.nextMove.x, (int)lastMove.nextMove.y] = true;
             while (lastMove.prev != null) // stop one short
             {
                 lastMove = lastMove.prev;
-                board.movementBoard[(int)lastMove.nextMove.x, (int)lastMove.nextMove.y] = false;
+                board.occupiedBoard[(int)lastMove.nextMove.x, (int)lastMove.nextMove.y] = true;
             }
             result = lastMove.nextMove;
         }
@@ -82,17 +91,18 @@ public class Piece : MonoBehaviour
     private List<Vector2> GetNeighbour(Vector2 current, bool[,] movementBoard)
     {
         List<Vector2> result = new List<Vector2>();
-        result.Add( current + Vector2.up);
+        result.Add (current + Vector2.up);
         result.Add (current + Vector2.down);
         result.Add (current + Vector2.left);
         result.Add (current + Vector2.right);
-        for(int i = 0; i < result.Count; i++)
-        {
-            if(!CanMove(result[i], movementBoard))
-            {
-                result.Remove(result[i]);
-            }
-        }
+        //for(int i = 0; i < result.Count; i++)
+        //{
+        //    if(!CanMove(result[i], movementBoard))
+        //    {
+        //        result.Remove(result[i]);
+        //        i--;
+        //    }
+        //}
         return result;
     }
 
@@ -105,17 +115,32 @@ public class Piece : MonoBehaviour
     {
         int row = movementBoard.GetLength(0);
         int col = movementBoard.GetLength(1);
-        return pos.x >= 0 && pos.x < col && pos.y >= 0 && pos.y < row & movementBoard[(int)pos.x, (int)pos.y];
+        Debug.LogFormat("{0}, {1}, board {2}, {3}", pos.x, pos.y, row, col);
+        return pos.x >= 0 && pos.x < col && pos.y >= 0 && pos.y < row & !movementBoard[(int)pos.x, (int)pos.y];
     }
 
     public IEnumerator MovePiece(Vector2 newPos)
     {
-        return null;
+        while(Vector2.Distance(this.transform.position, newPos) > EPSILON)
+        {
+            Vector2 pos = Vector2.Lerp(this.transform.position, newPos, GlobalManager.GAME_SCALE / 2.0f);
+            this.transform.position = pos;
+            yield return null;
+        }
+
+        this.transform.position = newPos;
     }
 
-    public void Tick()
+    public void Tic()
     {
-        // DO sh1t
+        Vector2 nextMove = GetNextMove(GlobalManager.Instance.GameBoard);
+        if (nextMove.Equals(Vector2.negativeInfinity)) { return; }
+
+        Tile tile = GlobalManager.Instance.GameBoard.GetTile((int)nextMove.x, (int)nextMove.y);
+        if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+        
+        Debug.Log(nextMove);
+        moveCoroutine = StartCoroutine(MovePiece(tile.transform.position));
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

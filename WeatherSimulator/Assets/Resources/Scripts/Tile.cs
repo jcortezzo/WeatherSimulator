@@ -46,35 +46,6 @@ public class Tile : MonoBehaviour, Ticable
         selected = false;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Piece p = collision.GetComponent<Piece>();
-        if (p != null)
-        {
-            //Debug.Log("piece added to tile");
-            pieces.Add(p);
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        Piece p = collision.GetComponent<Piece>();
-        if (p != null)
-        {
-            //Debug.Log("piece added to tile");
-            pieces.Add(p);
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        Piece p = collision.GetComponent<Piece>();
-        if (p != null)
-        {
-            pieces.Remove(p);
-        }
-    }
-
     public void Tic()
     {
         //Debug.Log(type);

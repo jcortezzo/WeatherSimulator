@@ -5,16 +5,20 @@ using UnityEngine.Assertions;
 
 public abstract class Piece : MonoBehaviour, Ticable
 {
-    ISet<Tile> tilemap;
+    ISet<Tile> tiles;
     public static float EPSILON = 0.1f;
     protected Coroutine moveCoroutine;
     private Vector2Int prevPosition;
     private SpriteRenderer sr;
 
     // Start is called before the first frame update
+    void Awake()
+    {
+        tiles = new HashSet<Tile>();
+    }
+
     public virtual void Start()
     {
-        tilemap = new HashSet<Tile>();
         sr = GetComponent<SpriteRenderer>();
         sr.sortingLayerName = "Pieces";
         prevPosition = GetLocation();
@@ -23,8 +27,8 @@ public abstract class Piece : MonoBehaviour, Ticable
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(tilemap.Count);
-        foreach (Tile t in tilemap)
+        // Debug.Log(tiles.Count);
+        foreach (Tile t in tiles)
         {
             ReceiveEffects(t);
         }
@@ -34,13 +38,13 @@ public abstract class Piece : MonoBehaviour, Ticable
 
     public Vector2Int? GetNextMove(Vector2Int currentPos, Vector2Int dest, bool[,] occupiedBoard)
     {
-        Assert.IsTrue(tilemap.Count == 1);
-        var tile = tilemap.GetEnumerator().Current;
+        // Assert.IsTrue(tiles.Count == 1);
+        // var tile = tiles.GetEnumerator().Current;
 
-        if (/* tile == ice*/ true)
-        {
-            return GetLocation() - prevPosition; // continue in the same dir
-        }
+        // if (/* tile == ice*/ true)
+        // {
+        //     return GetLocation() - prevPosition; // continue in the same dir
+        // }
 
         var bestPath = GetBestPath(currentPos, dest, occupiedBoard);
         if (bestPath.Count < 2)
@@ -156,6 +160,7 @@ public abstract class Piece : MonoBehaviour, Ticable
 
     public virtual void Tic()
     {
+        Debug.Log(this.tiles.Count);
         prevPosition = GetLocation();
     }
 
@@ -167,7 +172,7 @@ public abstract class Piece : MonoBehaviour, Ticable
     private void ReceiveEffects(Tile t)
     {
         var info = t.DescribeTile();
-        Debug.Log(info);
+        // Debug.Log(info);
         if (info.effect == TileEffect.ELECTRIC)
         {
             //Debug.Log(t.DescribeTile());
@@ -175,81 +180,17 @@ public abstract class Piece : MonoBehaviour, Ticable
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Tile t = collision.gameObject.GetComponent<Tile>();
-        if (t != null)
-        {
-            if (tilemap != null)
-            {
-                tilemap.Add(t);
-            }
-            //ReceiveEffects(t);
-        }
-    }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        Tile t = collision.gameObject.GetComponent<Tile>();
-        if (t != null)
-        {
-            if (tilemap != null)
-            {
-                tilemap.Add(t);
-            }
-            //ReceiveEffects(t);
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        Tile t = collision.gameObject.GetComponent<Tile>();
-        if (t != null)
-        {
-            if (tilemap != null)
-            {
-                tilemap.Remove(t);
-            }
-            //ReceiveEffects(t);
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        Debug.Log("on something");
-        Tile t = collision.GetComponent<Tile>();
-        if (t != null)
-        {
-            if (tilemap != null)
-            {
-                tilemap.Add(t);
-            }
-            //ReceiveEffects(t);
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
         Tile t = collision.GetComponent<Tile>();
         if (t != null)
-        {
-            if (tilemap != null)
-            {
-                tilemap.Add(t);
-            }
-            //ReceiveEffects(t);
-        }
+            tiles.Add(t);
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    void OnTriggerExit2D(Collider2D collision)
     {
         Tile t = collision.GetComponent<Tile>();
         if (t != null)
-        {
-            if (tilemap != null)
-            {
-                //tilemap.Remove(t);
-            }
-        }
+            tiles.Remove(t);
     }
 }

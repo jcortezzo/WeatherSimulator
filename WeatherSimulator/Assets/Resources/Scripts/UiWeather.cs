@@ -5,9 +5,12 @@ using UnityEngine.UI;
 
 public class UiWeather : MonoBehaviour
 {
+    public bool selected;
     [SerializeField] private Weather weather;
-    [SerializeField] public bool selected;
 
+    [SerializeField] private Sprite selectedSprite;
+    [SerializeField] private Sprite unselectedSprite;
+    [SerializeField] private Image childImage;
     private Image image;
 
     void Start()
@@ -19,7 +22,7 @@ public class UiWeather : MonoBehaviour
     void Update()
     {
         image.color = selected ? Color.yellow : Color.white;
-
+        childImage.sprite = selected ? selectedSprite : unselectedSprite;
     }
 
 

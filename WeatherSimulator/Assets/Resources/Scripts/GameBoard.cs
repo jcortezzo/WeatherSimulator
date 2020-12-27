@@ -99,8 +99,7 @@ public class GameBoard : MonoBehaviour, Ticable
             Vector2Int location = enemyLocations[piece];
             occupiedBoard[location.x, location.y] = true;
         }
-
-        playerPiece.Tic();
+        if(playerPiece != null) playerPiece.Tic();
     }
 
     void DisplayBoard()

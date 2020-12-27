@@ -73,7 +73,7 @@ public class Piece : MonoBehaviour
                 var newFinalMove = visited[visitedPos];
                 // Can optimize this later if needed
                 if (finalMove == null ||
-                    ManhattanDistance(finalMove.Value, randomPos) <
+                    ManhattanDistance(finalMove.Value, randomPos) >
                     ManhattanDistance(newFinalMove.Value, randomPos))
                     finalMove = newFinalMove;
             }
@@ -88,21 +88,15 @@ public class Piece : MonoBehaviour
         return Mathf.Abs(pos1.x - pos2.x) + Mathf.Abs(pos1.y - pos2.y);
     }
 
-    private Vector2Int ExtractFirstMove(Dictionary<Vector2Int, Vector2Int?> backpointers, Vector2Int dest)
+    private Vector2Int? ExtractFirstMove(Dictionary<Vector2Int, Vector2Int?> backpointers, Vector2Int dest)
     {
-        if (!backpointers.ContainsKey(dest) || backpointers[dest] == null)
+        Vector2Int? nextVisit = null;
+        while (backpointers[dest] != null)
         {
-            Debug.Log("Invalid path");
+            nextVisit = dest;
+            dest = backpointers[dest].Value;
         }
-        else
-        {
-            while (backpointers[dest] != null &&
-                backpointers[backpointers[dest].Value] != null)
-            {
-                dest = backpointers[dest].Value;
-            }
-        }
-        return dest;
+        return nextVisit;
     }
 
     private List<Vector2Int> GetNeighbours(Vector2Int current)

@@ -42,8 +42,6 @@ public abstract class Piece : MonoBehaviour, Ticable
         prevLocation = currLocation;
         currLocation = GetLocation();
 
-        Debug.Log($"Last pos {prevLocation}, curr pos: {currLocation}");
-
         if (tileMap.Count != 1)
             Debug.Log($"ERR, currently standing on {tileMap.Count} tiles");
         var tile = new List<Tile>(tileMap)[0];

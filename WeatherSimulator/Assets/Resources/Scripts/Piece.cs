@@ -6,17 +6,17 @@ public class Piece : MonoBehaviour
 {
     ISet<Tile> tilemap;
     public static float EPSILON = 0.1f;
-    private Coroutine moveCoroutine; 
+    private Coroutine moveCoroutine;
     // Start is called before the first frame update
     void Start()
     {
-        tilemap = new HashSet<Tile>();    
+        tilemap = new HashSet<Tile>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     /// <summary>
@@ -24,6 +24,7 @@ public class Piece : MonoBehaviour
     /// </summary>
     /// <param name="board">Mutable GameBoard</param>
     /// <returns></returns>
+
     public Vector2 GetNextMove(GameBoard board)
     {
         int row = board.occupiedBoard.GetLength(0);
@@ -38,7 +39,7 @@ public class Piece : MonoBehaviour
 
         (int, int) pos = board.enemyLocations[this];
         NextMove currentPos = new NextMove() { prev = null, nextMove = new Vector2(pos.Item1, pos.Item2) };
-        
+
         bool pathFound = false;
         NextMove finalMove = null;
 
@@ -50,7 +51,7 @@ public class Piece : MonoBehaviour
         {
             NextMove pop = queue.Dequeue();
             //Debug.LogFormat("current move check: {0}", pop.nextMove);
-            if(pop.nextMove.Equals(randomPos))
+            if (pop.nextMove.Equals(randomPos))
             {
                 Debug.Log("path found");
                 pathFound = true;
@@ -61,7 +62,8 @@ public class Piece : MonoBehaviour
             //Debug.LogFormat("neighbour {0}", availableMove.Count);
             foreach (Vector2 nextMove in availableMove)
             {
-                if(!visited.Contains(nextMove)) {
+                if (!visited.Contains(nextMove))
+                {
                     NextMove newMove = new NextMove() { prev = pop, nextMove = nextMove };
                     queue.Enqueue(newMove);
                     visited.Add(newMove.nextMove);
@@ -70,7 +72,7 @@ public class Piece : MonoBehaviour
         }
 
         Vector2 result = Vector2.negativeInfinity;
-        if(pathFound)
+        if (pathFound)
         {
             //fence post
             //board.occupiedBoard[(int)finalMove.nextMove.x, (int)finalMove.nextMove.y] = true;
@@ -85,8 +87,8 @@ public class Piece : MonoBehaviour
             //    board.occupiedBoard[(int)finalMove.nextMove.x, (int)finalMove.nextMove.y] = true;
             //    board.occupiedBoard[(int)currentPos.nextMove.x, (int)currentPos.nextMove.y] = false;
             //} else
-            
-            
+
+
         }
         return result;
     }
@@ -94,13 +96,13 @@ public class Piece : MonoBehaviour
     private List<Vector2> GetNeighbour(Vector2 current, bool[,] movementBoard)
     {
         List<Vector2> result = new List<Vector2>();
-        result.Add (current + Vector2.up);
-        result.Add (current + Vector2.down);
-        result.Add (current + Vector2.left);
-        result.Add (current + Vector2.right);
-        for(int i = 0; i < result.Count; i++)
+        result.Add(current + Vector2.up);
+        result.Add(current + Vector2.down);
+        result.Add(current + Vector2.left);
+        result.Add(current + Vector2.right);
+        for (int i = 0; i < result.Count; i++)
         {
-            if(!CanMove(result[i], movementBoard))
+            if (!CanMove(result[i], movementBoard))
             {
                 result.Remove(result[i]);
                 i--;
@@ -109,7 +111,8 @@ public class Piece : MonoBehaviour
         return result;
     }
 
-    private class NextMove {
+    private class NextMove
+    {
         public NextMove prev;
         public Vector2 nextMove;
     }
@@ -124,13 +127,18 @@ public class Piece : MonoBehaviour
 
     public IEnumerator MovePiece(Vector2 newPos)
     {
-        while(Vector2.Distance(this.transform.position, newPos) > EPSILON)
-        {
-            Vector2 pos = Vector2.Lerp(this.transform.position, newPos, 0.05f);
-            this.transform.position = pos;
-            yield return null;
-        }
+        Vector2 oldPos = this.transform.position;
+        Debug.Log("moving: " + oldPos + " " + newPos);
 
+        int numSteps = 10; // arbirtary, this is smooth though!
+        float stepLength = GlobalManager.Instance.TIC_TIME / numSteps / 10; // time leng of step
+
+        for (float i = 0; i < 1; i += (1f / numSteps))
+        {
+            // We can apply a sinuosoid to this as well!
+            this.transform.position = Vector2.Lerp(oldPos, newPos, i);
+            yield return new WaitForSeconds(stepLength);
+        }
         this.transform.position = newPos;
     }
 
@@ -146,7 +154,7 @@ public class Piece : MonoBehaviour
 
         if (moveCoroutine != null) StopCoroutine(moveCoroutine);
         moveCoroutine = StartCoroutine(MovePiece(tile.transform.position));
-        
+
         //this.transform.position = tile.transform.position;
         GlobalManager.Instance.GameBoard.enemyLocations[this] = ((int)nextMove.x, (int)nextMove.y);
 

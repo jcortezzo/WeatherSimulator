@@ -52,14 +52,21 @@ public class Player : MonoBehaviour
         RaycastHit2D hit = MouseRayCast();
         if (hit.collider != null)
         {
-            //Debug.Log("Raycast hit!");
-            Tile t = hit.transform.GetComponent<Tile>();
-            if (t != null)
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Debug.DrawRay(ray.GetPoint(0), ray.direction, Color.red);
+            RaycastHit2D hit2 = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            if (hit2.collider != null)
             {
-                //Debug.Log("Found Tile object");
-                t.Select();
+                //Debug.Log("Raycast hit!");
+                Tile t = hit.transform.GetComponent<Tile>();
+                if (t != null)
+                {
+                    //Debug.Log("Found Tile object");
+                    t.Select();
+                }
             }
         }
+       
     }
 
     private void Lightning()

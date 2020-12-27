@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Piece : MonoBehaviour
+public class Piece : MonoBehaviour, Ticable
 {
     ISet<Tile> tilemap;
     public static float EPSILON = 0.1f;
-    private Coroutine moveCoroutine;
+    
+    protected Coroutine moveCoroutine;
+    protected Vector2Int finalDestination;
+
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         tilemap = new HashSet<Tile>();
+
     }
 
     // Update is called once per frame
@@ -20,44 +24,47 @@ public class Piece : MonoBehaviour
 
     }
 
+
     /// <summary>
     /// Get a mutable gameboard and generate a next available move
     /// </summary>
     /// <param name="board">Mutable GameBoard</param>
     /// <returns></returns>
 
-    public Vector2Int? GetNextMove(GameBoard board)
+    public Vector2Int? GetNextMove(GameBoard board, Vector2Int currentPos, Vector2Int dest, bool[,] occupiedBoard)
     {
-        var currPos = new Vector2Int(
-            board.enemyLocations[this].Item1,
-            board.enemyLocations[this].Item2
-        );
+        //var currPos = new Vector2Int(
+        //    board.enemyLocations[this].Item1,
+        //    board.enemyLocations[this].Item2
+        //);
 
         // int row = board.occupiedBoard.GetLength(0);
         // int col = board.occupiedBoard.GetLength(1);
-        Vector2Int randomPos = new Vector2Int(8, 8); // our dest
-        Debug.LogFormat("new random pos: {0}, {1}", randomPos.x, randomPos.y);
+
+        //Vector2Int randomPos = new Vector2Int(8, 8); // our dest
+        Debug.LogFormat("new random pos: {0}, {1}", dest.x, dest.y);
 
         // This is a way we could genericize checking for movement instead... other ideas possible
-        Func<Vector2Int, bool> canMove = (Vector2Int pos) =>
-        {
-            int row = board.occupiedBoard.GetLength(0);
-            int col = board.occupiedBoard.GetLength(1);
-            return pos.x >= 0 && pos.x < col && pos.y >= 0 && pos.y < row && !board.occupiedBoard[pos.x, pos.y];
-        };
+        //Func<Vector2Int, bool> canMove = (Vector2Int pos) =>
+        //{
+        //    int row = board.occupiedBoard.GetLength(0);
+        //    int col = board.occupiedBoard.GetLength(1);
+        //    return pos.x >= 0 && pos.x < col && pos.y >= 0 && pos.y < row && !board.occupiedBoard[pos.x, pos.y];
+        //};
 
-        var bestPath = GetBestPath(currPos, randomPos, canMove);
+        var bestPath = GetBestPath(currentPos, dest, occupiedBoard);
         if (bestPath.Count < 2)
             return null;
         return bestPath[1]; // return the NEXT move in our list
     }
 
-    public List<Vector2Int> GetBestPath(Vector2Int currPos, Vector2Int dest, Func<Vector2Int, bool> canMove)
+    public List<Vector2Int> GetBestPath(Vector2Int currPos, Vector2Int dest, bool[,] occupiedBoard)
     {
         // set up queue and set
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         // visited is now a mapping of position -> prev
         Dictionary<Vector2Int, Vector2Int?> visited = new Dictionary<Vector2Int, Vector2Int?>();
+
 
         queue.Enqueue(currPos);
         visited[currPos] = null;
@@ -66,13 +73,14 @@ public class Piece : MonoBehaviour
         while (queue.Count != 0)
         {
             var pop = queue.Dequeue();
+
             if (pop.Equals(dest))
             {
                 return ExtractPath(visited, dest);
             }
             foreach (Vector2Int neighbor in GetNeighbours(pop))
             {
-                if (canMove(neighbor) && !visited.ContainsKey(neighbor))
+                if (CanMove(neighbor, occupiedBoard) && !visited.ContainsKey(neighbor))
                 {
                     queue.Enqueue(neighbor);
                     visited[neighbor] = pop;
@@ -156,23 +164,9 @@ public class Piece : MonoBehaviour
         this.transform.position = newPos;
     }
 
-    public void Tic()
+    public virtual void Tic()
     {
 
-        Vector2Int? maybeNextMove = GetNextMove(GlobalManager.Instance.GameBoard);
-        if (maybeNextMove == null)
-            return;
-        Vector2Int nextMove = maybeNextMove.Value;
-
-        Debug.Log("piece tic");
-        Tile tile = GlobalManager.Instance.GameBoard.GetTile((int)nextMove.x, (int)nextMove.y);
-        Debug.Log(tile.transform.position);
-
-        if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-        moveCoroutine = StartCoroutine(MovePiece(tile.transform.position));
-
-        //this.transform.position = tile.transform.position;
-        GlobalManager.Instance.GameBoard.enemyLocations[this] = ((int)nextMove.x, (int)nextMove.y);
     }
 
     private void OnDestroy()

@@ -8,10 +8,13 @@ public class GameBoard : MonoBehaviour, Ticable
 
     [Header("Used by Enemies to pathfind")]
     public bool[,] occupiedBoard;
-    public IDictionary<Piece, (int, int)> enemyLocations;
+    public IDictionary<Piece, Vector2Int> enemyLocations;
+    public Vector2Int playerLocation;
 
     [SerializeField] private Tile tilePrefab;
-    [SerializeField] private int BOARD_SIZE;
+    [SerializeField] public static int BOARD_SIZE;
+
+    [SerializeField] Piece playerPiece;
 
     private void Awake()
     {
@@ -29,7 +32,7 @@ public class GameBoard : MonoBehaviour, Ticable
             }
         }
         occupiedBoard = new bool[BOARD_SIZE, BOARD_SIZE];
-        enemyLocations = new Dictionary<Piece, (int, int)>();
+        enemyLocations = new Dictionary<Piece, Vector2Int>();
     }
 
     public Tile GetTile((int, int) index)
@@ -47,13 +50,21 @@ public class GameBoard : MonoBehaviour, Ticable
         return GetTile((BOARD_SIZE / 2, BOARD_SIZE / 2));
     }
 
-    public void SpawnEnemy((int, int) index, Piece piecePrefab)
+    public void SpawnEnemy(Vector2Int index, Piece piecePrefab)
     {
         Piece p = Instantiate(piecePrefab.gameObject, 
-                              board[index.Item1, index.Item2].transform.position, 
+                              board[index.x, index.y].transform.position, 
                               Quaternion.identity).GetComponent<Piece>();
         enemyLocations[p] = index;
-        occupiedBoard[index.Item1, index.Item2] = true;
+        occupiedBoard[index.x, index.y] = true;
+    }
+
+    public void SpawnPlayerPiece((int, int) index, Piece piecePrefab)
+    {
+        Piece p = Instantiate(piecePrefab.gameObject,
+                              board[index.Item1, index.Item2].transform.position,
+                              Quaternion.identity).GetComponent<Piece>();
+        playerPiece = p;
     }
 
     public int GetBoardHeight()
@@ -64,18 +75,6 @@ public class GameBoard : MonoBehaviour, Ticable
     public int GetBoardWidth()
     {
         return board.GetLength(1);
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void Tic()
@@ -91,9 +90,11 @@ public class GameBoard : MonoBehaviour, Ticable
         occupiedBoard = new bool[BOARD_SIZE, BOARD_SIZE];
         foreach (Piece piece in enemyLocations.Keys)
         {
-            (int, int) location = enemyLocations[piece];
-            occupiedBoard[location.Item1, location.Item2] = true;
+            Vector2Int location = enemyLocations[piece];
+            occupiedBoard[location.x, location.y] = true;
         }
+
+        //playerPiece.Tic();
     }
 
     void DisplayBoard()

@@ -4,16 +4,32 @@ using UnityEngine;
 
 public class DummyEnemy : Piece
 {
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
-        
+        finalDestination = new Vector2Int(GlobalManager.Instance.GameBoard.playerLocation.x,
+                                        GlobalManager.Instance.GameBoard.playerLocation.y);
+    }
+
+    public override void Tic()
+    {
+        base.Tic();
+        Vector2Int? maybeNextMove = GetNextMove(GlobalManager.Instance.GameBoard,
+                                        GlobalManager.Instance.GameBoard.enemyLocations[this],
+                                        finalDestination,
+                                        GlobalManager.Instance.GameBoard.occupiedBoard);
+        if (maybeNextMove == null)
+            return;
+        Vector2Int nextMove = maybeNextMove.Value;
+
+        Debug.Log("piece tic");
+        Tile tile = GlobalManager.Instance.GameBoard.GetTile((int)nextMove.x, (int)nextMove.y);
+        Debug.Log(tile.transform.position);
+
+        if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+        moveCoroutine = StartCoroutine(MovePiece(tile.transform.position));
+
+        //this.transform.position = tile.transform.position;
+        GlobalManager.Instance.GameBoard.enemyLocations[this] = nextMove;
     }
 }

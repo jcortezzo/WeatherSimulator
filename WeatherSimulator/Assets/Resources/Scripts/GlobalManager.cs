@@ -15,6 +15,8 @@ public class GlobalManager : MonoBehaviour
     [SerializeField] private Piece piece;
     [SerializeField] private Piece mainPiece;
 
+    [SerializeField] private bool isPaused;
+
     [SerializeField] private Vector2Int[] enemyLocations;
 
     public Camera cam;
@@ -47,11 +49,18 @@ public class GlobalManager : MonoBehaviour
         }
         Vector3 centerPos = gameBoard.GetCenterTile().transform.position;
         cam.transform.position = new Vector3(centerPos.x, centerPos.y, -10);
+
+        isPaused = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Don't tic if the game is paused
+        if (IsPaused())
+        {
+            return;
+        }
         globalTimer += Time.deltaTime;
         if (globalTimer >= TIC_TIME)
         {
@@ -62,6 +71,21 @@ public class GlobalManager : MonoBehaviour
                 gameBoard.SpawnEnemy(new Vector2Int(Random.Range(0, BOARD_SIZE), Random.Range(0, BOARD_SIZE)), piece);
             }
         }
+    }
+
+    public void Pause()
+    {
+        isPaused = true;
+    }
+
+    public void Unpause()
+    {
+        isPaused = false;
+    }
+
+    public bool IsPaused()
+    {
+        return isPaused;
     }
 
     // Returns the Vec3 world position of a given board location

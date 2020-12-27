@@ -40,6 +40,24 @@ public class Player : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (!GlobalManager.Instance.IsPaused())
+            {
+                GlobalManager.Instance.Pause();
+            }
+            else
+            {
+                GlobalManager.Instance.Unpause();
+            }
+        }
+
+        // Don't let player change game state besides picking whether if paused
+        if (GlobalManager.Instance.IsPaused())
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             actions[(int)selectedWeather].Invoke();

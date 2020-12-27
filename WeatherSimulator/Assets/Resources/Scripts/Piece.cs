@@ -150,7 +150,7 @@ public class Piece : MonoBehaviour, Ticable
     public IEnumerator MovePiece(Vector2 newPos)
     {
         Vector2 oldPos = this.transform.position;
-        Debug.Log("moving: " + oldPos + " " + newPos);
+        //Debug.Log("moving: " + oldPos + " " + newPos);
 
         int numSteps = 10; // arbirtary, this is smooth though!
         float stepLength = GlobalManager.Instance.TIC_TIME / numSteps / 10; // time leng of step

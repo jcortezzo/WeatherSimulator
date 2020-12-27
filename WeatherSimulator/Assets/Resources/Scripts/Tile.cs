@@ -47,7 +47,7 @@ public class Tile : MonoBehaviour, Ticable
         Piece p = collision.GetComponent<Piece>();
         if (p != null)
         {
-            Debug.Log("piece added to tile");
+            //Debug.Log("piece added to tile");
             pieces.Add(p);
         }
     }
@@ -57,7 +57,7 @@ public class Tile : MonoBehaviour, Ticable
         Piece p = collision.GetComponent<Piece>();
         if (p != null)
         {
-            Debug.Log("piece added to tile");
+            //Debug.Log("piece added to tile");
             pieces.Add(p);
         }
     }

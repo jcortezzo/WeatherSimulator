@@ -14,15 +14,17 @@ public class DummyEnemy : Piece
     public override void Tic()
     {
         base.Tic();
+        //Debug.LogFormat("play pos: {0}", finalDestination);
         Vector2Int? maybeNextMove = GetNextMove(GlobalManager.Instance.GameBoard,
                                         GlobalManager.Instance.GameBoard.enemyLocations[this],
                                         finalDestination,
                                         GlobalManager.Instance.GameBoard.occupiedBoard);
+
         if (maybeNextMove == null)
             return;
         Vector2Int nextMove = maybeNextMove.Value;
 
-        Debug.Log("piece tic");
+        //Debug.Log("piece tic");
         Tile tile = GlobalManager.Instance.GameBoard.GetTile((int)nextMove.x, (int)nextMove.y);
         Debug.Log(tile.transform.position);
 

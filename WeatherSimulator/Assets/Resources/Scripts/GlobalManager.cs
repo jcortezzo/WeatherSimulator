@@ -39,7 +39,7 @@ public class GlobalManager : MonoBehaviour
         //{
         //    gameBoard.SpawnEnemy((i, 0), piece);  // TODO: give piece prefab from Nguyen
         //}
-        gameBoard.SpawnPlayerPiece((8, 8), mainPiece);
+        gameBoard.SpawnPlayerPiece(new Vector2Int(8, 8), mainPiece);
 
         gameBoard.SpawnEnemy(new Vector2Int(0,0), piece);
         gameBoard.SpawnEnemy(new Vector2Int(4,4), piece);

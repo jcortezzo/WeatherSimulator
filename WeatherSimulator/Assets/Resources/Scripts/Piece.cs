@@ -33,43 +33,38 @@ public class Piece : MonoBehaviour
 
         Debug.LogFormat("new random pos: {0}, {1}", randomPos.x, randomPos.y);
         // set up queue and set
-        Queue<NextMove> queue = new Queue<NextMove>();
-        // Jank redundant info, but its ok lol
-        Dictionary<Vector2Int, NextMove> visited = new Dictionary<Vector2Int, NextMove>();
-        NextMove finalMove = null;
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        // visited is now a mapping of position -> prev
+        Dictionary<Vector2Int, Vector2Int?> visited = new Dictionary<Vector2Int, Vector2Int?>();
+        Vector2Int? finalMove = null;
 
         // enemyLocations should just return Vector2Ints, dw for now
-        (int x, int y) pos = board.enemyLocations[this];
-        NextMove currentPos = new NextMove()
-        {
-            prev = null,
-            position = new Vector2Int(pos.x, pos.y)
-        };
-
+        var currentPos = new Vector2Int(
+            board.enemyLocations[this].Item1,
+            board.enemyLocations[this].Item2
+        );
         queue.Enqueue(currentPos);
-        visited.Add(currentPos.position, currentPos);
+        visited.Add(currentPos, null);
 
         // bfs
         while (queue.Count != 0)
         {
-            NextMove pop = queue.Dequeue();
-            if (pop.position.Equals(randomPos))
+            var pop = queue.Dequeue();
+            if (pop.Equals(randomPos))
             {
                 Debug.Log("path found");
                 finalMove = pop;
                 break;
             }
-            foreach (Vector2Int neighbor in GetNeighbours(pop.position))
+            foreach (Vector2Int neighbor in GetNeighbours(pop))
             {
                 if (CanMove(neighbor, board.occupiedBoard) && !visited.ContainsKey(neighbor))
                 {
-                    NextMove newMove = new NextMove() { prev = pop, position = neighbor };
-                    queue.Enqueue(newMove);
-                    visited.Add(newMove.position, newMove);
+                    queue.Enqueue(neighbor);
+                    visited.Add(neighbor, pop);
                 }
             }
         }
-
         if (finalMove == null)
         {
             // Try and find out closest final move
@@ -78,20 +73,14 @@ public class Piece : MonoBehaviour
                 var newFinalMove = visited[visitedPos];
                 // Can optimize this later if needed
                 if (finalMove == null ||
-                    ManhattanDistance(newFinalMove.position, randomPos) <
-                    ManhattanDistance(finalMove.position, randomPos))
+                    ManhattanDistance(finalMove.Value, randomPos) <
+                    ManhattanDistance(newFinalMove.Value, randomPos))
                     finalMove = newFinalMove;
             }
         }
         if (finalMove == null)
             return null; // No possible moves
-        return ExtractFirstMove(finalMove);
-    }
-
-    private class NextMove
-    {
-        public NextMove prev;
-        public Vector2Int position;
+        return ExtractFirstMove(visited, finalMove.Value);
     }
 
     private float ManhattanDistance(Vector2Int pos1, Vector2Int pos2)
@@ -99,16 +88,21 @@ public class Piece : MonoBehaviour
         return Mathf.Abs(pos1.x - pos2.x) + Mathf.Abs(pos1.y - pos2.y);
     }
 
-    private Vector2Int ExtractFirstMove(NextMove move)
+    private Vector2Int ExtractFirstMove(Dictionary<Vector2Int, Vector2Int?> backpointers, Vector2Int dest)
     {
-        if (move == null || move.prev == null)
+        if (!backpointers.ContainsKey(dest) || backpointers[dest] == null)
         {
             Debug.Log("Invalid path");
-            return move.position;
         }
-        while (move.prev.prev != null)
-            move = move.prev;
-        return move.position;
+        else
+        {
+            while (backpointers[dest] != null &&
+                backpointers[backpointers[dest].Value] != null)
+            {
+                dest = backpointers[dest].Value;
+            }
+        }
+        return dest;
     }
 
     private List<Vector2Int> GetNeighbours(Vector2Int current)

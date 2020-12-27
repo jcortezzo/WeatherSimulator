@@ -11,7 +11,7 @@ public class Tile : MonoBehaviour, Ticable
     private bool selected;
     private GameObject selection;
     private SpriteRenderer sr;
-
+    private Dictionary<TileType, Sprite> tileSprites;
     public Vector2Int tornadoDir;
 
     private void Awake()
@@ -19,6 +19,13 @@ public class Tile : MonoBehaviour, Ticable
         pieces = new HashSet<Piece>();
         type = TileType.DEFAULT;
         tornadoDir = Vector2Int.zero;
+        tileSprites = new Dictionary<TileType, Sprite>
+        {
+            { TileType.DEFAULT, Resources.Load<Sprite>("Sprites/Grass")},
+            { TileType.HOT, Resources.Load<Sprite>("Sprites/Grass")}, // TODO
+            { TileType.ICE, Resources.Load<Sprite>("Sprites/Ice")},
+            { TileType.WATER, Resources.Load<Sprite>("Sprites/Water")},
+        };
     }
 
     // Start is called before the first frame update
@@ -37,7 +44,7 @@ public class Tile : MonoBehaviour, Ticable
     void Update()
     {
         selection.gameObject.SetActive(selected);
-        //Debug.Log("tile: " + pieces.Count);
+        
     }
 
     public void Select()
@@ -95,6 +102,18 @@ public class Tile : MonoBehaviour, Ticable
             this.effect = TileEffect.ELECTRIC;
             //Debug.Log("Lightning Tile");
             GetComponent<SpriteRenderer>().color = Color.blue;
+        } else if (weather == Weather.RAIN)
+        {
+            type = TileType.WATER;
+            sr.sprite = tileSprites[TileType.WATER];
+        } else if(weather == Weather.SNOW)
+        {
+            type = TileType.ICE;
+            sr.sprite = tileSprites[TileType.ICE];
+        } else if(weather == Weather.SUN)
+        {
+            type = TileType.HOT;
+            sr.sprite = tileSprites[TileType.HOT];
         }
         //ApplyEffect(this.type, this.effect);
     }

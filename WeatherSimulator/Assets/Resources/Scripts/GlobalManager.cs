@@ -14,6 +14,8 @@ public class GlobalManager : MonoBehaviour
     [SerializeField] private Piece piece;
     [SerializeField] private Piece mainPiece;
 
+    [SerializeField] private Vector2Int[] enemyLocations;
+
     public Camera cam;
 
     private void Awake()
@@ -36,17 +38,14 @@ public class GlobalManager : MonoBehaviour
     {
         cam = Camera.main;
         gameBoard = Instantiate(gameBoard.transform).GetComponent<GameBoard>();
-        //for (int i = 0; i < 3; i++)
-        //{
-        //    gameBoard.SpawnEnemy((i, 0), piece);  // TODO: give piece prefab from Nguyen
-        //}
         gameBoard.SpawnPlayerPiece(new Vector2Int(8, 8), mainPiece);
 
-        gameBoard.SpawnEnemy(new Vector2Int(0, 0), piece);
-        gameBoard.SpawnEnemy(new Vector2Int(4, 4), piece);
-
+        foreach (Vector2Int location in enemyLocations)
+        {
+            gameBoard.SpawnEnemy(location, piece);
+        }
         Vector3 centerPos = gameBoard.GetCenterTile().transform.position;
-        cam.transform.position = new Vector3(centerPos.x, centerPos.y, cam.transform.position.z);
+        cam.transform.position = new Vector3(centerPos.x, centerPos.y, -10);
     }
 
     // Update is called once per frame

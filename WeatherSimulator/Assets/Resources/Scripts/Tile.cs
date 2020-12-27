@@ -12,10 +12,13 @@ public class Tile : MonoBehaviour, Ticable
     private GameObject selection;
     private SpriteRenderer sr;
 
+    public Vector2Int tornadoDir;
+
     private void Awake()
     {
         pieces = new HashSet<Piece>();
         type = TileType.DEFAULT;
+        tornadoDir = Vector2Int.zero;
     }
 
     // Start is called before the first frame update

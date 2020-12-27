@@ -26,12 +26,16 @@ public abstract class Piece : MonoBehaviour, Ticable
     // Update is called once per frame
     protected virtual void Update()
     {
-
         Debug.Log("piece " + this.tileMap.Count);
-        foreach (Tile t in this.tileMap)
+        IList<Tile> shallowCopy = new List<Tile>(tileMap);
+        for (int i = 0; i < shallowCopy.Count; i++)
         {
-            ReceiveEffects(t);
+            ReceiveEffects(shallowCopy[i]);
         }
+        //foreach (Tile t in this.tileMap)
+        //{
+        //    ReceiveEffects(t);
+        //}
     }
 
     public abstract Vector2Int GetLocation();
@@ -175,8 +179,15 @@ public abstract class Piece : MonoBehaviour, Ticable
         // Debug.Log(info);
         if (info.effect == TileEffect.ELECTRIC)
         {
-            //Debug.Log(t.DescribeTile());
             Destroy(this.gameObject);
+        }
+        else if (info.effect == TileEffect.TORNADO)
+        {
+            if (moveCoroutine != null)
+            {
+                StopCoroutine(this.moveCoroutine);
+            }
+            moveCoroutine = StartCoroutine(MovePiece(t.transform.position + new Vector3(t.tornadoDir.x, t.tornadoDir.y)));
         }
     }
 

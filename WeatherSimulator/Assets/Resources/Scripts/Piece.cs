@@ -1,16 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using UnityEngine.Assertions;
 
-public class Piece : MonoBehaviour, Ticable
+public abstract class Piece : MonoBehaviour, Ticable
 {
     public ISet<Tile> tileMap;
     public static float EPSILON = 0.1f;
-    
     protected Coroutine moveCoroutine;
-    protected Vector2Int finalDestination;
-
+    private Vector2Int prevPosition;
     private SpriteRenderer sr;
 
     protected virtual void Awake()
@@ -18,16 +16,17 @@ public class Piece : MonoBehaviour, Ticable
         tileMap = new HashSet<Tile>();
     }
 
-    // Start is called before the first frame update
     protected virtual void Start()
     {
         sr = GetComponent<SpriteRenderer>();
         sr.sortingLayerName = "Pieces";
+        prevPosition = GetLocation();
     }
 
     // Update is called once per frame
     protected virtual void Update()
     {
+
         Debug.Log("piece " + this.tileMap.Count);
         foreach (Tile t in this.tileMap)
         {
@@ -35,33 +34,17 @@ public class Piece : MonoBehaviour, Ticable
         }
     }
 
+    public abstract Vector2Int GetLocation();
 
-    /// <summary>
-    /// Get a mutable gameboard and generate a next available move
-    /// </summary>
-    /// <param name="board">Mutable GameBoard</param>
-    /// <returns></returns>
-
-    public Vector2Int? GetNextMove(GameBoard board, Vector2Int currentPos, Vector2Int dest, bool[,] occupiedBoard)
+    public Vector2Int? GetNextMove(Vector2Int currentPos, Vector2Int dest, bool[,] occupiedBoard)
     {
-        //var currPos = new Vector2Int(
-        //    board.enemyLocations[this].Item1,
-        //    board.enemyLocations[this].Item2
-        //);
+        // Assert.IsTrue(tiles.Count == 1);
+        // var tile = tiles.GetEnumerator().Current;
 
-        // int row = board.occupiedBoard.GetLength(0);
-        // int col = board.occupiedBoard.GetLength(1);
-
-        //Vector2Int randomPos = new Vector2Int(8, 8); // our dest
-        //Debug.LogFormat("new random pos: {0}, {1}", dest.x, dest.y);
-
-        // This is a way we could genericize checking for movement instead... other ideas possible
-        //Func<Vector2Int, bool> canMove = (Vector2Int pos) =>
-        //{
-        //    int row = board.occupiedBoard.GetLength(0);
-        //    int col = board.occupiedBoard.GetLength(1);
-        //    return pos.x >= 0 && pos.x < col && pos.y >= 0 && pos.y < row && !board.occupiedBoard[pos.x, pos.y];
-        //};
+        // if (/* tile == ice*/ true)
+        // {
+        //     return GetLocation() - prevPosition; // continue in the same dir
+        // }
 
         var bestPath = GetBestPath(currentPos, dest, occupiedBoard);
         if (bestPath.Count < 2)
@@ -177,7 +160,8 @@ public class Piece : MonoBehaviour, Ticable
 
     public virtual void Tic()
     {
-
+        Debug.Log(this.tileMap.Count);
+        prevPosition = GetLocation();
     }
 
     private void OnDestroy()
@@ -188,45 +172,11 @@ public class Piece : MonoBehaviour, Ticable
     private void ReceiveEffects(Tile t)
     {
         var info = t.DescribeTile();
-        Debug.Log(info);
+        // Debug.Log(info);
         if (info.effect == TileEffect.ELECTRIC)
         {
             //Debug.Log(t.DescribeTile());
             Destroy(this.gameObject);
-        }
-    }
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        Tile t = collision.gameObject.GetComponent<Tile>();
-        if (t != null)
-        {
-            this.tileMap.Add(t);
-            //ReceiveEffects(t);
-        }
-    }
-
-    void OnCollisionStay2D(Collision2D collision)
-    {
-        Tile t = collision.gameObject.GetComponent<Tile>();
-        if (t != null)
-        {
- 
-            this.tileMap.Add(t);
-            //ReceiveEffects(t);
-        }
-    }
-
-    void OnCollisionExit2D(Collision2D collision)
-    {
-        Tile t = collision.gameObject.GetComponent<Tile>();
-        if (t != null)
-        {
-            if (tileMap != null)
-            {
-                //tilemap.Remove(t);
-            }
-            //ReceiveEffects(t);
         }
     }
 
@@ -237,13 +187,9 @@ public class Piece : MonoBehaviour, Ticable
         if (t != null)
         {
             Debug.Log("fucucucuck");
-            //if (tilemap != null)
-            //{
-                Debug.Log("it's nguyend outside");
-                this.tileMap.Add(t);
-                Debug.Log("omg wtf " + tileMap.Count);
-            //}
-            //ReceiveEffects(t);
+            Debug.Log("it's nguyend outside");
+            this.tileMap.Add(t);
+            Debug.Log("omg wtf " + tileMap.Count);
         }
     }
 
@@ -253,7 +199,6 @@ public class Piece : MonoBehaviour, Ticable
         if (t != null)
         {
             this.tileMap.Add(t);
-            //ReceiveEffects(t);
         }
     }
 
@@ -262,7 +207,7 @@ public class Piece : MonoBehaviour, Ticable
         Tile t = collision.GetComponent<Tile>();
         if (t != null)
         {
-            //tileMap.Remove(t);
+            tileMap.Remove(t);
         }
     }
 }

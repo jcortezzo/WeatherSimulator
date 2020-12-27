@@ -9,7 +9,7 @@ public class GlobalManager : MonoBehaviour
     public const int GAME_SCALE = 2;
 
     public GameBoard GameBoard { get { return gameBoard; } }
-    [SerializeField] private float TIC_TIME = 2f;
+    [SerializeField] public float TIC_TIME = 2f;
     [SerializeField] private GameBoard gameBoard;
     [SerializeField] private Piece piece;
 
@@ -34,10 +34,13 @@ public class GlobalManager : MonoBehaviour
     {
         cam = Camera.main;
         gameBoard = Instantiate(gameBoard.transform).GetComponent<GameBoard>();
-        for (int i = 0; i < 1; i++)
-        {
-            gameBoard.SpawnEnemy((i, 0), piece);  // TODO: give piece prefab from Nguyen
-        }
+        //for (int i = 0; i < 3; i++)
+        //{
+        //    gameBoard.SpawnEnemy((i, 0), piece);  // TODO: give piece prefab from Nguyen
+        //}
+        gameBoard.SpawnEnemy((0, 0), piece);
+
+        gameBoard.SpawnEnemy((4, 4), piece);
         Vector3 centerPos = gameBoard.GetCenterTile().transform.position;
         cam.transform.position = new Vector3(centerPos.x, centerPos.y, cam.transform.position.z);
     }

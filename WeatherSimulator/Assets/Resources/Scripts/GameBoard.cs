@@ -83,9 +83,16 @@ public class GameBoard : MonoBehaviour, Ticable
         foreach (Tile t in board) {
             t.Tic();
         }
-        foreach(Piece piece in enemyLocations.Keys)
+        ISet<Piece> copy = new HashSet<Piece>(enemyLocations.Keys);
+        foreach (Piece piece in copy)
         {
             piece.Tic();
+        }
+        occupiedBoard = new bool[BOARD_SIZE, BOARD_SIZE];
+        foreach (Piece piece in enemyLocations.Keys)
+        {
+            (int, int) location = enemyLocations[piece];
+            occupiedBoard[location.Item1, location.Item2] = true;
         }
     }
 

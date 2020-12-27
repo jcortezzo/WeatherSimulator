@@ -86,7 +86,7 @@ public class Tile : MonoBehaviour, Ticable
         if (weather == Weather.LIGHTNING)
         {
             this.effect = TileEffect.ELECTRIC;
-            Debug.Log("Lightning Tile");
+            //Debug.Log("Lightning Tile");
             GetComponent<SpriteRenderer>().color = Color.blue;
         }
         //ApplyEffect(this.type, this.effect);

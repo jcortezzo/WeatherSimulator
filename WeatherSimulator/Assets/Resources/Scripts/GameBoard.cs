@@ -53,8 +53,8 @@ public class GameBoard : MonoBehaviour, Ticable
 
     public void SpawnEnemy(Vector2Int index, Piece piecePrefab)
     {
-        Debug.Log(index);
-        Debug.Log(board.Length);
+        //Debug.Log(index);
+        //Debug.Log(board.Length);
         Vector3 boardPos = board[index.x, index.y].transform.position;
         Piece p = Instantiate(piecePrefab.gameObject, 
                               new Vector3(boardPos.x, boardPos.y, boardPos.z - 2), 

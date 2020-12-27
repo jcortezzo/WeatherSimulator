@@ -37,7 +37,7 @@ public class MainPiece : Piece
 
         //Debug.Log("piece tic");
         Tile tile = GlobalManager.Instance.GameBoard.GetTile(nextMove.x, nextMove.y);
-        Debug.Log(tile.transform.position);
+        //Debug.Log(tile.transform.position);
 
         if (moveCoroutine != null) StopCoroutine(moveCoroutine);
         moveCoroutine = StartCoroutine(MovePiece(tile.transform.position));

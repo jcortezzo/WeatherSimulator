@@ -46,14 +46,20 @@ public abstract class Piece : MonoBehaviour, Ticable
         if (tileMap.Count != 1)
             Debug.Log($"ERR, currently standing on {tileMap.Count} tiles");
         var tile = new List<Tile>(tileMap)[0];
-        // TODO: Change this to TileType.ICE
-        if (tile.DescribeTile().type == TileType.DEFAULT)
+        var tileType = tile.DescribeTile().type;
+
+        // Tile "Tic" effects
+        if (tileType == TileType.ICE)
         {
-            Debug.Log("Sliding");
             var slideDir = currLocation - prevLocation;
             var newDest = currLocation + slideDir;
             if (CanMove(newDest, occupiedBoard) && slideDir != Vector2Int.zero)
                 return currLocation + slideDir;
+        }
+        else if (tileType == TileType.HOT)
+        {
+            if (currLocation != prevLocation)
+                return currLocation; // Cancel every other move while hot
         }
 
         var bestPath = GetBestPath(currentPos, dest, occupiedBoard);
@@ -190,12 +196,8 @@ public abstract class Piece : MonoBehaviour, Ticable
         //Debug.Log(this.tileMap.Count);
     }
 
-    private void OnDestroy()
-    {
-        GlobalManager.Instance.GameBoard.enemyLocations.Remove(this);
-    }
-
-    private void ReceiveEffects(Tile t)
+    // "Continuous" tile effects
+    public virtual void ReceiveEffects(Tile t)
     {
         var info = t.DescribeTile();
         // Debug.Log(info);

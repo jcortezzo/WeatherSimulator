@@ -31,4 +31,9 @@ public class DummyEnemy : Piece
         moveCoroutine = StartCoroutine(MovePiece(newPos));
         GlobalManager.Instance.GameBoard.enemyLocations[this] = nextMove;
     }
+
+    void OnDestroy()
+    {
+        GlobalManager.Instance.GameBoard.enemyLocations.Remove(this);
+    }
 }

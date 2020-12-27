@@ -29,6 +29,7 @@ public class GameBoard : MonoBehaviour, Ticable
                                                       transform.position.z),
                                           Quaternion.identity)
                                           .GetComponent<Tile>();
+                board[i, j].position = new Vector2Int(i, j);
             }
         }
         occupiedBoard = new bool[GlobalManager.Instance.BOARD_SIZE, GlobalManager.Instance.BOARD_SIZE];

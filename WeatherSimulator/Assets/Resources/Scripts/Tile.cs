@@ -7,6 +7,7 @@ public class Tile : MonoBehaviour, Ticable
     private ISet<Piece> pieces;
     [SerializeField] private TileType type;
     [SerializeField] private TileEffect effect;
+    public Vector2Int position;
     private bool selected;
     private GameObject selection;
     private SpriteRenderer sr;
@@ -91,8 +92,8 @@ public class Tile : MonoBehaviour, Ticable
         //ApplyEffect(this.type, this.effect);
     }
 
-    public (TileType, TileEffect) DescribeTile()
+    public (TileType type, TileEffect effect, Vector2Int position) DescribeTile()
     {
-        return (type, effect);
+        return (type, effect, position);
     }
 }

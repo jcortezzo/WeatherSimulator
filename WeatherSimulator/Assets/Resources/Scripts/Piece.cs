@@ -30,6 +30,7 @@ public class Piece : MonoBehaviour
         int col = board.occupiedBoard.GetLength(1);
         //Vector2 randomPos = new Vector2(Random.Range(0, row), Random.Range(0, col));
         Vector2 randomPos = new Vector2(8, 8);
+
         Debug.LogFormat("new random pos: {0}, {1}", randomPos.x, randomPos.y);
         // set up queue and set
         Queue<NextMove> queue = new Queue<NextMove>();
@@ -37,10 +38,9 @@ public class Piece : MonoBehaviour
 
         (int, int) pos = board.enemyLocations[this];
         NextMove currentPos = new NextMove() { prev = null, nextMove = new Vector2(pos.Item1, pos.Item2) };
-        board.occupiedBoard[pos.Item1, pos.Item2] = false;
-
+        
         bool pathFound = false;
-        NextMove lastMove = null;
+        NextMove finalMove = null;
 
         queue.Enqueue(currentPos);
         visited.Add(currentPos.nextMove);
@@ -49,20 +49,16 @@ public class Piece : MonoBehaviour
         while (queue.Count != 0)
         {
             NextMove pop = queue.Dequeue();
-            if(!CanMove(pop.nextMove, board.occupiedBoard)) {
-                continue;
-            }
-
-            Debug.LogFormat("current move check: {0}", pop.nextMove);
+            //Debug.LogFormat("current move check: {0}", pop.nextMove);
             if(pop.nextMove.Equals(randomPos))
             {
                 Debug.Log("path found");
                 pathFound = true;
-                lastMove = pop;
+                finalMove = pop;
                 break;
             }
             List<Vector2> availableMove = GetNeighbour(pop.nextMove, board.occupiedBoard);
-            Debug.LogFormat("neighbour {0}", availableMove.Count);
+            //Debug.LogFormat("neighbour {0}", availableMove.Count);
             foreach (Vector2 nextMove in availableMove)
             {
                 if(!visited.Contains(nextMove)) {
@@ -77,13 +73,20 @@ public class Piece : MonoBehaviour
         if(pathFound)
         {
             //fence post
-            board.occupiedBoard[(int)lastMove.nextMove.x, (int)lastMove.nextMove.y] = true;
-            while (lastMove.prev != null) // stop one short
+            //board.occupiedBoard[(int)finalMove.nextMove.x, (int)finalMove.nextMove.y] = true;
+            while (finalMove.prev != null && finalMove.prev.prev != null) // stop one short
             {
-                lastMove = lastMove.prev;
-                board.occupiedBoard[(int)lastMove.nextMove.x, (int)lastMove.nextMove.y] = true;
+                finalMove = finalMove.prev;
+                //board.occupiedBoard[(int)finalMove.nextMove.x, (int)finalMove.nextMove.y] = true;
             }
-            result = lastMove.nextMove;
+            result = finalMove.nextMove;
+            //if(!finalMove.Equals(randomPos))
+            //{
+            //    board.occupiedBoard[(int)finalMove.nextMove.x, (int)finalMove.nextMove.y] = true;
+            //    board.occupiedBoard[(int)currentPos.nextMove.x, (int)currentPos.nextMove.y] = false;
+            //} else
+            
+            
         }
         return result;
     }
@@ -95,14 +98,14 @@ public class Piece : MonoBehaviour
         result.Add (current + Vector2.down);
         result.Add (current + Vector2.left);
         result.Add (current + Vector2.right);
-        //for(int i = 0; i < result.Count; i++)
-        //{
-        //    if(!CanMove(result[i], movementBoard))
-        //    {
-        //        result.Remove(result[i]);
-        //        i--;
-        //    }
-        //}
+        for(int i = 0; i < result.Count; i++)
+        {
+            if(!CanMove(result[i], movementBoard))
+            {
+                result.Remove(result[i]);
+                i--;
+            }
+        }
         return result;
     }
 
@@ -115,15 +118,15 @@ public class Piece : MonoBehaviour
     {
         int row = movementBoard.GetLength(0);
         int col = movementBoard.GetLength(1);
-        Debug.LogFormat("{0}, {1}, board {2}, {3}", pos.x, pos.y, row, col);
-        return pos.x >= 0 && pos.x < col && pos.y >= 0 && pos.y < row & !movementBoard[(int)pos.x, (int)pos.y];
+        //Debug.LogFormat("{0}, {1}, board {2}, {3}", pos.x, pos.y, row, col);
+        return pos.x >= 0 && pos.x < col && pos.y >= 0 && pos.y < row && !movementBoard[(int)pos.x, (int)pos.y];
     }
 
     public IEnumerator MovePiece(Vector2 newPos)
     {
         while(Vector2.Distance(this.transform.position, newPos) > EPSILON)
         {
-            Vector2 pos = Vector2.Lerp(this.transform.position, newPos, GlobalManager.GAME_SCALE / 2.0f);
+            Vector2 pos = Vector2.Lerp(this.transform.position, newPos, 0.05f);
             this.transform.position = pos;
             yield return null;
         }
@@ -133,14 +136,20 @@ public class Piece : MonoBehaviour
 
     public void Tic()
     {
+
         Vector2 nextMove = GetNextMove(GlobalManager.Instance.GameBoard);
         if (nextMove.Equals(Vector2.negativeInfinity)) { return; }
 
+        Debug.Log("piece tic");
         Tile tile = GlobalManager.Instance.GameBoard.GetTile((int)nextMove.x, (int)nextMove.y);
+        Debug.Log(tile.transform.position);
+
         if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-        
-        Debug.Log(nextMove);
         moveCoroutine = StartCoroutine(MovePiece(tile.transform.position));
+        
+        //this.transform.position = tile.transform.position;
+        GlobalManager.Instance.GameBoard.enemyLocations[this] = ((int)nextMove.x, (int)nextMove.y);
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

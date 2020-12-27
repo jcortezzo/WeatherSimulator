@@ -5,6 +5,7 @@ using UnityEngine.Assertions;
 
 public abstract class Piece : MonoBehaviour, Ticable
 {
+    public Arrow arrowPrefab;
     public ISet<Tile> tileMap;
     public static float EPSILON = 0.1f;
     protected Coroutine moveCoroutine;

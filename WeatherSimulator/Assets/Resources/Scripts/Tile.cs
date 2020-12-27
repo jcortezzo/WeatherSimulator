@@ -104,12 +104,15 @@ public class Tile : MonoBehaviour, Ticable
             GetComponent<SpriteRenderer>().color = Color.blue;
         } else if (weather == Weather.RAIN)
         {
+            type = TileType.WATER;
             sr.sprite = tileSprites[TileType.WATER];
         } else if(weather == Weather.SNOW)
         {
+            type = TileType.ICE;
             sr.sprite = tileSprites[TileType.ICE];
         } else if(weather == Weather.SUN)
         {
+            type = TileType.HOT;
             sr.sprite = tileSprites[TileType.HOT];
         }
         //ApplyEffect(this.type, this.effect);

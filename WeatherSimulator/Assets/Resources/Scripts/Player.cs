@@ -87,16 +87,40 @@ public class Player : MonoBehaviour
 
     private void Rain()
     {
-
+        RaycastHit2D hit = MouseRayCast();
+        if (hit.collider != null)
+        {
+            Tile t = hit.transform.GetComponent<Tile>();
+            if (t != null)
+            {
+                t.ChangeType(Weather.RAIN);
+            }
+        }
     }
 
     private void Sun()
     {
-
+        RaycastHit2D hit = MouseRayCast();
+        if (hit.collider != null)
+        {
+            Tile t = hit.transform.GetComponent<Tile>();
+            if (t != null)
+            {
+                t.ChangeType(Weather.SUN);
+            }
+        }
     }
 
     private void Snow()
     {
-
+        RaycastHit2D hit = MouseRayCast();
+        if (hit.collider != null)
+        {
+            Tile t = hit.transform.GetComponent<Tile>();
+            if (t != null)
+            {
+                t.ChangeType(Weather.SNOW);
+            }
+        }
     }
 }

@@ -44,7 +44,7 @@ public class Tile : MonoBehaviour, Ticable
     void Update()
     {
         selection.gameObject.SetActive(selected);
-        sr.sprite = tileSprites[type];
+        
     }
 
     public void Select()
@@ -104,13 +104,13 @@ public class Tile : MonoBehaviour, Ticable
             GetComponent<SpriteRenderer>().color = Color.blue;
         } else if (weather == Weather.RAIN)
         {
-
+            sr.sprite = tileSprites[TileType.WATER];
         } else if(weather == Weather.SNOW)
         {
-
+            sr.sprite = tileSprites[TileType.ICE];
         } else if(weather == Weather.SUN)
         {
-
+            sr.sprite = tileSprites[TileType.HOT];
         }
         //ApplyEffect(this.type, this.effect);
     }

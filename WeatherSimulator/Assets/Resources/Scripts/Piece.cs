@@ -27,7 +27,7 @@ public abstract class Piece : MonoBehaviour, Ticable
     protected virtual void Update()
     {
 
-        Debug.Log("piece " + this.tileMap.Count);
+        //Debug.Log("piece " + this.tileMap.Count);
         IList<Tile> shallowCopy = new List<Tile>(tileMap);
         for (int i = 0; i < shallowCopy.Count; i++)
         {

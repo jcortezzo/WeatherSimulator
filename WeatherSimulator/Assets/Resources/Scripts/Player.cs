@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] Weather selectedWeather;
+    [SerializeField] public Weather selectedWeather;
     private List<System.Action> actions;
     private Tile previousSelected;
     public LayerMask layerMask;

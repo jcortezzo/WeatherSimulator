@@ -27,7 +27,7 @@ public abstract class Piece : MonoBehaviour, Ticable
     protected virtual void Update()
     {
 
-        Debug.Log("piece " + this.tileMap.Count);
+        //Debug.Log("piece " + this.tileMap.Count);
         foreach (Tile t in this.tileMap)
         {
             ReceiveEffects(t);
@@ -160,7 +160,7 @@ public abstract class Piece : MonoBehaviour, Ticable
 
     public virtual void Tic()
     {
-        Debug.Log(this.tileMap.Count);
+        //Debug.Log(this.tileMap.Count);
         prevPosition = GetLocation();
     }
 
@@ -182,14 +182,14 @@ public abstract class Piece : MonoBehaviour, Ticable
 
     void OnTriggerStay2D(Collider2D collision)
     {
-        Debug.Log("on something");
+        //Debug.Log("on something");
         Tile t = collision.GetComponent<Tile>();
         if (t != null)
         {
-            Debug.Log("fucucucuck");
-            Debug.Log("it's nguyend outside");
+            //Debug.Log("fucucucuck");
+            //Debug.Log("it's nguyend outside");
             this.tileMap.Add(t);
-            Debug.Log("omg wtf " + tileMap.Count);
+            //Debug.Log("omg wtf " + tileMap.Count);
         }
     }
 

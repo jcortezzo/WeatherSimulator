@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     [SerializeField] Weather selectedWeather;
     private List<System.Action> actions;
     private Tile previousSelected;
+    public LayerMask layerMask;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,7 +44,7 @@ public class Player : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(
-                Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+                Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 1000, layerMask);
         return hit;
     }
 

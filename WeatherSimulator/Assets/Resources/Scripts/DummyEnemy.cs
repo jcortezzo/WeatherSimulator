@@ -4,12 +4,7 @@ using UnityEngine;
 
 public class DummyEnemy : Piece
 {
-    //protected override void Update()
-    //{
-    //    base.Update();
-    //    //var finalDestination = new Vector2Int(GlobalManager.Instance.GameBoard.playerLocation.x,
-    //    //                                GlobalManager.Instance.GameBoard.playerLocation.y);
-    //}
+    
 
     public override Vector2Int GetLocation()
     {

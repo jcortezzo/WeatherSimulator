@@ -367,6 +367,16 @@ PrefabInstance:
       propertyPath: enemyLocations.Array.data[2].y
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 289645774549277727, guid: 9040fdc79672a8d4a81b691f9fa62f6d,
+        type: 3}
+      propertyPath: enemyNumbers
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 289645774549277727, guid: 9040fdc79672a8d4a81b691f9fa62f6d,
+        type: 3}
+      propertyPath: BOARD_SIZE
+      value: 12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9040fdc79672a8d4a81b691f9fa62f6d, type: 3}
 --- !u!1001 &1810077701
@@ -475,7 +485,7 @@ PrefabInstance:
     - target: {fileID: 7237090747921893795, guid: db04cfb4349740c46946ab1858396976,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0051574707
+      value: -0.005126953
       objectReference: {fileID: 0}
     - target: {fileID: 7237090747921893795, guid: db04cfb4349740c46946ab1858396976,
         type: 3}

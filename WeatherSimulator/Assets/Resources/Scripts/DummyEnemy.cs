@@ -5,8 +5,9 @@ using UnityEngine;
 public class DummyEnemy : Piece
 {
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         finalDestination = new Vector2Int(GlobalManager.Instance.GameBoard.playerLocation.x,
                                         GlobalManager.Instance.GameBoard.playerLocation.y);
     }

@@ -34,6 +34,7 @@ public class Tile : MonoBehaviour, Ticable
     void Update()
     {
         selection.gameObject.SetActive(selected);
+        //Debug.Log("tile: " + pieces.Count);
     }
 
     public void Select()
@@ -53,6 +54,7 @@ public class Tile : MonoBehaviour, Ticable
         {
             //Debug.Log("piece added to tile");
             pieces.Add(p);
+            //p.tilemap.Add(this);
         }
     }
 
@@ -63,6 +65,7 @@ public class Tile : MonoBehaviour, Ticable
         {
             //Debug.Log("piece added to tile");
             pieces.Add(p);
+            //p.tilemap.Add(this);
         }
     }
 
@@ -72,6 +75,7 @@ public class Tile : MonoBehaviour, Ticable
         if (p != null)
         {
             pieces.Remove(p);
+            //p.tilemap.Remove(this);
         }
     }
 

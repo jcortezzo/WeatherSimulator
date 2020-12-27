@@ -5,7 +5,7 @@ using System;
 
 public class Piece : MonoBehaviour, Ticable
 {
-    ISet<Tile> tilemap;
+    public ISet<Tile> tileMap;
     public static float EPSILON = 0.1f;
     
     protected Coroutine moveCoroutine;
@@ -13,19 +13,23 @@ public class Piece : MonoBehaviour, Ticable
 
     private SpriteRenderer sr;
 
-    // Start is called before the first frame update
-    public void Start()
+    protected virtual void Awake()
     {
-        tilemap = new HashSet<Tile>();
+        tileMap = new HashSet<Tile>();
+    }
+
+    // Start is called before the first frame update
+    protected virtual void Start()
+    {
         sr = GetComponent<SpriteRenderer>();
         sr.sortingLayerName = "Pieces";
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
-        Debug.Log(tilemap.Count);
-        foreach (Tile t in tilemap)
+        Debug.Log("piece " + this.tileMap.Count);
+        foreach (Tile t in this.tileMap)
         {
             ReceiveEffects(t);
         }
@@ -192,81 +196,73 @@ public class Piece : MonoBehaviour, Ticable
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
         Tile t = collision.gameObject.GetComponent<Tile>();
         if (t != null)
         {
-            if (tilemap != null)
+            this.tileMap.Add(t);
+            //ReceiveEffects(t);
+        }
+    }
+
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        Tile t = collision.gameObject.GetComponent<Tile>();
+        if (t != null)
+        {
+ 
+            this.tileMap.Add(t);
+            //ReceiveEffects(t);
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        Tile t = collision.gameObject.GetComponent<Tile>();
+        if (t != null)
+        {
+            if (tileMap != null)
             {
-                tilemap.Add(t);
+                //tilemap.Remove(t);
             }
             //ReceiveEffects(t);
         }
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        Tile t = collision.gameObject.GetComponent<Tile>();
-        if (t != null)
-        {
-            if (tilemap != null)
-            {
-                tilemap.Add(t);
-            }
-            //ReceiveEffects(t);
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        Tile t = collision.gameObject.GetComponent<Tile>();
-        if (t != null)
-        {
-            if (tilemap != null)
-            {
-                tilemap.Remove(t);
-            }
-            //ReceiveEffects(t);
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
+    void OnTriggerStay2D(Collider2D collision)
     {
         Debug.Log("on something");
         Tile t = collision.GetComponent<Tile>();
         if (t != null)
         {
-            if (tilemap != null)
-            {
-                tilemap.Add(t);
-            }
+            Debug.Log("fucucucuck");
+            //if (tilemap != null)
+            //{
+                Debug.Log("it's nguyend outside");
+                this.tileMap.Add(t);
+                Debug.Log("omg wtf " + tileMap.Count);
+            //}
             //ReceiveEffects(t);
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
         Tile t = collision.GetComponent<Tile>();
         if (t != null)
         {
-            if (tilemap != null)
-            {
-                tilemap.Add(t);
-            }
+            this.tileMap.Add(t);
             //ReceiveEffects(t);
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    void OnTriggerExit2D(Collider2D collision)
     {
         Tile t = collision.GetComponent<Tile>();
         if (t != null)
         {
-            if (tilemap != null)
-            {
-                //tilemap.Remove(t);
-            }
+            //tileMap.Remove(t);
         }
     }
 }

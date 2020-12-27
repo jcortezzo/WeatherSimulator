@@ -19,6 +19,9 @@ public class Tile : MonoBehaviour, Ticable
     void Start()
     {
         selection = transform.Find("Selection").gameObject;
+        selection.transform.position = new Vector3(selection.transform.position.x,
+                                                   selection.transform.position.y,
+                                                   this.transform.position.z - 1);
         selected = false;
     }
 

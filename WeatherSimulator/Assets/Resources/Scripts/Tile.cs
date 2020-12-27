@@ -47,6 +47,17 @@ public class Tile : MonoBehaviour, Ticable
         Piece p = collision.GetComponent<Piece>();
         if (p != null)
         {
+            Debug.Log("piece added to tile");
+            pieces.Add(p);
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        Piece p = collision.GetComponent<Piece>();
+        if (p != null)
+        {
+            Debug.Log("piece added to tile");
             pieces.Add(p);
         }
     }
@@ -79,16 +90,13 @@ public class Tile : MonoBehaviour, Ticable
 
     private void ApplyEffect(TileType type, TileEffect effect)
     {
-        ISet<Piece> deepCopy = new HashSet<Piece>();
+        IList<Piece> shallowCopy = new List<Piece>(pieces);
         if (effect == TileEffect.ELECTRIC)
         {
             // Shock
-            Debug.Log(deepCopy);
-            ISet<Piece> toDestroy = new HashSet<Piece>();
-            foreach (Piece p in deepCopy)
+            for (int i = 0; i < shallowCopy.Count; i++)
             {
-                Destroy(p.gameObject);
-                Debug.Log("piece destroyed by lightning!");
+                Destroy(shallowCopy[i].gameObject);
             }
         }
     }
@@ -104,6 +112,7 @@ public class Tile : MonoBehaviour, Ticable
 
     private enum TileEffect
     {
+        NONE,
         ELECTRIC,
         TORNADO,
         FIRE,

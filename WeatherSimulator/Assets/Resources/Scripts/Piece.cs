@@ -169,12 +169,20 @@ public class Piece : MonoBehaviour, Ticable
 
     }
 
+    private void OnDestroy()
+    {
+        GlobalManager.Instance.GameBoard.enemyLocations.Remove(this);
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Tile t = collision.GetComponent<Tile>();
         if (t != null)
         {
-            tilemap.Add(t);
+            if (tilemap != null)
+            {
+                tilemap.Add(t);
+            }
         }
     }
 
@@ -183,7 +191,10 @@ public class Piece : MonoBehaviour, Ticable
         Tile t = collision.GetComponent<Tile>();
         if (t != null)
         {
-            tilemap.Remove(t);
+            if (tilemap != null)
+            {
+                tilemap.Remove(t);
+            }
         }
     }
 }

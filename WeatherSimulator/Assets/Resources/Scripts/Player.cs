@@ -50,11 +50,11 @@ public class Player : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
         if (hit.collider != null)
         {
-            Debug.Log("Raycast hit!");
+            //Debug.Log("Raycast hit!");
             Tile t = hit.transform.GetComponent<Tile>();
             if (t != null)
             {
-                Debug.Log("Found Tile object");
+                //Debug.Log("Found Tile object");
                 t.Select();
             }
         }

@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class GlobalManager : MonoBehaviour
 {
+    public static GlobalManager Instance;
     public float globalTimer;
     public const int GAME_SCALE = 2;
+
+    public GameBoard GameBoard { get { return gameBoard; } }
     [SerializeField] private float TIC_TIME = 2f;
     [SerializeField] private GameBoard gameBoard;
     [SerializeField] private Piece piece;
@@ -15,6 +18,15 @@ public class GlobalManager : MonoBehaviour
     private void Awake()
     {
         globalTimer = 0;
+        if(Instance == null)
+        {
+            Instance = this;
+        } else
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        DontDestroyOnLoad(this.gameObject);
     }
 
     // Start is called before the first frame update
@@ -22,7 +34,7 @@ public class GlobalManager : MonoBehaviour
     {
         cam = Camera.main;
         gameBoard = Instantiate(gameBoard.transform).GetComponent<GameBoard>();
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 1; i++)
         {
             gameBoard.SpawnEnemy((i, 0), piece);  // TODO: give piece prefab from Nguyen
         }
@@ -40,4 +52,5 @@ public class GlobalManager : MonoBehaviour
             gameBoard.Tic();
         }
     }
+
 }

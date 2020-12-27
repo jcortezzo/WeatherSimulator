@@ -42,7 +42,7 @@ public class Piece : MonoBehaviour, Ticable
         // int col = board.occupiedBoard.GetLength(1);
 
         //Vector2Int randomPos = new Vector2Int(8, 8); // our dest
-        Debug.LogFormat("new random pos: {0}, {1}", dest.x, dest.y);
+        //Debug.LogFormat("new random pos: {0}, {1}", dest.x, dest.y);
 
         // This is a way we could genericize checking for movement instead... other ideas possible
         //Func<Vector2Int, bool> canMove = (Vector2Int pos) =>

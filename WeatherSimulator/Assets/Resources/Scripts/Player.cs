@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] Weather selectedWeather;
     private List<System.Action> actions;
-
+    private Tile previousSelected;
     // Start is called before the first frame update
     void Start()
     {
@@ -58,10 +58,12 @@ public class Player : MonoBehaviour
             if (hit2.collider != null)
             {
                 //Debug.Log("Raycast hit!");
+                if (previousSelected != null) previousSelected.Unselect();
                 Tile t = hit.transform.GetComponent<Tile>();
                 if (t != null)
                 {
                     //Debug.Log("Found Tile object");
+                    previousSelected = t;
                     t.Select();
                 }
             }

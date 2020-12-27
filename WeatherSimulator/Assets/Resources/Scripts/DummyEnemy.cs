@@ -26,7 +26,7 @@ public class DummyEnemy : Piece
 
         //Debug.Log("piece tic");
         Tile tile = GlobalManager.Instance.GameBoard.GetTile((int)nextMove.x, (int)nextMove.y);
-        Debug.Log(tile.transform.position);
+        //Debug.Log(tile.transform.position);
 
         if (moveCoroutine != null) StopCoroutine(moveCoroutine);
         moveCoroutine = StartCoroutine(MovePiece(tile.transform.position));

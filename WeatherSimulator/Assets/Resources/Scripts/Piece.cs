@@ -26,8 +26,6 @@ public abstract class Piece : MonoBehaviour, Ticable
     // Update is called once per frame
     protected virtual void Update()
     {
-
-        Debug.Log("piece " + this.tileMap.Count);
         IList<Tile> shallowCopy = new List<Tile>(tileMap);
         for (int i = 0; i < shallowCopy.Count; i++)
         {
@@ -39,14 +37,17 @@ public abstract class Piece : MonoBehaviour, Ticable
 
     public Vector2Int? GetNextMove(Vector2Int currentPos, Vector2Int dest, bool[,] occupiedBoard)
     {
+        /*
         Assert.IsTrue(tileMap.Count == 1);
         var tile = tileMap.GetEnumerator().Current;
 
+        Debug.Log(tile);
         if (tile.DescribeTile().type == TileType.ICE)
         {
             // just slide, IE continue in the same dir
             return GetLocation() - prevPosition;
         }
+        */
 
         var bestPath = GetBestPath(currentPos, dest, occupiedBoard);
         if (bestPath.Count < 2)
@@ -148,7 +149,7 @@ public abstract class Piece : MonoBehaviour, Ticable
     {
         // take cos from -pi -> pi
         // add 1 to our cos and div by 2
-        float currRad = (1 - lerpVal) * -Mathf.PI + (lerpVal) * Mathf.PI;
+        float currRad = (1 - lerpVal) * -Mathf.PI; // + (lerpVal) * 0
         return (Mathf.Cos(currRad) + 1) / 2;
     }
 

@@ -4,43 +4,40 @@ using UnityEngine;
 
 public class MainPiece : Piece
 {
+    private Vector2Int destination;
     private bool[,] playerBoard;
+
+    public override Vector2Int GetLocation()
+    {
+        return GlobalManager.Instance.GameBoard.playerLocation;
+    }
+
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
         base.Start();
         playerBoard = new bool[GlobalManager.Instance.BOARD_SIZE, GlobalManager.Instance.BOARD_SIZE];
-        GenerateFinalPosition(GlobalManager.Instance.GameBoard.GetBoardHeight(),
-                                 GlobalManager.Instance.GameBoard.GetBoardWidth());
+        destination = GenerateRandomPos();
     }
 
-    public void GenerateFinalPosition(int row, int col)
+    private Vector2Int GenerateRandomPos()
     {
-        finalDestination = new Vector2Int(Random.Range(0, row), Random.Range(0, col));
+        int w = GlobalManager.Instance.GameBoard.GetBoardWidth();
+        int h = GlobalManager.Instance.GameBoard.GetBoardHeight();
+        return new Vector2Int(Random.Range(0, w), Random.Range(0, h));
     }
 
     public override void Tic()
     {
-        if (GlobalManager.Instance.GameBoard.playerLocation.Equals(finalDestination))
-        {
-            GenerateFinalPosition(GlobalManager.Instance.GameBoard.GetBoardHeight(),
-                                 GlobalManager.Instance.GameBoard.GetBoardWidth());
-        }
-        Vector2Int playPos = GlobalManager.Instance.GameBoard.playerLocation;
-        Vector2Int? maybeNextMove = GetNextMove(GlobalManager.Instance.GameBoard,
-                                        playPos,
-                                        finalDestination,
-                                        playerBoard);
-        if (maybeNextMove == null)
+        base.Tic();
+        if (GetLocation().Equals(destination))
+            destination = GenerateRandomPos();
+        Vector2Int? maybeNextMove = GetNextMove(GetLocation(), destination, playerBoard);
+        if (!maybeNextMove.HasValue)
             return;
         Vector2Int nextMove = maybeNextMove.Value;
-
-        //Debug.Log("piece tic");
-        Tile tile = GlobalManager.Instance.GameBoard.GetTile(nextMove.x, nextMove.y);
-        Debug.Log(tile.transform.position);
-
-        if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-        moveCoroutine = StartCoroutine(MovePiece(tile.transform.position));
+        // if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+        moveCoroutine = StartCoroutine(MovePiece(GlobalManager.Instance.GetWorldPos(nextMove)));
         GlobalManager.Instance.GameBoard.playerLocation = nextMove;
     }
 }

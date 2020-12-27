@@ -1,24 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using UnityEngine.Assertions;
 
-public class Piece : MonoBehaviour, Ticable
+public abstract class Piece : MonoBehaviour, Ticable
 {
     ISet<Tile> tilemap;
     public static float EPSILON = 0.1f;
-    
     protected Coroutine moveCoroutine;
-    protected Vector2Int finalDestination;
-
+    private Vector2Int prevPosition;
     private SpriteRenderer sr;
 
     // Start is called before the first frame update
-    public void Start()
+    public virtual void Start()
     {
         tilemap = new HashSet<Tile>();
         sr = GetComponent<SpriteRenderer>();
         sr.sortingLayerName = "Pieces";
+        prevPosition = GetLocation();
     }
 
     // Update is called once per frame
@@ -27,33 +26,17 @@ public class Piece : MonoBehaviour, Ticable
 
     }
 
+    public abstract Vector2Int GetLocation();
 
-    /// <summary>
-    /// Get a mutable gameboard and generate a next available move
-    /// </summary>
-    /// <param name="board">Mutable GameBoard</param>
-    /// <returns></returns>
-
-    public Vector2Int? GetNextMove(GameBoard board, Vector2Int currentPos, Vector2Int dest, bool[,] occupiedBoard)
+    public Vector2Int? GetNextMove(Vector2Int currentPos, Vector2Int dest, bool[,] occupiedBoard)
     {
-        //var currPos = new Vector2Int(
-        //    board.enemyLocations[this].Item1,
-        //    board.enemyLocations[this].Item2
-        //);
+        Assert.IsTrue(tilemap.Count == 1);
+        var tile = tilemap.GetEnumerator().Current;
 
-        // int row = board.occupiedBoard.GetLength(0);
-        // int col = board.occupiedBoard.GetLength(1);
-
-        //Vector2Int randomPos = new Vector2Int(8, 8); // our dest
-        Debug.LogFormat("new random pos: {0}, {1}", dest.x, dest.y);
-
-        // This is a way we could genericize checking for movement instead... other ideas possible
-        //Func<Vector2Int, bool> canMove = (Vector2Int pos) =>
-        //{
-        //    int row = board.occupiedBoard.GetLength(0);
-        //    int col = board.occupiedBoard.GetLength(1);
-        //    return pos.x >= 0 && pos.x < col && pos.y >= 0 && pos.y < row && !board.occupiedBoard[pos.x, pos.y];
-        //};
+        if (/* tile == ice*/ true)
+        {
+            return GetLocation() - prevPosition; // continue in the same dir
+        }
 
         var bestPath = GetBestPath(currentPos, dest, occupiedBoard);
         if (bestPath.Count < 2)
@@ -169,7 +152,7 @@ public class Piece : MonoBehaviour, Ticable
 
     public virtual void Tic()
     {
-
+        prevPosition = GetLocation();
     }
 
     private void OnDestroy()

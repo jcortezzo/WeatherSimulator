@@ -5,11 +5,19 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] Weather selectedWeather;
+    private List<System.Action> actions;
 
     // Start is called before the first frame update
     void Start()
     {
-        selectedWeather = (Weather) 0;
+        selectedWeather = Weather.LIGHTNING;
+        actions = new List<System.Action>()
+        {
+            Lightning,
+            Rain,
+            Sun,
+            Snow,
+        };
     }
 
     // Update is called once per frame
@@ -17,40 +25,37 @@ public class Player : MonoBehaviour
     {
         SimpleMouseOver();
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        for (KeyCode kc = KeyCode.Alpha1; kc <= KeyCode.Alpha4; kc++)
         {
-            selectedWeather = (Weather) 0;
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            selectedWeather = (Weather) 1;
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            selectedWeather = (Weather) 2;
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            selectedWeather = (Weather) 3;
+            if (Input.GetKeyDown(kc))
+            {
+                selectedWeather = (Weather) (kc - KeyCode.Alpha1);
+            }
         }
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (selectedWeather == Weather.LIGHTNING)
-            {
-
-            }
+            actions[(int)selectedWeather].Invoke();
         }
+    }
+
+    private RaycastHit2D MouseRayCast()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(
+                Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        return hit;
     }
 
     protected void SimpleMouseOver()
     {
-        if(Input.GetMouseButtonDown(0))
+        RaycastHit2D hit = MouseRayCast();
+        if (hit.collider != null)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             Debug.DrawRay(ray.GetPoint(0), ray.direction, Color.red);
-            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-            if (hit.collider != null)
+            RaycastHit2D hit2 = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            if (hit2.collider != null)
             {
                 //Debug.Log("Raycast hit!");
                 Tile t = hit.transform.GetComponent<Tile>();
@@ -64,11 +69,31 @@ public class Player : MonoBehaviour
        
     }
 
-    private enum Weather
+    private void Lightning()
     {
-        LIGHTNING,
-        RAIN,
-        SUN,
-        SNOW,
+        RaycastHit2D hit = MouseRayCast();
+        if (hit.collider != null)
+        {
+            Tile t = hit.transform.GetComponent<Tile>();
+            if (t != null)
+            {
+                t.ChangeType(Weather.LIGHTNING);
+            }
+        }
+    }
+
+    private void Rain()
+    {
+
+    }
+
+    private void Sun()
+    {
+
+    }
+
+    private void Snow()
+    {
+
     }
 }

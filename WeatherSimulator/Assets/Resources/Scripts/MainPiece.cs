@@ -8,8 +8,8 @@ public class MainPiece : Piece
     void Start()
     {
         base.Start();
-        GenerateFinalPosition(GlobalManager.Instance.GameBoard.GetBoardHeight(),
-                                 GlobalManager.Instance.GameBoard.GetBoardWidth());
+        //GenerateFinalPosition(GlobalManager.Instance.GameBoard.GetBoardHeight(),
+        //                         GlobalManager.Instance.GameBoard.GetBoardWidth());
     }
 
     // Update is called once per frame
@@ -18,22 +18,22 @@ public class MainPiece : Piece
         
     }
 
-    public override void Tic()
-    {
-        if (this.transform.position.Equals(finalPosition))
-        {
-            GenerateFinalPosition(GlobalManager.Instance.GameBoard.GetBoardHeight(),
-                                 GlobalManager.Instance.GameBoard.GetBoardWidth());
-        }
-        Vector2 nextMove = GetNextMove(GlobalManager.Instance.GameBoard, finalPosition);
-        if (nextMove.Equals(Vector2.negativeInfinity)) { return; }
+    //public override void Tic()
+    //{
+    //    //if (this.transform.position.Equals(finalPosition))
+    //    //{
+    //    //    GenerateFinalPosition(GlobalManager.Instance.GameBoard.GetBoardHeight(),
+    //    //                         GlobalManager.Instance.GameBoard.GetBoardWidth());
+    //    //}
+    //    //Vector2 nextMove = GetNextMove(GlobalManager.Instance.GameBoard, finalPosition);
+    //    //if (nextMove.Equals(Vector2.negativeInfinity)) { return; }
 
-        Debug.Log("piece tic");
-        Tile tile = GlobalManager.Instance.GameBoard.GetTile((int)nextMove.x, (int)nextMove.y);
-        Debug.Log(tile.transform.position);
+    //    //Debug.Log("piece tic");
+    //    //Tile tile = GlobalManager.Instance.GameBoard.GetTile((int)nextMove.x, (int)nextMove.y);
+    //    //Debug.Log(tile.transform.position);
 
-        if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-        moveCoroutine = StartCoroutine(MovePiece(tile.transform.position));
-        GlobalManager.Instance.GameBoard.playerLocation = ((int)nextMove.x, (int)nextMove.y);
-    }
+    //    //if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+    //    //moveCoroutine = StartCoroutine(MovePiece(tile.transform.position));
+    //    //GlobalManager.Instance.GameBoard.playerLocation = ((int)nextMove.x, (int)nextMove.y);
+    //}
 }

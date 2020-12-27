@@ -94,7 +94,7 @@ public class GameBoard : MonoBehaviour, Ticable
             occupiedBoard[location.Item1, location.Item2] = true;
         }
 
-        playerPiece.Tic();
+        //playerPiece.Tic();
     }
 
     void DisplayBoard()

@@ -7,149 +7,157 @@ public class Piece : MonoBehaviour
     ISet<Tile> tilemap;
     public static float EPSILON = 0.1f;
 
-    protected Coroutine moveCoroutine;
-    protected Vector2 finalPosition;
-
+    private Coroutine moveCoroutine;
+    
     // Start is called before the first frame update
     public void Start()
     {
         tilemap = new HashSet<Tile>();
 
-        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    protected void GenerateFinalPosition(int row, int col)
-    {
-        finalPosition = new Vector2(Random.Range(0, row), Random.Range(0, col));
-    }
+    //protected void GenerateFinalPosition(int row, int col)
+    //{
+    //    finalPosition = new Vector2(Random.Range(0, row), Random.Range(0, col));
+    //}
 
     /// <summary>
     /// Get a mutable gameboard and generate a next available move
     /// </summary>
     /// <param name="board">Mutable GameBoard</param>
     /// <returns></returns>
-    public Vector2 GetNextMove(GameBoard board, Vector2 finalPosition)
+
+    public Vector2Int? GetNextMove(GameBoard board)
     {
-        Debug.LogFormat("new random pos: {0}, {1}", finalPosition.x, finalPosition.y);
+        int row = board.occupiedBoard.GetLength(0);
+        int col = board.occupiedBoard.GetLength(1);
+        Vector2Int randomPos = new Vector2Int(8, 8);
+
+        Debug.LogFormat("new random pos: {0}, {1}", randomPos.x, randomPos.y);
         // set up queue and set
-        Queue<NextMove> queue = new Queue<NextMove>();
-        ISet<Vector2> visited = new HashSet<Vector2>();
-        (int, int) pos = (2,2);
-        if (this.GetComponent<MainPiece>() != null)
-        {
-            pos = board.playerLocation;
-        } else
-        {
-            pos = board.enemyLocations[this];
-        }
-        
-        NextMove currentPos = new NextMove() { prev = null, nextMove = new Vector2(pos.Item1, pos.Item2) };
-        
-        bool pathFound = false;
-        NextMove finalMove = null;
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        // visited is now a mapping of position -> prev
+        Dictionary<Vector2Int, Vector2Int?> visited = new Dictionary<Vector2Int, Vector2Int?>();
+        Vector2Int? finalMove = null;
+
+        // enemyLocations should just return Vector2Ints, dw for now
+        var currentPos = new Vector2Int(
+            board.enemyLocations[this].Item1,
+            board.enemyLocations[this].Item2
+        );
 
         queue.Enqueue(currentPos);
-        visited.Add(currentPos.nextMove);
+        visited.Add(currentPos, null);
 
         // bfs
         while (queue.Count != 0)
         {
-            NextMove pop = queue.Dequeue();
-            //Debug.LogFormat("current move check: {0}", pop.nextMove);
-            if(pop.nextMove.Equals(finalPosition))
+
+            var pop = queue.Dequeue();
+            if (pop.Equals(randomPos))
+
             {
                 Debug.Log("path found");
-                pathFound = true;
                 finalMove = pop;
                 break;
             }
-            List<Vector2> availableMove = GetNeighbour(pop.nextMove, board.occupiedBoard);
-            //Debug.LogFormat("neighbour {0}", availableMove.Count);
-            foreach (Vector2 nextMove in availableMove)
+            foreach (Vector2Int neighbor in GetNeighbours(pop))
             {
-                if(!visited.Contains(nextMove)) {
-                    NextMove newMove = new NextMove() { prev = pop, nextMove = nextMove };
-                    queue.Enqueue(newMove);
-                    visited.Add(newMove.nextMove);
+                if (CanMove(neighbor, board.occupiedBoard) && !visited.ContainsKey(neighbor))
+                {
+                    queue.Enqueue(neighbor);
+                    visited.Add(neighbor, pop);
                 }
             }
         }
-
-        Vector2 result = Vector2.negativeInfinity;
-        if(pathFound)
+        if (finalMove == null)
         {
-            //fence post
-            //board.occupiedBoard[(int)finalMove.nextMove.x, (int)finalMove.nextMove.y] = true;
-            while (finalMove.prev != null && finalMove.prev.prev != null) // stop one short
+            // Try and find out closest final move
+            foreach (Vector2Int visitedPos in visited.Keys)
             {
-                finalMove = finalMove.prev;
-                //board.occupiedBoard[(int)finalMove.nextMove.x, (int)finalMove.nextMove.y] = true;
+                var newFinalMove = visited[visitedPos];
+                // Can optimize this later if needed
+                if (finalMove == null ||
+                    ManhattanDistance(finalMove.Value, randomPos) <
+                    ManhattanDistance(newFinalMove.Value, randomPos))
+                    finalMove = newFinalMove;
             }
-            result = finalMove.nextMove;
-            //if(!finalMove.Equals(randomPos))
-            //{
-            //    board.occupiedBoard[(int)finalMove.nextMove.x, (int)finalMove.nextMove.y] = true;
-            //    board.occupiedBoard[(int)currentPos.nextMove.x, (int)currentPos.nextMove.y] = false;
-            //} else
-            
-            
         }
-        return result;
+        if (finalMove == null)
+            return null; // No possible moves
+        return ExtractFirstMove(visited, finalMove.Value);
     }
 
-    private List<Vector2> GetNeighbour(Vector2 current, bool[,] movementBoard)
+    private float ManhattanDistance(Vector2Int pos1, Vector2Int pos2)
     {
-        List<Vector2> result = new List<Vector2>();
-        result.Add (current + Vector2.up);
-        result.Add (current + Vector2.down);
-        result.Add (current + Vector2.left);
-        result.Add (current + Vector2.right);
-        for(int i = 0; i < result.Count; i++)
+        return Mathf.Abs(pos1.x - pos2.x) + Mathf.Abs(pos1.y - pos2.y);
+    }
+
+    private Vector2Int ExtractFirstMove(Dictionary<Vector2Int, Vector2Int?> backpointers, Vector2Int dest)
+    {
+        if (!backpointers.ContainsKey(dest) || backpointers[dest] == null)
         {
-            if(!CanMove(result[i], movementBoard))
+            Debug.Log("Invalid path");
+        }
+        else
+        {
+            while (backpointers[dest] != null &&
+                backpointers[backpointers[dest].Value] != null)
             {
-                result.Remove(result[i]);
-                i--;
+                dest = backpointers[dest].Value;
             }
         }
-        return result;
+        return dest;
     }
 
-    private class NextMove {
-        public NextMove prev;
-        public Vector2 nextMove;
+    private List<Vector2Int> GetNeighbours(Vector2Int current)
+    {
+        return new List<Vector2Int>{
+            (current + Vector2Int.up),
+            (current + Vector2Int.down),
+            (current + Vector2Int.left),
+            (current + Vector2Int.right),
+        };
     }
 
-    private bool CanMove(Vector2 pos, bool[,] movementBoard)
+    private bool CanMove(Vector2Int pos, bool[,] movementBoard)
     {
         int row = movementBoard.GetLength(0);
         int col = movementBoard.GetLength(1);
-        //Debug.LogFormat("{0}, {1}, board {2}, {3}", pos.x, pos.y, row, col);
-        return pos.x >= 0 && pos.x < col && pos.y >= 0 && pos.y < row && !movementBoard[(int)pos.x, (int)pos.y];
+        return pos.x >= 0 && pos.x < col && pos.y >= 0 && pos.y < row && !movementBoard[pos.x, pos.y];
     }
 
     public IEnumerator MovePiece(Vector2 newPos)
     {
-        while(Vector2.Distance(this.transform.position, newPos) > EPSILON)
-        {
-            Vector2 pos = Vector2.Lerp(this.transform.position, newPos, 0.05f);
-            this.transform.position = pos;
-            yield return null;
-        }
+        Vector2 oldPos = this.transform.position;
+        Debug.Log("moving: " + oldPos + " " + newPos);
 
+        int numSteps = 10; // arbirtary, this is smooth though!
+        float stepLength = GlobalManager.Instance.TIC_TIME / numSteps / 10; // time leng of step
+
+        for (float i = 0; i < 1; i += (1f / numSteps))
+        {
+            // We can apply a sinuosoid to this as well!
+            this.transform.position = Vector2.Lerp(oldPos, newPos, i);
+            yield return new WaitForSeconds(stepLength);
+        }
         this.transform.position = newPos;
     }
 
     public virtual void Tic()
     {
-        Vector2 nextMove = GetNextMove(GlobalManager.Instance.GameBoard, finalPosition);
-        if (nextMove.Equals(Vector2.negativeInfinity)) { return; }
+
+
+        Vector2Int? maybeNextMove = GetNextMove(GlobalManager.Instance.GameBoard);
+        if (maybeNextMove == null)
+            return;
+        Vector2Int nextMove = maybeNextMove.Value;
 
         Debug.Log("piece tic");
         Tile tile = GlobalManager.Instance.GameBoard.GetTile((int)nextMove.x, (int)nextMove.y);
@@ -157,7 +165,7 @@ public class Piece : MonoBehaviour
 
         if (moveCoroutine != null) StopCoroutine(moveCoroutine);
         moveCoroutine = StartCoroutine(MovePiece(tile.transform.position));
-        
+
         //this.transform.position = tile.transform.position;
         GlobalManager.Instance.GameBoard.enemyLocations[this] = ((int)nextMove.x, (int)nextMove.y);
     }

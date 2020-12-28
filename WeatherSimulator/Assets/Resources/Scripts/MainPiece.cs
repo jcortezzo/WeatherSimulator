@@ -19,6 +19,8 @@ public class MainPiece : Piece
         base.Start();
         playerBoard = new bool[GlobalManager.Instance.BOARD_SIZE, GlobalManager.Instance.BOARD_SIZE];
         destination = GenerateRandomPos();
+
+        fieldNextMove = GetNextMove(GetLocation(), destination, playerBoard);
     }
 
     private Vector2Int GenerateRandomPos()
@@ -31,17 +33,49 @@ public class MainPiece : Piece
     public override void Tic()
     {
         base.Tic();
+        // update new location if 
         if (GetLocation().Equals(destination))
             destination = GenerateRandomPos();
-        Vector2Int? maybeNextMove = GetNextMove(GetLocation(), destination, playerBoard);
-        if (!maybeNextMove.HasValue)
+
+        if(fieldNextMove == null)
+        {
+            fieldNextMove = GetNextMove(GetLocation(), destination, playerBoard);
             return;
-        Vector2Int nextMove = maybeNextMove.Value;
+        }
+        //Vector2Int? maybeNextMove = GetNextMove(GetLocation(), destination, playerBoard);
+        //if (!maybeNextMove.HasValue)
+        //    return;
+        
+        Vector2Int nextMove = fieldNextMove.Value;
+        Debug.Log("Player next move: " + nextMove);
         // if (moveCoroutine != null) StopCoroutine(moveCoroutine);
         moveCoroutine = StartCoroutine(MovePiece(GlobalManager.Instance.GetWorldPos(nextMove)));
-        GlobalManager.Instance.GameBoard.playerLocation = nextMove;
+        UpdatePiecePosition(nextMove);
         DrawNextDirections();
+
+        fieldNextMove = GetNextMove(GetLocation(), destination, playerBoard);
+        //if(fieldNextMove == null) { return;  }
+
+
     }
+
+    //public override void Tic()
+    //{
+    //    base.Tic();
+    //    // update new location if 
+    //    if (GetLocation().Equals(destination))
+    //        destination = GenerateRandomPos();
+
+    //    Vector2Int? maybeNextMove = GetNextMove(GetLocation(), destination, playerBoard);
+    //    if (!maybeNextMove.HasValue)
+    //        return;
+
+    //    Vector2Int nextMove = maybeNextMove.Value;
+    //    // if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+    //    moveCoroutine = StartCoroutine(MovePiece(GlobalManager.Instance.GetWorldPos(nextMove)));
+    //    GlobalManager.Instance.GameBoard.playerLocation = nextMove;
+    //    DrawNextDirections();
+    //}
 
     public override void UpdatePiecePosition(Vector2Int newPos)
     {

@@ -266,31 +266,30 @@ public abstract class Piece : MonoBehaviour, Ticable
             KillPiece(this.gameObject);
         }
 
-        if (info.type == TileType.ICE)
-        {
-            Vector2Int slideDir = currLocation - prevLocation;
-            Vector2Int newDest = currLocation + slideDir;
-            Tile nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
-            while (nextTile != null && nextTile.DescribeTile().type == TileType.ICE && !coroutineRunning)
-            {
-                newDest += slideDir;
-                if (newDest == newDest - slideDir) break;
-                nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
-                Debug.Log("loooppping");
-            }
+        //if (info.type == TileType.ICE)
+        //{
+        //    Vector2Int slideDir = currLocation - prevLocation;
+        //    Vector2Int newDest = currLocation + slideDir;
+        //    Tile nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
+        //    while (nextTile != null && nextTile.DescribeTile().type == TileType.ICE && !coroutineRunning)
+        //    {
+        //        newDest += slideDir;
+        //        if (newDest == newDest - slideDir) break;
+        //        nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
+        //        Debug.Log("loooppping");
+        //    }
 
-            Vector2Int nextMove = newDest;
-            Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
-            if (!coroutineRunning)
-            {
-                StartCoroutine(MovePiece(newPos));
-                if (arrow != null) Destroy(arrow.gameObject);
-                updatePosition(nextMove);
-                //GlobalManager.Instance.GameBoard.enemyLocations[this] = nextMove;
-            }
+        //    Vector2Int nextMove = newDest;
+        //    Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
+        //    if (!coroutineRunning)
+        //    {
+        //        StartCoroutine(MovePiece(newPos));
+        //        if (arrow != null) Destroy(arrow.gameObject);
+        //        updatePosition(nextMove);
+        //    }
 
-            cancelTic = true;
-        }
+        //    cancelTic = true;
+        //}
     }
 
     public abstract void UpdatePiecePosition(Vector2Int newPos);

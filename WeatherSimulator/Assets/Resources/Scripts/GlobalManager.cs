@@ -41,6 +41,7 @@ public class GlobalManager : MonoBehaviour
     {
         cam = Camera.main;
         gameBoard = Instantiate(gameBoard.transform).GetComponent<GameBoard>();
+
         gameBoard.SpawnPlayerPiece(new Vector2Int(8, 8), mainPiece);
 
         foreach (Vector2Int location in enemyLocations)

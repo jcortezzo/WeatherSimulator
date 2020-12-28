@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class DummyEnemy : Piece
 {
-   
-    
 
     protected override void Start()
     {
@@ -48,15 +46,13 @@ public class DummyEnemy : Piece
         Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
         //if (moveCoroutine != null) StopCoroutine(moveCoroutine); // Shouldn't need this
         moveCoroutine = StartCoroutine(MovePiece(newPos));
-        GlobalManager.Instance.GameBoard.enemyLocations[this] = nextMove;
+        UpdatePiecePosition(nextMove);
 
         fieldNextMove = GetNextMove(GetLocation(),
                                     GlobalManager.Instance.GameBoard.playerLocation,
                                     GlobalManager.Instance.GameBoard.occupiedBoard);
-        if (fieldNextMove == null)
-        {
-            return;
-        }
+        if (fieldNextMove == null) { return; }
+
         nextMove = fieldNextMove.Value;
         Debug.Log("next move " + nextMove);
         newPos = GlobalManager.Instance.GetWorldPos(nextMove);

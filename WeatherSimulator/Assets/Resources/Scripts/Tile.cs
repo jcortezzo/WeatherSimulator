@@ -21,6 +21,8 @@ public class Tile : MonoBehaviour, Ticable
     public int typeResetTic;
     public int effectResetTic;
 
+    private Animator waterAnim;
+
     private void Awake()
     {
         pieces = new HashSet<Piece>();
@@ -51,6 +53,9 @@ public class Tile : MonoBehaviour, Ticable
         tornado = transform.Find("Tornado").gameObject;
         tornado.SetActive(effect == TileEffect.TORNADO);
 
+        waterAnim = GetComponent<Animator>();
+        waterAnim.enabled = (type == TileType.WATER);
+
         selected = false;
         sr = GetComponent<SpriteRenderer>();
         sr.sortingLayerName = "Ground";
@@ -63,6 +68,7 @@ public class Tile : MonoBehaviour, Ticable
         electric.SetActive(effect == TileEffect.ELECTRIC);
         fire.SetActive(effect == TileEffect.FIRE);
         tornado.SetActive(effect == TileEffect.TORNADO);
+        waterAnim.enabled = (type == TileType.WATER);
     }
 
     public void Select()

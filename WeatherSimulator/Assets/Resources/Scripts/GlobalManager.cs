@@ -98,6 +98,7 @@ public class GlobalManager : MonoBehaviour
             GameObject lost = Instantiate(youLose, gameBoard.GetCenterTile().transform.position, Quaternion.identity);
             lost.GetComponent<Renderer>().sortingLayerName = "Lightning";
             hasLost = true;
+            
             return;
         }
 

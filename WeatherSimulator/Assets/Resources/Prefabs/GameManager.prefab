@@ -45,10 +45,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   globalTimer: 0
   BOARD_SIZE: 10
+  enemyNumbers: 0
   TIC_TIME: 2
   gameBoard: {fileID: 5513934484955198149, guid: d88ae4da01d40ee47a6a3ab68f9470db,
     type: 3}
   piece: {fileID: 2944299055601615967, guid: 7e729f6ca5dc3714887d9d674567c1b8, type: 3}
   mainPiece: {fileID: 4225282151352948699, guid: 99be6775050f919469c695d5fba38e6e,
     type: 3}
+  isPaused: 0
+  enemyLocations: []
+  treasureGo: {fileID: 7563685243254233981, guid: abee93b03e51bac4f95b3c01c55fd77d,
+    type: 3}
   cam: {fileID: 0}
+  youLose: {fileID: 3260080413810454894, guid: 058a67558333c4e4abb50e985c00bbde, type: 3}

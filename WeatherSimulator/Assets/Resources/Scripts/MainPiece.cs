@@ -21,6 +21,8 @@ public class MainPiece : Piece
         destination = GenerateRandomPos();
 
         fieldNextMove = GetNextMove(GetLocation(), destination, playerBoard);
+        GlobalManager.Instance.CreateTreasure(GlobalManager.Instance.GameBoard.GetTile(destination).transform.position);//destination);
+
     }
 
     private Vector2Int GenerateRandomPos()
@@ -35,7 +37,10 @@ public class MainPiece : Piece
         base.Tic();
         // update new location if 
         if (GetLocation().Equals(destination))
+        {
             destination = GenerateRandomPos();
+            GlobalManager.Instance.CreateTreasure(GlobalManager.Instance.GameBoard.GetTile(destination).transform.position);
+        }
 
         if(fieldNextMove == null)
         {

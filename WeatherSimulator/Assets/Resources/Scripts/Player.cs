@@ -113,7 +113,7 @@ public class Player : MonoBehaviour
                 if (lightingCoroutine != null) StopCoroutine(lightingCoroutine);
                 lightingCoroutine = StartCoroutine(LightningZap());
                 t.ChangeType(Weather.LIGHTNING);
-                Jukebox.Instance.PlaySFX("Lightning");
+                Jukebox.Instance.PlaySFX("Lightning", 0.25f, 0.5f);
             }
         }
     }

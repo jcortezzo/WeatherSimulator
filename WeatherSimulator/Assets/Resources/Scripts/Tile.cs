@@ -69,6 +69,20 @@ public class Tile : MonoBehaviour, Ticable
         fire.SetActive(effect == TileEffect.FIRE);
         tornado.SetActive(effect == TileEffect.TORNADO);
         waterAnim.enabled = (type == TileType.WATER);
+        CheckInteractions();
+    }
+
+    private void CheckInteractions()
+    {
+        if (type == TileType.ICE)
+        {
+            if (effect == TileEffect.FIRE)
+            {
+                ChangeType(Weather.RAIN);
+                effect = TileEffect.FIRE;
+                effectResetTic = 1;
+            }
+        }
     }
 
     public void Select()
@@ -147,12 +161,13 @@ public class Tile : MonoBehaviour, Ticable
                         t.effect = TileEffect.FIRE;
                         t.effectResetTic = 5;
                     }
-                } else if (info.type == TileType.DEFAULT)
+                } else if (info.type != TileType.WATER)
                 {
                     if (Random.Range(0f, 1f) <= 0.05f)
                     {
                         t.effect = TileEffect.FIRE;
                         t.effectResetTic = 5;
+                        Jukebox.Instance.PlaySFX("Fire", 1f, 1f);
                     }
                 }
             }
@@ -162,6 +177,7 @@ public class Tile : MonoBehaviour, Ticable
             type = TileType.WATER;
             sr.sprite = tileSprites[TileType.WATER];
             typeResetTic = -1;
+            Jukebox.Instance.PlaySFX("Rain", .25f, 1f);
         }
         else if(weather == Weather.SNOW)
         {

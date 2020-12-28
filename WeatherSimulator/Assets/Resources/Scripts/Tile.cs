@@ -163,6 +163,7 @@ public class Tile : MonoBehaviour, Ticable
             type = TileType.WATER;
             sr.sprite = tileSprites[TileType.WATER];
             typeResetTic = -1;
+            Jukebox.Instance.PlaySFX("Rain", .25f, 1f);
         }
         else if(weather == Weather.SNOW)
         {

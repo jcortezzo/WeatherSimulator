@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GlobalManager : MonoBehaviour
 {
@@ -22,6 +23,9 @@ public class GlobalManager : MonoBehaviour
     [SerializeField] private GameObject treasureGo;
 
     public Camera cam;
+
+    [SerializeField] private GameObject youLose;
+    private bool hasLost;
 
     private void Awake()
     {
@@ -58,6 +62,23 @@ public class GlobalManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (gameBoard.playerPiece == null && !hasLost)
+        {
+            GameObject lost = Instantiate(youLose, gameBoard.GetCenterTile().transform.position, Quaternion.identity);
+            lost.GetComponent<Renderer>().sortingLayerName = "Lightning";
+            hasLost = true;
+            return;
+        }
+
+        if (hasLost)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+        }
+
         // Don't tic if the game is paused
         if (IsPaused())
         {
@@ -73,6 +94,8 @@ public class GlobalManager : MonoBehaviour
                 gameBoard.SpawnEnemy(new Vector2Int(Random.Range(0, BOARD_SIZE), Random.Range(0, BOARD_SIZE)), piece);
             }
         }
+
+        
     }
 
     public void CreateTreasure(Vector2 pos)

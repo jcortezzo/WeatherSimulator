@@ -57,3 +57,4 @@ MonoBehaviour:
   treasureGo: {fileID: 7563685243254233981, guid: abee93b03e51bac4f95b3c01c55fd77d,
     type: 3}
   cam: {fileID: 0}
+  youLose: {fileID: 3260080413810454894, guid: 058a67558333c4e4abb50e985c00bbde, type: 3}

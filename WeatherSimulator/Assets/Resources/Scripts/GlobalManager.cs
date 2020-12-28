@@ -30,16 +30,16 @@ public class GlobalManager : MonoBehaviour
     private void Awake()
     {
         globalTimer = 0;
-        if (Instance == null)
-        {
+        //if (Instance == null)
+        //{
             Instance = this;
-        }
-        else
-        {
-            Destroy(this.gameObject);
-            return;
-        }
-        DontDestroyOnLoad(this.gameObject);
+        //}
+        //else
+        //{
+            //Destroy(this.gameObject);
+            //return;
+        //}
+        //DontDestroyOnLoad(this.gameObject);
     }
 
     // Start is called before the first frame update
@@ -59,9 +59,38 @@ public class GlobalManager : MonoBehaviour
         isPaused = false;
     }
 
+    //private void OnEnable()
+    //{
+    //    SceneManager.sceneLoaded += OnSceneLoaded;
+    //}
+
+    //private void OnDisable()
+    //{
+    //    SceneManager.sceneLoaded -= OnSceneLoaded;
+    //}
+
+    //void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    //{
+    //    Start();
+    //}
+
+    private void OnLevelWasLoaded(int level)
+    {
+        Start();
+    }
+
     // Update is called once per frame
     void Update()
     {
+
+        if (hasLost)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                hasLost = false;
+            }
+        }
 
         if (gameBoard.playerPiece == null && !hasLost)
         {
@@ -69,14 +98,6 @@ public class GlobalManager : MonoBehaviour
             lost.GetComponent<Renderer>().sortingLayerName = "Lightning";
             hasLost = true;
             return;
-        }
-
-        if (hasLost)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            }
         }
 
         // Don't tic if the game is paused

@@ -10,8 +10,8 @@ public abstract class Piece : MonoBehaviour, Ticable
     public ISet<Tile> tileMap;
     public static float EPSILON = 0.1f;
     protected Coroutine moveCoroutine;
-    private Vector2Int prevLocation;
-    private Vector2Int currLocation;
+    protected Vector2Int prevLocation;
+    protected Vector2Int currLocation;
     private SpriteRenderer sr;
 
     protected Vector2Int? fieldNextMove;
@@ -237,7 +237,7 @@ public abstract class Piece : MonoBehaviour, Ticable
         if(cancelTic)
         {
             cancelTic = false;
-            fieldNextMove = null;
+            fieldNextMove = null;// GetNextMove(GetLocation(), ;
             return;
         }
     }

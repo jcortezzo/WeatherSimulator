@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GlobalManager : MonoBehaviour
 {
@@ -19,21 +20,26 @@ public class GlobalManager : MonoBehaviour
 
     [SerializeField] private Vector2Int[] enemyLocations;
 
+    [SerializeField] private GameObject treasureGo;
+
     public Camera cam;
+
+    [SerializeField] private GameObject youLose;
+    private bool hasLost;
 
     private void Awake()
     {
         globalTimer = 0;
-        if (Instance == null)
-        {
+        //if (Instance == null)
+        //{
             Instance = this;
-        }
-        else
-        {
-            Destroy(this.gameObject);
-            return;
-        }
-        DontDestroyOnLoad(this.gameObject);
+        //}
+        //else
+        //{
+            //Destroy(this.gameObject);
+            //return;
+        //}
+        //DontDestroyOnLoad(this.gameObject);
     }
 
     // Start is called before the first frame update
@@ -53,9 +59,47 @@ public class GlobalManager : MonoBehaviour
         isPaused = false;
     }
 
+    //private void OnEnable()
+    //{
+    //    SceneManager.sceneLoaded += OnSceneLoaded;
+    //}
+
+    //private void OnDisable()
+    //{
+    //    SceneManager.sceneLoaded -= OnSceneLoaded;
+    //}
+
+    //void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    //{
+    //    Start();
+    //}
+
+    private void OnLevelWasLoaded(int level)
+    {
+        Start();
+    }
+
     // Update is called once per frame
     void Update()
     {
+
+        if (hasLost)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                hasLost = false;
+            }
+        }
+
+        if (gameBoard.playerPiece == null && !hasLost)
+        {
+            GameObject lost = Instantiate(youLose, gameBoard.GetCenterTile().transform.position, Quaternion.identity);
+            lost.GetComponent<Renderer>().sortingLayerName = "Lightning";
+            hasLost = true;
+            return;
+        }
+
         // Don't tic if the game is paused
         if (IsPaused())
         {
@@ -71,6 +115,13 @@ public class GlobalManager : MonoBehaviour
                 gameBoard.SpawnEnemy(new Vector2Int(Random.Range(0, BOARD_SIZE), Random.Range(0, BOARD_SIZE)), piece);
             }
         }
+
+        
+    }
+
+    public void CreateTreasure(Vector2 pos)
+    {
+        Instantiate(treasureGo, pos, Quaternion.identity);
     }
 
     public void Pause()

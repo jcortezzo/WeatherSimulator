@@ -43,19 +43,31 @@ public class GameBoard : MonoBehaviour, Ticable
         enemyLocations = new Dictionary<Piece, Vector2Int>();
     }
 
+    public Tile GetTile(Vector2 index)
+    {
+        return GetTile((int) index.x, (int) index.y);
+    }
+
     public Tile GetTile(Vector2Int index)
     {
-        return board[index.x, index.y];
+        return GetTile(index.x, index.y);
     }
 
     public Tile GetTile((int, int) index)
     {
-        return board[index.Item1, index.Item2];
+        return GetTile(index.Item1, index.Item2);
     }
 
     public Tile GetTile(int i, int j)
     {
-        return GetTile((i, j));
+        if (!IsValidTile(new Vector2Int(i, j)))
+        {
+            return null;
+        }
+        else
+        {
+            return board[i, j];
+        }
     }
 
     public Tile GetCenterTile()
@@ -142,6 +154,11 @@ public class GameBoard : MonoBehaviour, Ticable
         return coords.x >= 0 && coords.x < GetBoardHeight() &&
                coords.y >= 0 && coords.y < GetBoardWidth();
 
+    }
+
+    public Vector2Int GetCoordsFromTile(Tile t)
+    {
+        return tileToCoords.ContainsKey(t) ? tileToCoords[t] : Vector2Int.zero;
     }
 
     void DisplayBoard()

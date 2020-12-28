@@ -328,6 +328,7 @@ public abstract class Piece : MonoBehaviour, Ticable
     private IEnumerator Kill(GameObject go, float afterSec)
     {
         yield return new WaitForSeconds(afterSec);
+        Jukebox.Instance.PlaySFX("Death Sound", 0.5f, 1f);
         Destroy(go);
     }
 }

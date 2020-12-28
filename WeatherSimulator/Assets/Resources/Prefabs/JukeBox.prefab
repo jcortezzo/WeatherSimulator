@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4937217262255816552}
+  - component: {fileID: 904396480}
   m_Layer: 0
   m_Name: JukeBox
   m_TagString: Untagged
@@ -30,3 +31,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &904396480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 227728298595459265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbd78bbf253240b4e8ff27a9c4321f9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musics: []
+  sfxs:
+  - clip: {fileID: 8300000, guid: 6a5758cdb719c2d4089c0081202373b6, type: 3}
+    name: Death Sound
+    volume: 0
+    pitch: 0
+    loop: 0
+  - clip: {fileID: 8300000, guid: b77d581ba9edae548b9634d5c53d24b6, type: 3}
+    name: Fire
+    volume: 0
+    pitch: 0
+    loop: 0
+  - clip: {fileID: 8300000, guid: bd1b64198a80d0c48b17967a6cb98b45, type: 3}
+    name: Lightning
+    volume: 0
+    pitch: 0
+    loop: 0
+  - clip: {fileID: 8300000, guid: 0539f334b5747dd48a2258ef85c6df8b, type: 3}
+    name: Menu Change
+    volume: 0
+    pitch: 0
+    loop: 0

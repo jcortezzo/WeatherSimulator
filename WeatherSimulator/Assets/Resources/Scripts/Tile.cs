@@ -153,6 +153,7 @@ public class Tile : MonoBehaviour, Ticable
                     {
                         t.effect = TileEffect.FIRE;
                         t.effectResetTic = 5;
+                        Jukebox.Instance.PlaySFX("Fire", 1f, 1f);
                     }
                 }
             }

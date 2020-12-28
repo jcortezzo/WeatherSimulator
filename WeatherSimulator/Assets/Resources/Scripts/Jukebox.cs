@@ -60,6 +60,20 @@ public class Jukebox : MonoBehaviour
             }
         }
     }
+
+    public void PlaySFX(string name, float volume, float pitch)
+    {
+        foreach (Sound s in sfxs)
+        {
+            if (s.name.Equals(name))
+            {
+                sfxSource.volume = volume;
+                sfxSource.pitch = pitch;
+                sfxSource.PlayOneShot(s.clip);
+                return;
+            }
+        }
+    }
 }
 
 [System.Serializable]
@@ -77,3 +91,4 @@ public struct Sound
 
     public bool loop;
 }
+

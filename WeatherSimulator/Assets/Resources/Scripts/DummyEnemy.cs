@@ -33,7 +33,16 @@ public class DummyEnemy : Piece
     
     public override void Tic()
     {
-        base.Tic();
+        //base.Tic();
+
+        if (cancelTic)
+        {
+            cancelTic = false;
+            fieldNextMove = GetNextMove(GetLocation(),
+                                    GlobalManager.Instance.GameBoard.playerLocation,
+                                    GlobalManager.Instance.GameBoard.occupiedBoard);
+            return;
+        }
 
         if (fieldNextMove == null)
         {

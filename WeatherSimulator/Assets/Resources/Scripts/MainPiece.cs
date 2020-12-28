@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainPiece : Piece
+public class MainPiece : Piece, Ticable
 {
     private List<GameObject> arrowPath = new List<GameObject>();
     private Vector2Int destination;
@@ -34,7 +34,13 @@ public class MainPiece : Piece
 
     public override void Tic()
     {
-        base.Tic();
+        //base.Tic();
+        if (cancelTic)
+        {
+            cancelTic = false;
+            fieldNextMove = GetNextMove(GetLocation(), destination, playerBoard);
+            //return;
+        }
         // update new location if 
         if (GetLocation().Equals(destination))
         {
@@ -42,47 +48,16 @@ public class MainPiece : Piece
             GlobalManager.Instance.CreateTreasure(GlobalManager.Instance.GameBoard.GetTile(destination).transform.position);
         }
 
-        if(fieldNextMove == null)
+        if (fieldNextMove == null)
         {
             fieldNextMove = GetNextMove(GetLocation(), destination, playerBoard);
-            return;
+            //return;
         }
-        //Vector2Int? maybeNextMove = GetNextMove(GetLocation(), destination, playerBoard);
-        //if (!maybeNextMove.HasValue)
-        //    return;
-        
+
         Vector2Int nextMove = fieldNextMove.Value;
+
+        nextMove = fieldNextMove.Value;
         Debug.Log("Player next move: " + nextMove);
-        // if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-
-        ////////////////////////
-        List<Tile> l = new List<Tile>(tileMap);
-        var info = l[0].DescribeTile();
-        if (info.type == TileType.ICE)
-        {
-            Vector2Int slideDir = currLocation - prevLocation;
-            Vector2Int newDest = currLocation + slideDir;
-            Tile nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
-            while (nextTile != null && nextTile.DescribeTile().type == TileType.ICE && !coroutineRunning)
-            {
-                newDest += slideDir;
-                if (newDest == newDest - slideDir) break;
-                nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
-                Debug.Log("loooppping");
-            }
-
-            //Vector2Int nextMove = newDest;
-            nextMove = newDest;
-            Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
-            if (!coroutineRunning)
-            {
-                StartCoroutine(MovePiece(newPos));
-                GlobalManager.Instance.GameBoard.enemyLocations[this] = nextMove;
-            }
-
-            cancelTic = true;
-        }
-        ///////////////////////////////////
 
 
         moveCoroutine = StartCoroutine(MovePiece(GlobalManager.Instance.GetWorldPos(nextMove)));

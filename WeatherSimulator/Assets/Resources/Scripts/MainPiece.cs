@@ -19,6 +19,7 @@ public class MainPiece : Piece
         base.Start();
         playerBoard = new bool[GlobalManager.Instance.BOARD_SIZE, GlobalManager.Instance.BOARD_SIZE];
         destination = GenerateRandomPos();
+        GlobalManager.Instance.CreateTreasure(GlobalManager.Instance.GameBoard.GetTile(destination).transform.position);//destination);
     }
 
     private Vector2Int GenerateRandomPos()
@@ -32,7 +33,11 @@ public class MainPiece : Piece
     {
         base.Tic();
         if (GetLocation().Equals(destination))
+        {
             destination = GenerateRandomPos();
+            GlobalManager.Instance.CreateTreasure(GlobalManager.Instance.GameBoard.GetTile(destination).transform.position);
+        }
+            
         Vector2Int? maybeNextMove = GetNextMove(GetLocation(), destination, playerBoard);
         if (!maybeNextMove.HasValue)
             return;

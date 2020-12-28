@@ -19,6 +19,8 @@ public class GlobalManager : MonoBehaviour
 
     [SerializeField] private Vector2Int[] enemyLocations;
 
+    [SerializeField] private GameObject treasureGo;
+
     public Camera cam;
 
     private void Awake()
@@ -71,6 +73,11 @@ public class GlobalManager : MonoBehaviour
                 gameBoard.SpawnEnemy(new Vector2Int(Random.Range(0, BOARD_SIZE), Random.Range(0, BOARD_SIZE)), piece);
             }
         }
+    }
+
+    public void CreateTreasure(Vector2 pos)
+    {
+        Instantiate(treasureGo, pos, Quaternion.identity);
     }
 
     public void Pause()

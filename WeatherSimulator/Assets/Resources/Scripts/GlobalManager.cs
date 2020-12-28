@@ -66,6 +66,8 @@ public class GlobalManager : MonoBehaviour
 
         isPaused = false;
 
+        player = FindObjectOfType<Player>();
+
     }
     //private void OnLevelWasLoaded(int level)
     //{

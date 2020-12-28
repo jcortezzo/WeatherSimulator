@@ -31,6 +31,7 @@ public class Treasure : MonoBehaviour
     {
         GameObject floating = Instantiate(floatingText, this.transform.position, Quaternion.identity);
         floating.GetComponent<Renderer>().sortingLayerName = "Lightning";
+        Jukebox.Instance.PlaySFX("Treasure Ding", 0.75f, 1f);
         Destroy(floating, 2f);
         Destroy(this.gameObject);
     }

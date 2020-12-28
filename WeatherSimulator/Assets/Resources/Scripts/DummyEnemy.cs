@@ -100,15 +100,15 @@ public class DummyEnemy : Piece
         MainPiece piece = collision.gameObject.GetComponent<MainPiece>();
         if (piece != null)
         {
-            Destroy(piece.gameObject);
+            KillPiece(piece.gameObject);
         }
 
         DummyEnemy dummy = collision.gameObject.GetComponent<DummyEnemy>();
         if (dummy != null)
         {
 
-            Destroy(this.gameObject);
-            Destroy(dummy.gameObject);
+            KillPiece(this.gameObject);
+            KillPiece(piece.gameObject);
         }
     }
 

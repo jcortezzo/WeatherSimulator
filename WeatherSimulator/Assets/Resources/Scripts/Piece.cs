@@ -203,7 +203,10 @@ public abstract class Piece : MonoBehaviour, Ticable
         // Default param val
         coroutineRunning = true;
         if (duration == float.NegativeInfinity) duration = GlobalManager.Instance.TIC_TIME / 10;
-
+        if (newPos.Equals(Vector2.negativeInfinity))
+        {
+            yield break;
+        }
         Vector2 oldPos = this.transform.position;
         int numSteps = 20; // arbirtary, this is smooth though!
         float stepLength = duration / numSteps; // time leng of step
@@ -244,7 +247,7 @@ public abstract class Piece : MonoBehaviour, Ticable
         // Debug.Log(info);
         if (info.effect == TileEffect.ELECTRIC)
         {
-            Destroy(this.gameObject);
+            KillPiece(this.gameObject);
         }
         else if (info.effect == TileEffect.TORNADO)
         {
@@ -258,7 +261,7 @@ public abstract class Piece : MonoBehaviour, Ticable
         }
         else if (info.effect == TileEffect.FIRE)
         {
-            Destroy(this.gameObject);
+            KillPiece(this.gameObject);
         }
 
         if (info.type == TileType.ICE)
@@ -315,5 +318,16 @@ public abstract class Piece : MonoBehaviour, Ticable
         {
             tileMap.Remove(t);
         }
+    }
+
+    public virtual void KillPiece(GameObject go, float afterSec = 0.5f )
+    {
+        StartCoroutine(Kill(go, afterSec));
+    }
+
+    private IEnumerator Kill(GameObject go, float afterSec)
+    {
+        yield return new WaitForSeconds(afterSec);
+        Destroy(go);
     }
 }

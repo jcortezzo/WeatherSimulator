@@ -11,12 +11,15 @@ public class Tile : MonoBehaviour, Ticable
     private bool selected;
     private GameObject selection;
     private GameObject electric;
+    private GameObject fire;
+    private GameObject tornado;
 
     private SpriteRenderer sr;
     private Dictionary<TileType, Sprite> tileSprites;
     public Vector2Int tornadoDir;
 
-    public int resetTic;
+    public int typeResetTic;
+    public int effectResetTic;
 
     private void Awake()
     {
@@ -42,6 +45,12 @@ public class Tile : MonoBehaviour, Ticable
         electric = transform.Find("Electric").gameObject;
         electric.SetActive(effect == TileEffect.ELECTRIC);
 
+        fire = transform.Find("Fire").gameObject;
+        fire.SetActive(effect == TileEffect.FIRE);
+
+        tornado = transform.Find("Tornado").gameObject;
+        tornado.SetActive(effect == TileEffect.TORNADO);
+
         selected = false;
         sr = GetComponent<SpriteRenderer>();
         sr.sortingLayerName = "Ground";
@@ -52,7 +61,8 @@ public class Tile : MonoBehaviour, Ticable
     {
         selection.gameObject.SetActive(selected);
         electric.SetActive(effect == TileEffect.ELECTRIC);
-
+        fire.SetActive(effect == TileEffect.FIRE);
+        tornado.SetActive(effect == TileEffect.TORNADO);
     }
 
     public void Select()
@@ -101,8 +111,10 @@ public class Tile : MonoBehaviour, Ticable
     {
         //Debug.Log(type);
         //ApplyEffect(this.type, this.effect);
-        if(resetTic > 0) resetTic--;
-        if (resetTic <= 0) ChangeType(Weather.NONE);
+        if(typeResetTic > 0) typeResetTic--;
+        if (effectResetTic > 0) effectResetTic--;
+        if (typeResetTic == 0) ChangeType(Weather.NONE);
+        if (effectResetTic == 0) effect = TileEffect.NONE;
     }
 
     public void ChangeType(Weather weather)
@@ -110,39 +122,111 @@ public class Tile : MonoBehaviour, Ticable
         if (weather == Weather.LIGHTNING)
         {
             this.effect = TileEffect.ELECTRIC;
-            resetTic = 5;
+            effectResetTic = 5;
             ISet<Tile> neighbors = GlobalManager.Instance.GameBoard.GetNeighbors(this);
             foreach (Tile t in neighbors)
             {
-                if (t.DescribeTile().type == TileType.WATER &&
-                    t.DescribeTile().effect != TileEffect.ELECTRIC)
+                var info = t.DescribeTile();
+                if (info.type == TileType.WATER &&
+                    info.effect != TileEffect.ELECTRIC)
                 {
                     t.ChangeType(Weather.LIGHTNING);
                 }
+                else if (info.type == TileType.HOT &&
+                         info.effect != TileEffect.FIRE)
+                {
+                    if (Random.Range(0f, 1f) <= 0.5f)
+                    {
+                        t.ChangeType(Weather.SUN);
+                        t.effect = TileEffect.FIRE;
+                        t.effectResetTic = 5;
+                    }
+                } else if (info.type == TileType.DEFAULT)
+                {
+                    if (Random.Range(0f, 1f) <= 0.05f)
+                    {
+                        t.effect = TileEffect.FIRE;
+                        t.effectResetTic = 5;
+                    }
+                }
             }
-        } else if (weather == Weather.RAIN)
+        }
+        else if (weather == Weather.RAIN)
         {
             type = TileType.WATER;
             sr.sprite = tileSprites[TileType.WATER];
-            resetTic = 5;
-        } else if(weather == Weather.SNOW)
+            typeResetTic = -1;
+        }
+        else if(weather == Weather.SNOW)
         {
             type = TileType.ICE;
             sr.sprite = tileSprites[TileType.ICE];
-            resetTic = 5;
-        } else if(weather == Weather.SUN)
+            typeResetTic = -1;
+
+            GenerateTornados(TileType.HOT);
+        }
+        else if(weather == Weather.SUN)
         {
             type = TileType.HOT;
             sr.sprite = tileSprites[TileType.HOT];
-            resetTic = 5;
-        } else
+            typeResetTic = 10;
+
+            GenerateTornados(TileType.ICE);
+        }
+        else
         {
             //Debug.Log("reset tile");
             type = TileType.DEFAULT;
-            effect = TileEffect.NONE;
+            //effect = TileEffect.NONE;  no ty
             sr.sprite = tileSprites[TileType.DEFAULT];
         }
         //ApplyEffect(this.type, this.effect);
+    }
+
+    private void GenerateTornados(TileType desiredType)
+    {
+        Vector2Int coords = GlobalManager.Instance.GameBoard.GetCoordsFromTile(this);
+        if (coords != null)
+        {
+            Tile up = GlobalManager.Instance.GameBoard.GetTile(Vector2.up + coords);
+            Tile down = GlobalManager.Instance.GameBoard.GetTile(Vector2.down + coords);
+            Tile left = GlobalManager.Instance.GameBoard.GetTile(Vector2.left + coords);
+            Tile right = GlobalManager.Instance.GameBoard.GetTile(Vector2.right + coords);
+
+            Tile up2 = GlobalManager.Instance.GameBoard.GetTile(Vector2.up * 2 + coords);
+            Tile down2 = GlobalManager.Instance.GameBoard.GetTile(Vector2.down * 2 + coords);
+            Tile left2 = GlobalManager.Instance.GameBoard.GetTile(Vector2.left * 2 + coords);
+            Tile right2 = GlobalManager.Instance.GameBoard.GetTile(Vector2.right * 2 + coords);
+
+            IList<Tile> first = new List<Tile>() { up, down, left, right };
+            IList<Tile> second = new List<Tile>() { up2, down2, left2, right2 };
+            IDictionary<Tile, Tile> tiles = new Dictionary<Tile, Tile>(); ;
+            for (int i = 0; i < first.Count; i++)
+            {
+                if (first[i] == null || second[i] == null)
+                {
+                    continue;
+                }
+                else
+                {
+                    tiles[second[i]] = first[i];
+                }
+            }
+
+            // = new Dictionary<Tile, Tile>() { { up2, up }, { down2, down }, { left2, left }, { right2, right }, };
+            foreach (Tile t in tiles.Keys)
+            {
+                if (t == null) continue;
+
+                var info = t.DescribeTile();
+                if (t.type == desiredType)
+                {
+                    if (tiles[t] == null) continue;
+                    tiles[t].effect = TileEffect.TORNADO;
+                    tiles[t].effectResetTic = 5;
+                }
+            }
+        }
     }
 
     public (TileType type, TileEffect effect, Vector2Int position) DescribeTile()

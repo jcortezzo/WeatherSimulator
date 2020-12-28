@@ -98,7 +98,6 @@ public class GlobalManager : MonoBehaviour
             GameObject lost = Instantiate(youLose, gameBoard.GetCenterTile().transform.position, Quaternion.identity);
             lost.GetComponent<Renderer>().sortingLayerName = "Lightning";
             hasLost = true;
-            
             return;
         }
 
@@ -129,13 +128,11 @@ public class GlobalManager : MonoBehaviour
     public void Pause()
     {
         isPaused = true;
-        Jukebox.Instance.PlaySFX("Menu Change", 0.5f, 1f);
     }
 
     public void Unpause()
     {
         isPaused = false;
-        Jukebox.Instance.PlaySFX("Menu Change", 0.5f, 1f);
     }
 
     public bool IsPaused()

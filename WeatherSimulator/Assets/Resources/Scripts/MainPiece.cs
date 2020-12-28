@@ -131,7 +131,6 @@ public class MainPiece : Piece
 
     void OnDestroy()
     {
-        Jukebox.Instance.PlaySFX("Chad Death", 0.5f, 1f);
         ClearArrows();
         Debug.Log("The player has DIED!!");
     }

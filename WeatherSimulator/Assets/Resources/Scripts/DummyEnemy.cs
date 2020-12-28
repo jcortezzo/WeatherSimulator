@@ -121,6 +121,7 @@ public class DummyEnemy : Piece
             Destroy(arrow.gameObject);
         }
         GlobalManager.Instance.GameBoard.enemyLocations.Remove(this);
+        Jukebox.Instance.PlaySFX("Enemy Death", 1f, 1f);
     }
 
 

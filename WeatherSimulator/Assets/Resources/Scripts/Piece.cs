@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -17,6 +18,7 @@ public abstract class Piece : MonoBehaviour, Ticable
     protected bool coroutineRunning;
 
     public bool cancelTic;
+    protected GameObject arrow;
 
     protected virtual void Awake()
     {
@@ -36,7 +38,7 @@ public abstract class Piece : MonoBehaviour, Ticable
         IList<Tile> shallowCopy = new List<Tile>(tileMap);
         for (int i = 0; i < shallowCopy.Count; i++)
         {
-            ReceiveEffects(shallowCopy[i]);
+            ReceiveEffects(shallowCopy[i], UpdatePiecePosition);
         }
     }
 
@@ -241,7 +243,7 @@ public abstract class Piece : MonoBehaviour, Ticable
     }
 
     // "Continuous" tile effects
-    public virtual void ReceiveEffects(Tile t)
+    public virtual void ReceiveEffects(Tile t, Action<Vector2Int> updatePosition)
     {
         var info = t.DescribeTile();
         // Debug.Log(info);
@@ -264,30 +266,33 @@ public abstract class Piece : MonoBehaviour, Ticable
             KillPiece(this.gameObject);
         }
 
-        if (info.type == TileType.ICE)
-        {
-            Vector2Int slideDir = currLocation - prevLocation;
-            Vector2Int newDest = currLocation + slideDir;
-            Tile nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
-            while (nextTile != null && nextTile.DescribeTile().type == TileType.ICE && !coroutineRunning)
-            {
-                newDest += slideDir;
-                if (newDest == newDest - slideDir) break;
-                nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
-                Debug.Log("loooppping");
-            }
+        //if (info.type == TileType.ICE)
+        //{
+        //    Vector2Int slideDir = currLocation - prevLocation;
+        //    Vector2Int newDest = currLocation + slideDir;
+        //    Tile nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
+        //    while (nextTile != null && nextTile.DescribeTile().type == TileType.ICE && !coroutineRunning)
+        //    {
+        //        newDest += slideDir;
+        //        if (newDest == newDest - slideDir) break;
+        //        nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
+        //        Debug.Log("loooppping");
+        //    }
 
-            Vector2Int nextMove = newDest;
-            Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
-            if (!coroutineRunning)
-            {
-                StartCoroutine(MovePiece(newPos));
-                GlobalManager.Instance.GameBoard.enemyLocations[this] = nextMove;
-            }
+        //    Vector2Int nextMove = newDest;
+        //    Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
+        //    if (!coroutineRunning)
+        //    {
+        //        StartCoroutine(MovePiece(newPos));
+        //        if (arrow != null) Destroy(arrow.gameObject);
+        //        updatePosition(nextMove);
+        //    }
 
-            cancelTic = true;
-        }
+        //    cancelTic = true;
+        //}
     }
+
+    public abstract void UpdatePiecePosition(Vector2Int newPos);
 
     void OnTriggerStay2D(Collider2D collision)
     {
@@ -320,7 +325,7 @@ public abstract class Piece : MonoBehaviour, Ticable
         }
     }
 
-    public virtual void KillPiece(GameObject go, float afterSec = 0.5f )
+    public virtual void KillPiece(GameObject go, float afterSec = 0.0f )
     {
         StartCoroutine(Kill(go, afterSec));
     }

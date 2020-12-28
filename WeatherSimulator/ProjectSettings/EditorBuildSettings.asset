@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/NguyenScene.unity
     guid: 958087c4b61ccd84bbc71ae32ebafc70
+  - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: 14ec380e00965a24da06c5177940458c
   m_configObjects: {}

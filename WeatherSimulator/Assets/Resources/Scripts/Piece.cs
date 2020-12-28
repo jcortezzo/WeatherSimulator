@@ -253,13 +253,13 @@ public abstract class Piece : MonoBehaviour, Ticable
         }
         else if (info.effect == TileEffect.TORNADO)
         {
-            if (moveCoroutine != null)
-            {
-                StopCoroutine(this.moveCoroutine);
-            }
-            moveCoroutine = StartCoroutine(
-                TornadoMove(t.position, GetLocation() + t.tornadoDir)
-            );
+            //if (moveCoroutine != null)
+            //{
+            //    StopCoroutine(this.moveCoroutine);
+            //}
+            //moveCoroutine = StartCoroutine(
+            //    TornadoMove(t.position, GetLocation() + t.tornadoDir)
+            //);
         }
         else if (info.effect == TileEffect.FIRE)
         {

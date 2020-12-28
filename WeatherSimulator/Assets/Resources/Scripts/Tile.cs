@@ -170,7 +170,7 @@ public class Tile : MonoBehaviour, Ticable
             type = TileType.ICE;
             sr.sprite = tileSprites[TileType.ICE];
             typeResetTic = -1;
-
+            Jukebox.Instance.PlaySFX("Blizzard", .25f, 1f);
             GenerateTornados(TileType.HOT);
         }
         else if(weather == Weather.SUN)

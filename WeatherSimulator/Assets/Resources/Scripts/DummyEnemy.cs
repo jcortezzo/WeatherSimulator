@@ -27,6 +27,10 @@ public class DummyEnemy : Piece
 
     public override Vector2Int GetLocation()
     {
+        //Debug.Log("Instance: " + GlobalManager.Instance);
+        //Debug.Log("Gameboar: " + GlobalManager.Instance.GameBoard);
+        //Debug.Log("enemyloca: " + GlobalManager.Instance.GameBoard.enemyLocations.Count);
+
         return GlobalManager.Instance.GameBoard.enemyLocations[this];
     }
 
@@ -115,7 +119,7 @@ public class DummyEnemy : Piece
         }
 
         DummyEnemy dummy = collision.gameObject.GetComponent<DummyEnemy>();
-        if (dummy != null)
+        if (dummy != null && piece != null)
         {
 
             if (piece != null)

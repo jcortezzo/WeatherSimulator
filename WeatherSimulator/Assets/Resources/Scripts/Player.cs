@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, Ticable
 {
     [SerializeField] public Weather selectedWeather;
     private List<System.Action> actions;
@@ -11,6 +11,11 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject lightning;
     private Animator lightningAnim;
     private Coroutine lightingCoroutine;
+
+    public int lcd;
+    public int rcd;
+    public int scd;
+    public int icd;
 
     // Start is called before the first frame update
     void Start()
@@ -103,7 +108,7 @@ public class Player : MonoBehaviour
 
     private void Lightning()
     {
-        
+        if (lcd > 0) return;
         RaycastHit2D hit = MouseRayCast();
         if (hit.collider != null)
         {
@@ -116,6 +121,7 @@ public class Player : MonoBehaviour
                 Jukebox.Instance.PlaySFX("Lightning", 0.25f, 0.5f);
             }
         }
+        lcd = 3;
     }
 
     public IEnumerator LightningZap()
@@ -130,6 +136,7 @@ public class Player : MonoBehaviour
 
     private void Rain()
     {
+        if (rcd > 0) return;
         RaycastHit2D hit = MouseRayCast();
         if (hit.collider != null)
         {
@@ -139,10 +146,12 @@ public class Player : MonoBehaviour
                 t.ChangeType(Weather.RAIN);
             }
         }
+        rcd = 1;
     }
 
     private void Sun()
     {
+        if (scd > 0) return;
         RaycastHit2D hit = MouseRayCast();
         if (hit.collider != null)
         {
@@ -152,10 +161,12 @@ public class Player : MonoBehaviour
                 t.ChangeType(Weather.SUN);
             }
         }
+        scd = 1;
     }
 
     private void Snow()
     {
+        if (icd > 0) return;
         RaycastHit2D hit = MouseRayCast();
         if (hit.collider != null)
         {
@@ -165,5 +176,14 @@ public class Player : MonoBehaviour
                 t.ChangeType(Weather.SNOW);
             }
         }
+        icd = 1;
+    }
+
+    public void Tic()
+    {
+        if (lcd >= 0) lcd--;
+        if (icd >= 0) icd--;
+        if (scd >= 0) scd--;
+        if (rcd >= 0) rcd--;
     }
 }

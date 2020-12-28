@@ -27,6 +27,8 @@ public class GlobalManager : MonoBehaviour
     [SerializeField] private GameObject youLose;
     private bool hasLost;
 
+    public Player player;
+
     private void Awake()
     {
         globalTimer = 0;
@@ -58,6 +60,8 @@ public class GlobalManager : MonoBehaviour
         cam.transform.position = new Vector3(centerPos.x, centerPos.y, -10);
 
         isPaused = false;
+
+        player = FindObjectOfType<Player>();
     }
 
     //private void OnEnable()

@@ -118,8 +118,12 @@ public class DummyEnemy : Piece
         if (dummy != null)
         {
 
-            KillPiece(piece.gameObject);
-            KillPiece(this.gameObject);
+            if (piece != null)
+            {
+                KillPiece(piece.gameObject);
+                KillPiece(this.gameObject);
+            }
+            
         }
     }
 

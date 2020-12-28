@@ -132,6 +132,9 @@ public class GameBoard : MonoBehaviour, Ticable
             }
         }
         if (playerPiece != null) playerPiece.Tic();
+
+        Player player = GlobalManager.Instance.player;
+        if (player != null) player.Tic();
     }
 
     public ISet<Tile> GetNeighbors(Tile t)

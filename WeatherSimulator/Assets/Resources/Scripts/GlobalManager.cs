@@ -27,6 +27,8 @@ public class GlobalManager : MonoBehaviour
     [SerializeField] private GameObject youLose;
     private bool hasLost;
 
+    public Player player;
+
     private void Awake()
     {
         globalTimer = 0;
@@ -47,21 +49,6 @@ public class GlobalManager : MonoBehaviour
     {
         Load();
     }
-
-    //private void OnEnable()
-    //{
-    //    SceneManager.sceneLoaded += OnSceneLoaded;
-    //}
-
-    //private void OnDisable()
-    //{
-    //    SceneManager.sceneLoaded -= OnSceneLoaded;
-    //}
-
-    //void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    //{
-    //    Start();
-    //}
 
     public void Load()
     {   

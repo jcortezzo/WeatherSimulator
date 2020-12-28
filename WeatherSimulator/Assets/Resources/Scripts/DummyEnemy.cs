@@ -21,7 +21,7 @@ public class DummyEnemy : Piece
         var nextMove = fieldNextMove.Value;
         var newPos = GlobalManager.Instance.GetWorldPos(nextMove);
         if (arrow != null) Destroy(arrow);
-        arrow = GenerateArrow(GetLocation(), nextMove, "Enemy");
+        arrow = GenerateArrow(GetLocation(), nextMove, 1);
         arrow.transform.position = newPos;//transform.position;
         arrow.transform.parent = null;
         //arrow.transform.parent = transform; // make that arrow a child of our enemy
@@ -59,7 +59,7 @@ public class DummyEnemy : Piece
         // Generate our nextup arrow:
 
         if (arrow != null) Destroy(arrow);
-        arrow = GenerateArrow(GetLocation(), nextMove, "Enemy");
+        arrow = GenerateArrow(GetLocation(), nextMove, 1);
         arrow.transform.position = newPos;//transform.position;
         arrow.transform.parent = null;
         //arrow.transform.parent = transform; // make that arrow a child of our enemy
@@ -107,6 +107,10 @@ public class DummyEnemy : Piece
 
     void OnDestroy()
     {
+        if (arrow != null)
+        {
+            Destroy(arrow.gameObject);
+        }
         GlobalManager.Instance.GameBoard.enemyLocations.Remove(this);
     }
 

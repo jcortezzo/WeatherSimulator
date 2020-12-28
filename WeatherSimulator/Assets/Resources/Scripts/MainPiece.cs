@@ -50,7 +50,7 @@ public class MainPiece : Piece
         var nextPath = GetNextPath(numMoves);
         for (int i = 1; i < nextPath.Count - 1; i++)
         {
-            var arrow = GenerateArrow(nextPath[i], nextPath[i + 1], "Player");
+            var arrow = GenerateArrow(nextPath[i], nextPath[i + 1], 0);
             arrow.transform.position = GlobalManager.Instance.GetWorldPos(nextPath[i]);
             arrowPath.Add(arrow);
         }

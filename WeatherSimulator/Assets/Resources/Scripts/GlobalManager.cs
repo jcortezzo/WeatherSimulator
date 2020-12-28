@@ -27,6 +27,8 @@ public class GlobalManager : MonoBehaviour
     [SerializeField] private GameObject youLose;
     private bool hasLost;
 
+    public Player player;
+
     private void Awake()
     {
         globalTimer = 0;
@@ -45,6 +47,11 @@ public class GlobalManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Load();
+    }
+
+    public void Load()
+    {   
         cam = Camera.main;
         gameBoard = Instantiate(gameBoard.transform).GetComponent<GameBoard>();
 
@@ -58,27 +65,14 @@ public class GlobalManager : MonoBehaviour
         cam.transform.position = new Vector3(centerPos.x, centerPos.y, -10);
 
         isPaused = false;
+
+        player = FindObjectOfType<Player>();
+
     }
-
-    //private void OnEnable()
-    //{
-    //    SceneManager.sceneLoaded += OnSceneLoaded;
-    //}
-
-    //private void OnDisable()
-    //{
-    //    SceneManager.sceneLoaded -= OnSceneLoaded;
-    //}
-
-    //void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    //private void OnLevelWasLoaded(int level)
     //{
     //    Start();
     //}
-
-    private void OnLevelWasLoaded(int level)
-    {
-        Start();
-    }
 
     // Update is called once per frame
     void Update()
@@ -88,8 +82,9 @@ public class GlobalManager : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                 hasLost = false;
+                SceneManager.LoadScene("AbdulScene");
             }
         }
 

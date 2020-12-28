@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainPiece : Piece
+public class MainPiece : Piece, Ticable
 {
     private List<GameObject> arrowPath = new List<GameObject>();
     private Vector2Int destination;
@@ -34,7 +34,13 @@ public class MainPiece : Piece
 
     public override void Tic()
     {
-        base.Tic();
+        //base.Tic();
+        if (cancelTic)
+        {
+            cancelTic = false;
+            fieldNextMove = GetNextMove(GetLocation(), destination, playerBoard);
+            //return;
+        }
         // update new location if 
         if (GetLocation().Equals(destination))
         {
@@ -42,18 +48,18 @@ public class MainPiece : Piece
             GlobalManager.Instance.CreateTreasure(GlobalManager.Instance.GameBoard.GetTile(destination).transform.position);
         }
 
-        if(fieldNextMove == null)
+        if (fieldNextMove == null)
         {
             fieldNextMove = GetNextMove(GetLocation(), destination, playerBoard);
-            return;
+            //return;
         }
-        //Vector2Int? maybeNextMove = GetNextMove(GetLocation(), destination, playerBoard);
-        //if (!maybeNextMove.HasValue)
-        //    return;
-        
+
         Vector2Int nextMove = fieldNextMove.Value;
+
+        nextMove = fieldNextMove.Value;
         Debug.Log("Player next move: " + nextMove);
-        // if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+
+
         moveCoroutine = StartCoroutine(MovePiece(GlobalManager.Instance.GetWorldPos(nextMove)));
         UpdatePiecePosition(nextMove);
         DrawNextDirections();

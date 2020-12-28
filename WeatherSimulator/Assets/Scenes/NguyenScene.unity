@@ -409,7 +409,7 @@ PrefabInstance:
     - target: {fileID: 289645774549277727, guid: 9040fdc79672a8d4a81b691f9fa62f6d,
         type: 3}
       propertyPath: enemyLocations.Array.size
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 289645774549277727, guid: 9040fdc79672a8d4a81b691f9fa62f6d,
         type: 3}
@@ -419,12 +419,12 @@ PrefabInstance:
     - target: {fileID: 289645774549277727, guid: 9040fdc79672a8d4a81b691f9fa62f6d,
         type: 3}
       propertyPath: enemyLocations.Array.data[1].x
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 289645774549277727, guid: 9040fdc79672a8d4a81b691f9fa62f6d,
         type: 3}
       propertyPath: enemyLocations.Array.data[1].y
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 289645774549277727, guid: 9040fdc79672a8d4a81b691f9fa62f6d,
         type: 3}

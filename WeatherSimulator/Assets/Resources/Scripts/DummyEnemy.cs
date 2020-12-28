@@ -27,13 +27,26 @@ public class DummyEnemy : Piece
 
     public override Vector2Int GetLocation()
     {
+        //Debug.Log("Instance: " + GlobalManager.Instance);
+        //Debug.Log("Gameboar: " + GlobalManager.Instance.GameBoard);
+        //Debug.Log("enemyloca: " + GlobalManager.Instance.GameBoard.enemyLocations.Count);
+
         return GlobalManager.Instance.GameBoard.enemyLocations[this];
     }
 
     
     public override void Tic()
     {
-        base.Tic();
+        //base.Tic();
+
+        if (cancelTic)
+        {
+            cancelTic = false;
+            fieldNextMove = GetNextMove(GetLocation(),
+                                    GlobalManager.Instance.GameBoard.playerLocation,
+                                    GlobalManager.Instance.GameBoard.occupiedBoard);
+            return;
+        }
 
         if (fieldNextMove == null)
         {
@@ -106,11 +119,15 @@ public class DummyEnemy : Piece
         }
 
         DummyEnemy dummy = collision.gameObject.GetComponent<DummyEnemy>();
-        if (dummy != null)
+        if (dummy != null && piece != null)
         {
 
-            KillPiece(piece.gameObject);
-            KillPiece(this.gameObject);
+            if (piece != null)
+            {
+                KillPiece(piece.gameObject);
+                KillPiece(this.gameObject);
+            }
+            
         }
     }
 

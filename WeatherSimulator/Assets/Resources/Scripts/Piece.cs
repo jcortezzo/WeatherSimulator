@@ -152,8 +152,7 @@ public abstract class Piece : MonoBehaviour, Ticable
         var maybeAngle = Arrow.GetAngle(new Vector2Int(diff.y, diff.x));
         if (!maybeAngle.HasValue)
             return null;
-        Arrow arrow = Instantiate(arrowPrefab.gameObject, Vector3.zero, maybeAngle.Value)
-            .GetComponent<Arrow>();
+        Arrow arrow = Instantiate(arrowPrefab.gameObject, Vector3.zero, maybeAngle.Value).GetComponent<Arrow>();
         arrow.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/" + arrowType + "Arrow");
         return arrow.gameObject;
     }

@@ -73,6 +73,7 @@ public class GameBoard : MonoBehaviour, Ticable
                               Quaternion.identity).GetComponent<Piece>();
         enemyLocations[p] = index;
         occupiedBoard[index.x, index.y] = true;
+        p.tileMap.Add(GetTile(index));
     }
 
     public void SpawnPlayerPiece(Vector2Int index, Piece piecePrefab)

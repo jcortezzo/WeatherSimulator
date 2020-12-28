@@ -43,6 +43,37 @@ public class MainPiece : Piece
             return;
         Vector2Int nextMove = maybeNextMove.Value;
         // if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+
+        ////////////////////////
+        List<Tile> l = new List<Tile>(tileMap);
+        var info = l[0].DescribeTile();
+        if (info.type == TileType.ICE)
+        {
+            Vector2Int slideDir = currLocation - prevLocation;
+            Vector2Int newDest = currLocation + slideDir;
+            Tile nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
+            while (nextTile != null && nextTile.DescribeTile().type == TileType.ICE && !coroutineRunning)
+            {
+                newDest += slideDir;
+                if (newDest == newDest - slideDir) break;
+                nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
+                Debug.Log("loooppping");
+            }
+
+            //Vector2Int nextMove = newDest;
+            nextMove = newDest;
+            Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
+            if (!coroutineRunning)
+            {
+                StartCoroutine(MovePiece(newPos));
+                GlobalManager.Instance.GameBoard.enemyLocations[this] = nextMove;
+            }
+
+            cancelTic = true;
+        }
+        ///////////////////////////////////
+
+
         moveCoroutine = StartCoroutine(MovePiece(GlobalManager.Instance.GetWorldPos(nextMove)));
         GlobalManager.Instance.GameBoard.playerLocation = nextMove;
         DrawNextDirections();

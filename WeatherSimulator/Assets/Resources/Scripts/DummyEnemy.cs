@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DummyEnemy : Piece
 {
-    private GameObject arrow;
+   
     
 
     protected override void Start()
@@ -32,6 +32,7 @@ public class DummyEnemy : Piece
         return GlobalManager.Instance.GameBoard.enemyLocations[this];
     }
 
+    
     public override void Tic()
     {
         base.Tic();
@@ -70,6 +71,11 @@ public class DummyEnemy : Piece
         }
        
         //arrow.transform.parent = transform; // make that arrow a child of our enemy
+    }
+
+    public override void UpdatePiecePosition(Vector2Int newPos)
+    {
+        GlobalManager.Instance.GameBoard.enemyLocations[this] = newPos;
     }
 
     //public override void Tic()
@@ -120,5 +126,6 @@ public class DummyEnemy : Piece
         }
         GlobalManager.Instance.GameBoard.enemyLocations.Remove(this);
     }
+
 
 }

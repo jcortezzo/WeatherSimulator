@@ -124,7 +124,7 @@ public class GameBoard : MonoBehaviour, Ticable
             Vector2Int location = enemyLocations[piece];
             if (!IsValidTile(location))
             {
-                piece.KillPiece(piece.gameObject);
+                //piece.KillPiece(piece.gameObject);
             }
             else
             {

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -17,6 +18,7 @@ public abstract class Piece : MonoBehaviour, Ticable
     protected bool coroutineRunning;
 
     public bool cancelTic;
+    protected GameObject arrow;
 
     protected virtual void Awake()
     {
@@ -36,7 +38,7 @@ public abstract class Piece : MonoBehaviour, Ticable
         IList<Tile> shallowCopy = new List<Tile>(tileMap);
         for (int i = 0; i < shallowCopy.Count; i++)
         {
-            ReceiveEffects(shallowCopy[i]);
+            ReceiveEffects(shallowCopy[i], UpdatePiecePosition);
         }
     }
 
@@ -241,7 +243,7 @@ public abstract class Piece : MonoBehaviour, Ticable
     }
 
     // "Continuous" tile effects
-    public virtual void ReceiveEffects(Tile t)
+    public virtual void ReceiveEffects(Tile t, Action<Vector2Int> updatePosition)
     {
         var info = t.DescribeTile();
         // Debug.Log(info);
@@ -282,12 +284,16 @@ public abstract class Piece : MonoBehaviour, Ticable
             if (!coroutineRunning)
             {
                 StartCoroutine(MovePiece(newPos));
-                GlobalManager.Instance.GameBoard.enemyLocations[this] = nextMove;
+                if (arrow != null) Destroy(arrow.gameObject);
+                updatePosition(nextMove);
+                //GlobalManager.Instance.GameBoard.enemyLocations[this] = nextMove;
             }
 
             cancelTic = true;
         }
     }
+
+    public abstract void UpdatePiecePosition(Vector2Int newPos);
 
     void OnTriggerStay2D(Collider2D collision)
     {
@@ -320,7 +326,7 @@ public abstract class Piece : MonoBehaviour, Ticable
         }
     }
 
-    public virtual void KillPiece(GameObject go, float afterSec = 0.5f )
+    public virtual void KillPiece(GameObject go, float afterSec = 0.0f )
     {
         StartCoroutine(Kill(go, afterSec));
     }

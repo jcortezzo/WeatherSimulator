@@ -43,6 +43,11 @@ public class MainPiece : Piece
         DrawNextDirections();
     }
 
+    public override void UpdatePiecePosition(Vector2Int newPos)
+    {
+        GlobalManager.Instance.GameBoard.playerLocation = newPos;
+    }
+
     // This is SLOW! But there's no better way rn :(
     private void DrawNextDirections(int numMoves = 7)
     {
@@ -55,6 +60,7 @@ public class MainPiece : Piece
             arrowPath.Add(arrow);
         }
     }
+
 
     private List<Vector2Int> GetNextPath(int maxLeng)
     {
@@ -89,4 +95,6 @@ public class MainPiece : Piece
         ClearArrows();
         Debug.Log("The player has DIED!!");
     }
+
+
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class DummyEnemy : Piece
 {
     private GameObject arrow;
-    private Vector2Int? fieldNextMove;
+    
 
     protected override void Start()
     {
@@ -38,16 +38,18 @@ public class DummyEnemy : Piece
 
         if (fieldNextMove == null)
         {
+            fieldNextMove = GetNextMove(GetLocation(),
+                                   GlobalManager.Instance.GameBoard.playerLocation,
+                                   GlobalManager.Instance.GameBoard.occupiedBoard);
             return;
         }
-        var nextMove = fieldNextMove.Value;
-        var newPos = GlobalManager.Instance.GetWorldPos(nextMove);
-        // if (moveCoroutine != null) StopCoroutine(moveCoroutine); Shouldn't need this
+        Vector2Int nextMove = fieldNextMove.Value;
+        Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
+        //if (moveCoroutine != null) StopCoroutine(moveCoroutine); // Shouldn't need this
         moveCoroutine = StartCoroutine(MovePiece(newPos));
         GlobalManager.Instance.GameBoard.enemyLocations[this] = nextMove;
 
-        fieldNextMove = GetNextMove(
-                                    GetLocation(),
+        fieldNextMove = GetNextMove(GetLocation(),
                                     GlobalManager.Instance.GameBoard.playerLocation,
                                     GlobalManager.Instance.GameBoard.occupiedBoard);
         if (fieldNextMove == null)
@@ -55,13 +57,18 @@ public class DummyEnemy : Piece
             return;
         }
         nextMove = fieldNextMove.Value;
+        Debug.Log("next move " + nextMove);
         newPos = GlobalManager.Instance.GetWorldPos(nextMove);
         // Generate our nextup arrow:
 
         if (arrow != null) Destroy(arrow);
         arrow = GenerateArrow(GetLocation(), nextMove, 1);
-        arrow.transform.position = newPos;//transform.position;
-        arrow.transform.parent = null;
+        if (arrow != null)
+        {
+            arrow.transform.position = newPos;
+            arrow.transform.parent = null;
+        }
+       
         //arrow.transform.parent = transform; // make that arrow a child of our enemy
     }
 

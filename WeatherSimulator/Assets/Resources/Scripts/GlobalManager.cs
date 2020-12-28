@@ -91,6 +91,7 @@ public class GlobalManager : MonoBehaviour
     // Returns the Vec3 world position of a given board location
     public Vector3 GetWorldPos(Vector2Int tilePos)
     {
-        return GameBoard.GetTile(tilePos.x, tilePos.y).transform.position;
+        Tile tile = GameBoard.GetTile(tilePos.x, tilePos.y);
+        return tile != null ? GameBoard.GetTile(tilePos.x, tilePos.y).transform.position : Vector3.negativeInfinity;
     }
 }

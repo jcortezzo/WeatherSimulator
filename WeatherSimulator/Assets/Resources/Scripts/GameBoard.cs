@@ -45,7 +45,11 @@ public class GameBoard : MonoBehaviour, Ticable
 
     public Tile GetTile(Vector2Int index)
     {
-        return board[index.x, index.y];
+        if(index.x >= 0 && index.x < GlobalManager.Instance.BOARD_SIZE && index.y >= 0 && index.y < GlobalManager.Instance.BOARD_SIZE)
+        {
+            return board[index.x, index.y]; 
+        }
+        return null;
     }
 
     public Tile GetTile((int, int) index)

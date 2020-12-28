@@ -13,6 +13,11 @@ public abstract class Piece : MonoBehaviour, Ticable
     private Vector2Int currLocation;
     private SpriteRenderer sr;
 
+    protected Vector2Int? fieldNextMove;
+    protected bool coroutineRunning;
+
+    public bool cancelTic;
+
     protected virtual void Awake()
     {
         tileMap = new HashSet<Tile>();
@@ -54,14 +59,21 @@ public abstract class Piece : MonoBehaviour, Ticable
         var tileType = tile.DescribeTile().type;
 
         // Tile "Tic" effects
-        if (tileType == TileType.ICE)
-        {
-            var slideDir = currLocation - prevLocation;
-            var newDest = currLocation + slideDir;
-            if (CanMove(newDest, occupiedBoard) && slideDir != Vector2Int.zero)
-                return currLocation + slideDir;
-        }
-        else if (tileType == TileType.HOT)
+        //if (tileType == TileType.ICE)
+        //{
+        //    Vector2Int slideDir = currLocation - prevLocation;
+        //    Vector2Int newDest = currLocation + slideDir;
+        //    //Tile nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
+        //    //while(nextTile != null && nextTile.DescribeTile().type == TileType.ICE)
+        //    //{
+        //    //    newDest += slideDir;
+        //    //    nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
+        //    //}
+        //    if (CanMove(newDest, occupiedBoard) && slideDir != Vector2Int.zero)
+        //        return newDest;
+        //}
+        //else 
+        if (tileType == TileType.HOT)
         {
             if (currLocation != prevLocation)
                 return currLocation; // Cancel every other move while hot
@@ -189,6 +201,7 @@ public abstract class Piece : MonoBehaviour, Ticable
     public IEnumerator MovePiece(Vector2 newPos, float duration = float.NegativeInfinity)
     {
         // Default param val
+        coroutineRunning = true;
         if (duration == float.NegativeInfinity) duration = GlobalManager.Instance.TIC_TIME / 10;
 
         Vector2 oldPos = this.transform.position;
@@ -202,6 +215,8 @@ public abstract class Piece : MonoBehaviour, Ticable
             yield return new WaitForSeconds(stepLength);
         }
         this.transform.position = newPos;
+
+        coroutineRunning = false;
     }
 
     public IEnumerator TornadoMove(Vector2Int tornadoPos, Vector2Int finalPos)
@@ -214,6 +229,12 @@ public abstract class Piece : MonoBehaviour, Ticable
     public virtual void Tic()
     {
         //Debug.Log(this.tileMap.Count);
+        if(cancelTic)
+        {
+            cancelTic = false;
+            fieldNextMove = null;
+            return;
+        }
     }
 
     // "Continuous" tile effects
@@ -238,6 +259,30 @@ public abstract class Piece : MonoBehaviour, Ticable
         else if (info.effect == TileEffect.FIRE)
         {
             Destroy(this.gameObject);
+        }
+
+        if (info.type == TileType.ICE)
+        {
+            Vector2Int slideDir = currLocation - prevLocation;
+            Vector2Int newDest = currLocation + slideDir;
+            Tile nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
+            while (nextTile != null && nextTile.DescribeTile().type == TileType.ICE && !coroutineRunning)
+            {
+                newDest += slideDir;
+                if (newDest == newDest - slideDir) break;
+                nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
+                Debug.Log("loooppping");
+            }
+
+            Vector2Int nextMove = newDest;
+            Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
+            if (!coroutineRunning)
+            {
+                StartCoroutine(MovePiece(newPos));
+                GlobalManager.Instance.GameBoard.enemyLocations[this] = nextMove;
+            }
+
+            cancelTic = true;
         }
     }
 

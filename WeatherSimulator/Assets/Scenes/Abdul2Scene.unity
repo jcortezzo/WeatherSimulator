@@ -604,6 +604,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 904396480, guid: 72dcb2404486c9d49ad91d6639a89271, type: 3}
+      propertyPath: sfxs.Array.size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 904396480, guid: 72dcb2404486c9d49ad91d6639a89271, type: 3}
+      propertyPath: sfxs.Array.data[9].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 59aa2cddd7fe5194098f026460955bd5, type: 3}
+    - target: {fileID: 904396480, guid: 72dcb2404486c9d49ad91d6639a89271, type: 3}
+      propertyPath: sfxs.Array.data[9].name
+      value: UIChange
+      objectReference: {fileID: 0}
     - target: {fileID: 227728298595459265, guid: 72dcb2404486c9d49ad91d6639a89271,
         type: 3}
       propertyPath: m_Name

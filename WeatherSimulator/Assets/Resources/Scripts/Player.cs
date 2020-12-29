@@ -42,7 +42,7 @@ public class Player : MonoBehaviour, Ticable
         {
             if (Input.GetKeyDown(kc))
             {
-                Jukebox.Instance.PlaySFX("Menu Change", 0.5f, 1f);
+                Jukebox.Instance.PlaySFX("UIChange", 0.3f, 1f);
                 selectedWeather = (Weather)(kc - KeyCode.Alpha1);
             }
         }
@@ -122,6 +122,7 @@ public class Player : MonoBehaviour, Ticable
                 lightingCoroutine = StartCoroutine(LightningZap());
                 t.ChangeType(Weather.LIGHTNING);
                 Jukebox.Instance.PlaySFX("Lightning", 0.25f, 0.5f);
+                Jukebox.Instance.PlaySFX("LightningHard", 0.3f, 0.5f);
             }
         }
         if (!godMode)

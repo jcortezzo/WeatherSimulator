@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Menu.unity
     guid: 14ec380e00965a24da06c5177940458c
+  - enabled: 1
+    path: Assets/Scenes/Abdul2Scene.unity
+    guid: d1afb5f6dc97a1c498d1aaa1980f669a
   m_configObjects: {}

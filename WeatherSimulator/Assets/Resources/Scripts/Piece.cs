@@ -38,7 +38,7 @@ public abstract class Piece : MonoBehaviour, Ticable
         IList<Tile> shallowCopy = new List<Tile>(tileMap);
         for (int i = 0; i < shallowCopy.Count; i++)
         {
-            ReceiveEffects(shallowCopy[i], UpdatePiecePosition);
+            ReceiveEffects(shallowCopy[i]);
         }
     }
 
@@ -46,9 +46,9 @@ public abstract class Piece : MonoBehaviour, Ticable
 
     public Vector2Int? GetNextMove(Vector2Int currentPos, Vector2Int dest, bool[,] occupiedBoard)
     {
-
-        prevLocation = currLocation;
-        currLocation = GetLocation();
+        Debug.LogFormat("current: {0}, prev: {1}", currLocation, prevLocation);
+        //prevLocation = currLocation;
+        //currLocation = GetLocation();
 
         if (tileMap == null || tileMap.Count < 1 || tileMap.Count != 1)
         {
@@ -200,9 +200,13 @@ public abstract class Piece : MonoBehaviour, Ticable
         return (Mathf.Cos(currRad) + 1) / 2;
     }
 
-    public IEnumerator MovePiece(Vector2 newPos, float duration = float.NegativeInfinity)
+    public IEnumerator MovePiece(Vector2 newPos, bool isCancelTic, float duration = float.NegativeInfinity)
     {
         // Default param val
+        //if(isCancelTic)
+        //{
+        //    cancelTic = true;
+        //}
         coroutineRunning = true;
         if (duration == float.NegativeInfinity) duration = GlobalManager.Instance.TIC_TIME / 10;
         if (newPos.Equals(Vector2.negativeInfinity))
@@ -222,13 +226,17 @@ public abstract class Piece : MonoBehaviour, Ticable
         this.transform.position = newPos;
 
         coroutineRunning = false;
+        //if (isCancelTic)
+        //{
+        //    cancelTic = false;
+        //}
     }
 
     public IEnumerator TornadoMove(Vector2Int tornadoPos, Vector2Int finalPos)
     {
         // Durations are arbitrary!
-        yield return MovePiece(tornadoPos, GlobalManager.Instance.TIC_TIME / 30);
-        yield return MovePiece(finalPos, GlobalManager.Instance.TIC_TIME / 10);
+        yield return MovePiece(tornadoPos, false, GlobalManager.Instance.TIC_TIME / 30);
+        yield return MovePiece(finalPos, false, GlobalManager.Instance.TIC_TIME / 10);
     }
 
     public virtual void Tic()
@@ -236,14 +244,14 @@ public abstract class Piece : MonoBehaviour, Ticable
         //Debug.Log(this.tileMap.Count);
         if(cancelTic)
         {
+            fieldNextMove = null;
             cancelTic = false;
-            fieldNextMove = null;// GetNextMove(GetLocation(), ;
             return;
         }
     }
 
     // "Continuous" tile effects
-    public virtual void ReceiveEffects(Tile t, Action<Vector2Int> updatePosition)
+    public virtual void ReceiveEffects(Tile t)
     {
         var info = t.DescribeTile();
         // Debug.Log(info);
@@ -266,30 +274,35 @@ public abstract class Piece : MonoBehaviour, Ticable
             KillPiece(this.gameObject);
         }
 
-        //if (info.type == TileType.ICE)
-        //{
-        //    Vector2Int slideDir = currLocation - prevLocation;
-        //    Vector2Int newDest = currLocation + slideDir;
-        //    Tile nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
-        //    while (nextTile != null && nextTile.DescribeTile().type == TileType.ICE && !coroutineRunning)
-        //    {
-        //        newDest += slideDir;
-        //        if (newDest == newDest - slideDir) break;
-        //        nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
-        //        Debug.Log("loooppping");
-        //    }
+        if (info.type == TileType.ICE)
+        {
+            Vector2Int slideDir = currLocation - prevLocation;
+            Vector2Int newDest = currLocation + slideDir;
+            Tile nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
+            while (nextTile != null && nextTile.DescribeTile().type == TileType.ICE && !coroutineRunning)
+            {
+                newDest += slideDir;
+                if (newDest.Equals( newDest - slideDir))
+                {
+                    Debug.Log("standingstill");
+                    break;
+                }
+                nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
+                Debug.Log("loooppping");
+            }
 
-        //    Vector2Int nextMove = newDest;
-        //    Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
-        //    if (!coroutineRunning)
-        //    {
-        //        StartCoroutine(MovePiece(newPos));
-        //        if (arrow != null) Destroy(arrow.gameObject);
-        //        updatePosition(nextMove);
-        //    }
-
-        //    cancelTic = true;
-        //}
+            Vector2Int nextMove = newDest;
+            Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
+            Debug.Log(nextMove);
+            if (!coroutineRunning)
+            {
+                StartCoroutine(MovePiece(newPos, true));
+                if (arrow != null) Destroy(arrow.gameObject);
+                UpdatePiecePosition(nextMove);
+                
+            }
+            cancelTic = true;
+        }
     }
 
     public abstract void UpdatePiecePosition(Vector2Int newPos);

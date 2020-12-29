@@ -35,4 +35,9 @@ public class Treasure : MonoBehaviour
         Destroy(floating, 2f);
         Destroy(this.gameObject);
     }
+
+    private void OnDestroy()
+    {
+        GlobalManager.Instance.point += 100;
+    }
 }

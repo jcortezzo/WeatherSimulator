@@ -12,6 +12,7 @@ public class GlobalManager : MonoBehaviour
     public GameBoard GameBoard { get { return gameBoard; } }
     public int enemyNumbers;
     public GameObject chest;
+    public int point;
 
     [SerializeField] public float TIC_TIME = 2f;
     [SerializeField] private GameBoard gameBoard;
@@ -71,7 +72,7 @@ public class GlobalManager : MonoBehaviour
         isPaused = false;
 
         player = FindObjectOfType<Player>();
-
+        point = 0;
     }
     //private void OnLevelWasLoaded(int level)
     //{
@@ -112,7 +113,12 @@ public class GlobalManager : MonoBehaviour
             gameBoard.Tic();
             if(gameBoard.enemyLocations.Count< enemyNumbers)
             {
-                gameBoard.SpawnEnemy(new Vector2Int(Random.Range(0, BOARD_SIZE), Random.Range(0, BOARD_SIZE)), piece);
+                Vector2Int randPos = new Vector2Int(Random.Range(0, BOARD_SIZE), Random.Range(0, BOARD_SIZE));
+                while(randPos.Equals(gameBoard.playerLocation))
+                {
+                    randPos = new Vector2Int(Random.Range(0, BOARD_SIZE), Random.Range(0, BOARD_SIZE));
+                }
+                gameBoard.SpawnEnemy(randPos, piece);
             }
         }
 

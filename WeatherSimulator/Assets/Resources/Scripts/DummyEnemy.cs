@@ -135,6 +135,7 @@ public class DummyEnemy : Piece
             Destroy(arrow.gameObject);
         }
         GlobalManager.Instance.GameBoard.enemyLocations.Remove(this);
+        GlobalManager.Instance.point += 100;
         //Jukebox.Instance.PlaySFX("deathNoise", 1f, 1f);
     }
 

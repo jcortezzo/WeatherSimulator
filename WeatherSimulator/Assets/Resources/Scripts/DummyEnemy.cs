@@ -124,6 +124,7 @@ public class DummyEnemy : Piece
 
     public override void KillPiece(GameObject go, float afterSec = 0)
     {
+        GlobalManager.Instance.point += 100;
         Jukebox.Instance.PlaySFX("deathNoise", 2f, 1f);
         base.KillPiece(go, afterSec);
     }
@@ -135,7 +136,7 @@ public class DummyEnemy : Piece
             Destroy(arrow.gameObject);
         }
         GlobalManager.Instance.GameBoard.enemyLocations.Remove(this);
-        GlobalManager.Instance.point += 100;
+        //GlobalManager.Instance.point += 100;
         //Jukebox.Instance.PlaySFX("deathNoise", 1f, 1f);
     }
 

@@ -953,6 +953,28 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 579481018, guid: db04cfb4349740c46946ab1858396976, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 579481019, guid: db04cfb4349740c46946ab1858396976, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 766384704, guid: db04cfb4349740c46946ab1858396976, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 766384706, guid: db04cfb4349740c46946ab1858396976, type: 3}
+      propertyPath: m_text
+      value: 'Score
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 766384706, guid: db04cfb4349740c46946ab1858396976, type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 4685281486150336856, guid: db04cfb4349740c46946ab1858396976,
         type: 3}
       propertyPath: scoreText
@@ -1162,6 +1184,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: UiCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 7237090749326045591, guid: db04cfb4349740c46946ab1858396976,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: db04cfb4349740c46946ab1858396976, type: 3}

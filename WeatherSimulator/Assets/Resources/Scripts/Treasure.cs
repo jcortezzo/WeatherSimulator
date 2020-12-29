@@ -38,6 +38,6 @@ public class Treasure : MonoBehaviour
 
     private void OnDestroy()
     {
-        GlobalManager.Instance.point += 100;
+        GlobalManager.Instance.point += 500;
     }
 }

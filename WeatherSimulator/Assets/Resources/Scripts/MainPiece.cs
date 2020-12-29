@@ -22,7 +22,7 @@ public class MainPiece : Piece, Ticable
 
         fieldNextMove = GetNextMove(GetLocation(), destination, playerBoard);
         GlobalManager.Instance.CreateTreasure(GlobalManager.Instance.GameBoard.GetTile(destination).transform.position);//destination);
-
+        prevLocation = currLocation - Vector2Int.left;
     }
 
     private Vector2Int GenerateRandomPos()

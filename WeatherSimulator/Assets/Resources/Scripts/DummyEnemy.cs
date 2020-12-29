@@ -11,6 +11,7 @@ public class DummyEnemy : Piece
         fieldNextMove = GetNextMove(GetLocation(),
                                     GlobalManager.Instance.GameBoard.playerLocation,
                                     GlobalManager.Instance.GameBoard.occupiedBoard);
+        prevLocation = currLocation - Vector2Int.right;  // .___.
         if (fieldNextMove == null)
         {
             return;
@@ -22,6 +23,7 @@ public class DummyEnemy : Piece
         arrow = GenerateArrow(GetLocation(), nextMove, 1);
         arrow.transform.position = newPos;//transform.position;
         arrow.transform.parent = null;
+        
         //arrow.transform.parent = transform; // make that arrow a child of our enemy
     }
 

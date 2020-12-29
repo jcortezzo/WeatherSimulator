@@ -11,6 +11,7 @@ public class Player : MonoBehaviour, Ticable
     [SerializeField] private GameObject lightning;
     private Animator lightningAnim;
     private Coroutine lightingCoroutine;
+    [SerializeField] private bool godMode;
 
     public int lcd;
     public int rcd;
@@ -58,16 +59,17 @@ public class Player : MonoBehaviour, Ticable
         }
 
         // Don't let player change game state besides picking whether if paused
-        if (GlobalManager.Instance.IsPaused())
-        {
-            return;
-        }
+        
 
         if (Input.GetMouseButtonDown(0))
         {
             actions[(int)selectedWeather].Invoke();
         }
 
+        if (GlobalManager.Instance.IsPaused())
+        {
+            return;
+        }
         //if (lightningAnim.GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
         //{
         //    lightning.transform.position = new Vector3(0, 0, -1000);
@@ -121,7 +123,10 @@ public class Player : MonoBehaviour, Ticable
                 Jukebox.Instance.PlaySFX("Lightning", 0.25f, 0.5f);
             }
         }
-        lcd = 3;
+        if (!godMode)
+        {
+            lcd = 3;
+        }
     }
 
     public IEnumerator LightningZap()
@@ -146,7 +151,10 @@ public class Player : MonoBehaviour, Ticable
                 t.ChangeType(Weather.RAIN);
             }
         }
-        rcd = 1;
+        if (!godMode)
+        {
+            rcd = 1;
+        }
     }
 
     private void Sun()
@@ -161,7 +169,10 @@ public class Player : MonoBehaviour, Ticable
                 t.ChangeType(Weather.SUN);
             }
         }
-        scd = 1;
+        if (!godMode)
+        {
+            scd = 1;
+        }
     }
 
     private void Snow()
@@ -176,7 +187,10 @@ public class Player : MonoBehaviour, Ticable
                 t.ChangeType(Weather.SNOW);
             }
         }
-        icd = 0;
+        if (!godMode)
+        {
+            icd = 1;
+        }
     }
 
     public void Tic()

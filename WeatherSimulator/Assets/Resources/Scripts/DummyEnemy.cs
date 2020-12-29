@@ -30,7 +30,7 @@ public class DummyEnemy : Piece
         return GlobalManager.Instance.GameBoard.enemyLocations[this];
     }
 
-    
+
     public override void Tic()
     {
         base.Tic();
@@ -47,8 +47,8 @@ public class DummyEnemy : Piece
         }
         Vector2Int nextMove = fieldNextMove.Value;
         Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
-        //if (moveCoroutine != null) StopCoroutine(moveCoroutine); // Shouldn't need this
-        moveCoroutine = StartCoroutine(MovePiece(newPos, false));
+        if (moveCoroutine != null) StopCoroutine(moveCoroutine); // Shouldn't need this
+        //moveCoroutine = StartCoroutine(MovePiece(newPos, false));
         UpdatePiecePosition(nextMove);
 
         fieldNextMove = GetNextMove(GetLocation(),
@@ -57,7 +57,6 @@ public class DummyEnemy : Piece
         if (fieldNextMove == null) { return; }
 
         nextMove = fieldNextMove.Value;
-        Debug.Log("next move " + nextMove);
         newPos = GlobalManager.Instance.GetWorldPos(nextMove);
         // Generate our nextup arrow:
 
@@ -68,7 +67,7 @@ public class DummyEnemy : Piece
             arrow.transform.position = newPos;
             arrow.transform.parent = null;
         }
-       
+
         //arrow.transform.parent = transform; // make that arrow a child of our enemy
     }
 
@@ -111,15 +110,11 @@ public class DummyEnemy : Piece
         }
 
         DummyEnemy dummy = collision.gameObject.GetComponent<DummyEnemy>();
-        if (dummy != null && piece != null)
+        if (dummy != null)
         {
+            KillPiece(dummy.gameObject);
+            KillPiece(this.gameObject);
 
-            if (piece != null)
-            {
-                KillPiece(piece.gameObject);
-                KillPiece(this.gameObject);
-            }
-            
         }
     }
 
@@ -130,6 +125,7 @@ public class DummyEnemy : Piece
             Destroy(arrow.gameObject);
         }
         GlobalManager.Instance.GameBoard.enemyLocations.Remove(this);
+        Jukebox.Instance.PlaySFX("Enemy Death", 1f, 1f);
     }
 
 

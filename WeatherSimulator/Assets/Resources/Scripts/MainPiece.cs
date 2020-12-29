@@ -52,7 +52,7 @@ public class MainPiece : Piece, Ticable
         Vector2Int nextMove = fieldNextMove.Value;
         Debug.Log("Player next move: " + nextMove);
         Vector2 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
-        moveCoroutine = StartCoroutine(MovePiece(newPos, false));
+        if(!coroutineRunning) StartCoroutine(MovePiece(newPos, false));
         UpdatePiecePosition(nextMove);
         DrawNextDirections();
 
@@ -132,7 +132,6 @@ public class MainPiece : Piece, Ticable
 
     void OnDestroy()
     {
-        Jukebox.Instance.PlaySFX("Chad Death", 0.5f, 1f);
         ClearArrows();
         Debug.Log("The player has DIED!!");
     }

@@ -35,6 +35,10 @@ public abstract class Piece : MonoBehaviour, Ticable
     // Update is called once per frame
     protected virtual void Update()
     {
+        if (GlobalManager.Instance.IsPaused())
+        {
+            return;
+        }
         IList<Tile> shallowCopy = new List<Tile>(tileMap);
         for (int i = 0; i < shallowCopy.Count; i++)
         {
@@ -46,7 +50,7 @@ public abstract class Piece : MonoBehaviour, Ticable
 
     public Vector2Int? GetNextMove(Vector2Int currentPos, Vector2Int dest, bool[,] occupiedBoard)
     {
-        Debug.LogFormat("current: {0}, prev: {1}", currLocation, prevLocation);
+        //Debug.LogFormat("current: {0}, prev: {1}", currLocation, prevLocation);
         //prevLocation = currLocation;
         //currLocation = GetLocation();
 
@@ -203,7 +207,7 @@ public abstract class Piece : MonoBehaviour, Ticable
     public IEnumerator MovePiece(Vector2 newPos, bool isCancelTic, float duration = float.NegativeInfinity)
     {
         // Default param val
-        //if(isCancelTic)
+        //if (isCancelTic)
         //{
         //    cancelTic = true;
         //}
@@ -224,7 +228,7 @@ public abstract class Piece : MonoBehaviour, Ticable
             yield return new WaitForSeconds(stepLength);
         }
         this.transform.position = newPos;
-
+        Debug.LogFormat("current: {0}, prev: {1}", currLocation, prevLocation);
         coroutineRunning = false;
         //if (isCancelTic)
         //{
@@ -282,20 +286,20 @@ public abstract class Piece : MonoBehaviour, Ticable
             while (nextTile != null && nextTile.DescribeTile().type == TileType.ICE && !coroutineRunning)
             {
                 newDest += slideDir;
-                if (newDest.Equals( newDest - slideDir))
+                if (newDest.Equals(newDest - slideDir))
                 {
                     Debug.Log("standingstill");
                     break;
                 }
                 nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
-                Debug.Log("loooppping");
             }
 
             Vector2Int nextMove = newDest;
             Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
-            Debug.Log(nextMove);
+            //Debug.Log(nextMove);
             if (!coroutineRunning)
             {
+                Debug.Log("run coroutine");
                 StartCoroutine(MovePiece(newPos, true));
                 if (arrow != null) Destroy(arrow.gameObject);
                 UpdatePiecePosition(nextMove);

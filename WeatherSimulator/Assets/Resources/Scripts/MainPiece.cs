@@ -34,13 +34,8 @@ public class MainPiece : Piece, Ticable
 
     public override void Tic()
     {
-        //base.Tic();
-        if (cancelTic)
-        {
-            cancelTic = false;
-            fieldNextMove = GetNextMove(GetLocation(), destination, playerBoard);
-            //return;
-        }
+        base.Tic();
+
         // update new location if 
         if (GetLocation().Equals(destination))
         {
@@ -51,16 +46,13 @@ public class MainPiece : Piece, Ticable
         if (fieldNextMove == null)
         {
             fieldNextMove = GetNextMove(GetLocation(), destination, playerBoard);
-            //return;
+            return;
         }
 
         Vector2Int nextMove = fieldNextMove.Value;
-
-        nextMove = fieldNextMove.Value;
         Debug.Log("Player next move: " + nextMove);
-
-
-        moveCoroutine = StartCoroutine(MovePiece(GlobalManager.Instance.GetWorldPos(nextMove)));
+        Vector2 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
+        moveCoroutine = StartCoroutine(MovePiece(newPos, false));
         UpdatePiecePosition(nextMove);
         DrawNextDirections();
 
@@ -90,7 +82,9 @@ public class MainPiece : Piece, Ticable
 
     public override void UpdatePiecePosition(Vector2Int newPos)
     {
+        prevLocation = GlobalManager.Instance.GameBoard.playerLocation;
         GlobalManager.Instance.GameBoard.playerLocation = newPos;
+        currLocation = newPos;
     }
 
     // This is SLOW! But there's no better way rn :(
@@ -101,6 +95,7 @@ public class MainPiece : Piece, Ticable
         for (int i = 1; i < nextPath.Count - 1; i++)
         {
             var arrow = GenerateArrow(nextPath[i], nextPath[i + 1], 0);
+            if (arrow == null) continue;
             arrow.transform.position = GlobalManager.Instance.GetWorldPos(nextPath[i]);
             arrowPath.Add(arrow);
         }

@@ -176,7 +176,7 @@ public class Player : MonoBehaviour, Ticable
                 t.ChangeType(Weather.SNOW);
             }
         }
-        icd = 1;
+        icd = 0;
     }
 
     public void Tic()

@@ -27,27 +27,17 @@ public class DummyEnemy : Piece
 
     public override Vector2Int GetLocation()
     {
-        //Debug.Log("Instance: " + GlobalManager.Instance);
-        //Debug.Log("Gameboar: " + GlobalManager.Instance.GameBoard);
-        //Debug.Log("enemyloca: " + GlobalManager.Instance.GameBoard.enemyLocations.Count);
-
         return GlobalManager.Instance.GameBoard.enemyLocations[this];
     }
 
     
     public override void Tic()
     {
-        //base.Tic();
-
-        if (cancelTic)
-        {
-            cancelTic = false;
-            fieldNextMove = GetNextMove(GetLocation(),
-                                    GlobalManager.Instance.GameBoard.playerLocation,
-                                    GlobalManager.Instance.GameBoard.occupiedBoard);
-            return;
-        }
-
+        base.Tic();
+        //if(cancelTic)
+        //{
+        //    return;
+        //}
         if (fieldNextMove == null)
         {
             fieldNextMove = GetNextMove(GetLocation(),
@@ -58,7 +48,7 @@ public class DummyEnemy : Piece
         Vector2Int nextMove = fieldNextMove.Value;
         Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
         //if (moveCoroutine != null) StopCoroutine(moveCoroutine); // Shouldn't need this
-        moveCoroutine = StartCoroutine(MovePiece(newPos));
+        moveCoroutine = StartCoroutine(MovePiece(newPos, false));
         UpdatePiecePosition(nextMove);
 
         fieldNextMove = GetNextMove(GetLocation(),
@@ -84,7 +74,9 @@ public class DummyEnemy : Piece
 
     public override void UpdatePiecePosition(Vector2Int newPos)
     {
+        prevLocation = GlobalManager.Instance.GameBoard.enemyLocations[this];
         GlobalManager.Instance.GameBoard.enemyLocations[this] = newPos;
+        currLocation = newPos;
     }
 
     //public override void Tic()

@@ -123,7 +123,8 @@ public class Player : MonoBehaviour, Ticable
                 t.ChangeType(Weather.LIGHTNING);
                 Jukebox.Instance.PlaySFX("Lightning", 0.25f, 0.5f);
                 Jukebox.Instance.PlaySFX("LightningHard", 0.3f, 0.5f);
-                FindObjectOfType<CameraShake>().TriggerShake(0.1f);
+                CameraShake cs = FindObjectOfType<CameraShake>();
+                if (cs != null) cs.TriggerShake(0.1f);
             }
         }
         if (!godMode)

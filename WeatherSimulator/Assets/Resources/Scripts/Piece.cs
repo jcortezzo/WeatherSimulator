@@ -215,6 +215,8 @@ public abstract class Piece : MonoBehaviour, Ticable
         if (duration == float.NegativeInfinity) duration = GlobalManager.Instance.TIC_TIME / 10;
         if (newPos.Equals(Vector2.negativeInfinity))
         {
+            Debug.Log("negative infi");
+            coroutineRunning = false;
             yield break;
         }
         Vector2 oldPos = this.transform.position;
@@ -228,7 +230,7 @@ public abstract class Piece : MonoBehaviour, Ticable
             yield return new WaitForSeconds(stepLength);
         }
         this.transform.position = newPos;
-        Debug.LogFormat("current: {0}, prev: {1}", currLocation, prevLocation);
+        //Debug.LogFormat("current: {0}, prev: {1}", currLocation, prevLocation);
         coroutineRunning = false;
         //if (isCancelTic)
         //{
@@ -301,18 +303,20 @@ public abstract class Piece : MonoBehaviour, Ticable
             Vector2Int slideDir = currLocation - prevLocation;
             Vector2Int newDest = currLocation + slideDir;
             Tile nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
+            bool standStill = false;
             while (nextTile != null && nextTile.DescribeTile().type == TileType.ICE && !coroutineRunning)
             {
                 newDest += slideDir;
                 if (newDest.Equals(newDest - slideDir))
                 {
                     Debug.Log("standingstill");
+                    standStill = true;
                     break;
                 }
                 nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
             }
 
-            Vector2Int nextMove = newDest;
+            Vector2Int nextMove = standStill ? newDest + Vector2Int.left : newDest;
             Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
             //Debug.Log(nextMove);
             if (!coroutineRunning)
@@ -322,6 +326,9 @@ public abstract class Piece : MonoBehaviour, Ticable
                 if (arrow != null) Destroy(arrow.gameObject);
                 UpdatePiecePosition(nextMove);
                 
+            }else
+            {
+                Debug.Log("Coroutine still running");
             }
             cancelTic = true;
         }

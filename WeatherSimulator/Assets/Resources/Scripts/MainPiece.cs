@@ -52,7 +52,7 @@ public class MainPiece : Piece, Ticable
         Vector2Int nextMove = fieldNextMove.Value;
         Debug.Log("Player next move: " + nextMove);
         Vector2 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
-        if(!coroutineRunning) StartCoroutine(MovePiece(newPos, false));
+        StartCoroutine(MovePiece(newPos, false));
         UpdatePiecePosition(nextMove);
         DrawNextDirections();
 

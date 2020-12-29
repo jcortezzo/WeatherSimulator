@@ -49,8 +49,8 @@ public class DummyEnemy : Piece
         }
         Vector2Int nextMove = fieldNextMove.Value;
         Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
-        if (moveCoroutine != null) StopCoroutine(moveCoroutine); // Shouldn't need this
-        //moveCoroutine = StartCoroutine(MovePiece(newPos, false));
+        StartCoroutine(MovePiece(newPos, false));
+
         UpdatePiecePosition(nextMove);
 
         fieldNextMove = GetNextMove(GetLocation(),

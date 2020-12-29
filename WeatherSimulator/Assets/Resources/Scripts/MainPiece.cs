@@ -141,7 +141,7 @@ public class MainPiece : Piece, Ticable
 
     void OnDestroy()
     {
-        Jukebox.Instance.PlaySFX("Chad Death", 3f, 1f);
+        Jukebox.Instance.PlaySFX("chadDeath", 2f, 1f);
         ClearArrows();
         Debug.Log("The player has DIED!!");
     }

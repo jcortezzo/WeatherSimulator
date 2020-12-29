@@ -122,6 +122,12 @@ public class DummyEnemy : Piece
         }
     }
 
+    public override void KillPiece(GameObject go, float afterSec = 0)
+    {
+        Jukebox.Instance.PlaySFX("deathNoise", 2f, 1f);
+        base.KillPiece(go, afterSec);
+    }
+
     void OnDestroy()
     {
         if (arrow != null)
@@ -129,7 +135,7 @@ public class DummyEnemy : Piece
             Destroy(arrow.gameObject);
         }
         GlobalManager.Instance.GameBoard.enemyLocations.Remove(this);
-        Jukebox.Instance.PlaySFX("Enemy Death", 1f, 1f);
+        //Jukebox.Instance.PlaySFX("deathNoise", 1f, 1f);
     }
 
 

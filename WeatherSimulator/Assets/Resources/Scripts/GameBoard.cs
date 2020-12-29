@@ -159,7 +159,7 @@ public class GameBoard : MonoBehaviour, Ticable
         return ret;
     }
 
-    private bool IsValidTile(Vector2Int coords)
+    public bool IsValidTile(Vector2Int coords)
     {
         return coords.x >= 0 && coords.x < GetBoardHeight() &&
                coords.y >= 0 && coords.y < GetBoardWidth();

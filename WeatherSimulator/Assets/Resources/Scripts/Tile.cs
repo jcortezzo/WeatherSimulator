@@ -16,7 +16,7 @@ public class Tile : MonoBehaviour, Ticable
 
     private SpriteRenderer sr;
     private Dictionary<TileType, Sprite> tileSprites;
-    public Vector2Int tornadoDir;
+    public Vector2Int? tornadoDir;
 
     public int typeResetTic;
     public int effectResetTic;
@@ -68,6 +68,7 @@ public class Tile : MonoBehaviour, Ticable
         electric.SetActive(effect == TileEffect.ELECTRIC);
         fire.SetActive(effect == TileEffect.FIRE);
         tornado.SetActive(effect == TileEffect.TORNADO);
+        tornadoDir = tornadoDir != null ? tornadoDir : null;
         waterAnim.enabled = (type == TileType.WATER);
         CheckInteractions();
     }
@@ -177,6 +178,16 @@ public class Tile : MonoBehaviour, Ticable
             type = TileType.WATER;
             sr.sprite = tileSprites[TileType.WATER];
             typeResetTic = -1;
+            ISet<Tile> neighbors = GlobalManager.Instance.GameBoard.GetNeighbors(this);
+            foreach (Tile t in neighbors)
+            {
+                var info = t.DescribeTile();
+                if (t.type == TileType.WATER && t.effect == TileEffect.ELECTRIC)
+                {
+                    this.effect = TileEffect.ELECTRIC;
+                    this.effectResetTic = t.effectResetTic;
+                }
+            }
             Jukebox.Instance.PlaySFX("Rain", .25f, 1f);
         }
         else if(weather == Weather.SNOW)
@@ -246,6 +257,12 @@ public class Tile : MonoBehaviour, Ticable
                     if (tiles[t] == null) continue;
                     tiles[t].effect = TileEffect.TORNADO;
                     tiles[t].effectResetTic = 5;
+                    // up / down / left / right (inverse of line 224-227)
+                    tiles[t].tornadoDir = GlobalManager.Instance.GameBoard.GetCoordsFromTile(tiles[t]) - coords;
+                    if (desiredType == TileType.ICE)
+                    {
+                        tiles[t].tornadoDir *= -1;
+                    }
                 }
             }
         }

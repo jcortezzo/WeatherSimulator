@@ -110,14 +110,13 @@ public class DummyEnemy : Piece
         }
 
         DummyEnemy dummy = collision.gameObject.GetComponent<DummyEnemy>();
-        if (dummy != null && piece != null)
+        if (dummy != null)// && piece != null)
         {
-
-            if (piece != null)
-            {
-                KillPiece(piece.gameObject);
+            //if (piece != null)
+            //{
+                KillPiece(dummy.gameObject);
                 KillPiece(this.gameObject);
-            }
+            //}
 
         }
     }

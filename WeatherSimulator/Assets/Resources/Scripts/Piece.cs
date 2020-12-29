@@ -300,10 +300,16 @@ public abstract class Piece : MonoBehaviour, Ticable
 
         if (info.type == TileType.ICE)
         {
-            Vector2Int slideDir = currLocation - prevLocation;
-            Vector2Int newDest = currLocation + slideDir;
+            Vector2 p1 = new Vector2(currLocation.x, currLocation.y);
+            Vector2 p2 = new Vector2(prevLocation.x, prevLocation.y);
+            Vector2 dir = (p1 - p2).normalized;
+            Vector2Int slideDir = new Vector2Int((int)dir.x, (int)dir.y);
+            Vector2Int newDest = currLocation;
+
             Tile nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
+            Tile prevTile = GlobalManager.Instance.GameBoard.GetTile(currLocation);
             bool standStill = false;
+
             while (nextTile != null && nextTile.DescribeTile().type == TileType.ICE && !coroutineRunning)
             {
                 newDest += slideDir;
@@ -313,9 +319,18 @@ public abstract class Piece : MonoBehaviour, Ticable
                     standStill = true;
                     break;
                 }
+                prevTile = nextTile;
                 nextTile = GlobalManager.Instance.GameBoard.GetTile(newDest);
             }
-
+            if (nextTile == null)
+            {
+                Debug.Log("death by ice");
+                KillPiece(this.gameObject, 0.5f);
+            }
+            //} else
+            //{
+            //    prevLocation = GlobalManager.Instance.GameBoard.GetCoordsFromTile(prevTile);   
+            //}
             Vector2Int nextMove = standStill ? newDest + Vector2Int.left : newDest;
             Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove);
             //Debug.Log(nextMove);

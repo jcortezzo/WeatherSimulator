@@ -125,12 +125,13 @@ public class Player : MonoBehaviour, Ticable
                 Jukebox.Instance.PlaySFX("LightningHard", 0.3f, 0.5f);
                 CameraShake cs = FindObjectOfType<CameraShake>();
                 if (cs != null) cs.TriggerShake(0.1f);
+                if (!godMode)
+                {
+                    lcd = 3;
+                }
             }
         }
-        if (!godMode)
-        {
-            lcd = 3;
-        }
+
     }
 
     public IEnumerator LightningZap()
@@ -153,12 +154,13 @@ public class Player : MonoBehaviour, Ticable
             if (t != null)
             {
                 t.ChangeType(Weather.RAIN);
+                if (!godMode)
+                {
+                    rcd = 1;
+                }
             }
         }
-        if (!godMode)
-        {
-            rcd = 1;
-        }
+        
     }
 
     private void Sun()
@@ -171,11 +173,11 @@ public class Player : MonoBehaviour, Ticable
             if (t != null)
             {
                 t.ChangeType(Weather.SUN);
+                if (!godMode)
+                {
+                    scd = 1;
+                }
             }
-        }
-        if (!godMode)
-        {
-            scd = 1;
         }
     }
 
@@ -189,11 +191,11 @@ public class Player : MonoBehaviour, Ticable
             if (t != null)
             {
                 t.ChangeType(Weather.SNOW);
+                if (!godMode)
+                {
+                    icd = 1;
+                }
             }
-        }
-        if (!godMode)
-        {
-            icd = 1;
         }
     }
 

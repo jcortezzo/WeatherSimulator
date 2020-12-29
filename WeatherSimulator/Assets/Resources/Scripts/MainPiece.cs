@@ -32,6 +32,15 @@ public class MainPiece : Piece, Ticable
         return new Vector2Int(Random.Range(0, w), Random.Range(0, h));
     }
 
+    public void LateUpdate()
+    {
+        if (GlobalManager.Instance.chest == null)
+        {
+            destination = GenerateRandomPos();
+            GlobalManager.Instance.CreateTreasure(GlobalManager.Instance.GameBoard.GetTile(destination).transform.position);
+        }
+    }
+
     public override void Tic()
     {
         base.Tic();

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -325,7 +324,8 @@ public abstract class Piece : MonoBehaviour, Ticable
             if (nextTile == null)
             {
                 Debug.Log("death by ice");
-                KillPiece(this.gameObject, 0.5f);
+                KillPiece(this.gameObject);
+                return;
             }
             //} else
             //{
@@ -348,6 +348,8 @@ public abstract class Piece : MonoBehaviour, Ticable
             cancelTic = true;
         }
     }
+
+
 
     public abstract void UpdatePiecePosition(Vector2Int newPos);
 
@@ -382,7 +384,7 @@ public abstract class Piece : MonoBehaviour, Ticable
         }
     }
 
-    public virtual void KillPiece(GameObject go, float afterSec = 0.0f )
+    public virtual void KillPiece(GameObject go, float afterSec = 0.0f)
     {
         StartCoroutine(Kill(go, afterSec));
     }

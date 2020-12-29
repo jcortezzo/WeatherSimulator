@@ -11,6 +11,8 @@ public class GlobalManager : MonoBehaviour
     public int BOARD_SIZE;
     public GameBoard GameBoard { get { return gameBoard; } }
     public int enemyNumbers;
+    public GameObject chest;
+
     [SerializeField] public float TIC_TIME = 2f;
     [SerializeField] private GameBoard gameBoard;
     [SerializeField] private Piece piece;
@@ -29,6 +31,7 @@ public class GlobalManager : MonoBehaviour
 
     public Player player;
 
+    public Queue<Piece> toBeExequeue;
     private void Awake()
     {
         globalTimer = 0;
@@ -48,6 +51,7 @@ public class GlobalManager : MonoBehaviour
     void Start()
     {
         Load();
+        toBeExequeue = new Queue<Piece>();
     }
 
     public void Load()
@@ -112,12 +116,16 @@ public class GlobalManager : MonoBehaviour
             }
         }
 
+        foreach(Piece p in toBeExequeue)
+        {
+            GTFO(p);
+        }
         
     }
 
     public void CreateTreasure(Vector2 pos)
     {
-        Instantiate(treasureGo, pos, Quaternion.identity);
+        chest = Instantiate(treasureGo, pos, Quaternion.identity);
     }
 
     public void Pause()
@@ -142,5 +150,44 @@ public class GlobalManager : MonoBehaviour
     {
         Tile tile = GameBoard.GetTile(tilePos.x, tilePos.y);
         return tile != null ? GameBoard.GetTile(tilePos.x, tilePos.y).transform.position : Vector3.negativeInfinity;
+    }
+
+    public void AddToDeadQueue(Piece p)
+    {
+        toBeExequeue.Enqueue(p);
+    }
+
+    public IEnumerator GTFO(Piece p, float duration = float.NegativeInfinity)
+    {
+        p.GetComponent<Collider2D>().enabled = false;
+
+        Vector2 vec = new Vector2(Random.Range(0, 1), Random.Range(0, 1));
+        Vector3 dir = vec.normalized * 10;
+
+        Vector2 newPos = dir + p.transform.position;
+
+        int numSteps = 20; // arbirtary, this is smooth though!
+        float stepLength = duration / numSteps; // time leng of step
+
+        for (float i = 0; i < 1; i += (1f / numSteps))
+        {
+            // We can apply a sinuosoid to this as well!
+            this.transform.position = Vector2.Lerp(p.transform.position, newPos, 0.005f);
+            yield return new WaitForSeconds(stepLength);
+        }
+
+        KillPiece(p.gameObject, 1f);
+    }
+
+    public void KillPiece(GameObject go, float afterSec = 0.0f)
+    {
+        StartCoroutine(Kill(go, afterSec));
+    }
+
+    private IEnumerator Kill(GameObject go, float afterSec)
+    {
+        yield return new WaitForSeconds(afterSec);
+        Jukebox.Instance.PlaySFX("Enemy Death", 0.5f, 1f);
+        Destroy(go);
     }
 }

@@ -17,6 +17,7 @@ public class UiWeather : MonoBehaviour
     private Vector3 selectPos;
     private GameObject img;
     private Button button;
+    [SerializeField] private int selectOffset = 16;
 
     void Start()
     {
@@ -25,7 +26,7 @@ public class UiWeather : MonoBehaviour
         img = transform.Find("Image").gameObject;
         rectTrans = img.GetComponent<RectTransform>();
         ogPos = rectTrans.localPosition;
-        selectPos = new Vector2(ogPos.x + 36, ogPos.y);
+        selectPos = new Vector2(ogPos.x + selectOffset, ogPos.y);
         
     }
 

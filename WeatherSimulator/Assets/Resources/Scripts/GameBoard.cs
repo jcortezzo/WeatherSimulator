@@ -72,7 +72,7 @@ public class GameBoard : MonoBehaviour, Ticable
 
     public Tile GetCenterTile()
     {
-        return GetTile((GlobalManager.Instance.BOARD_SIZE / 2, GlobalManager.Instance.BOARD_SIZE / 2));
+        return GetTile(((GlobalManager.Instance.BOARD_SIZE) / 2, (GlobalManager.Instance.BOARD_SIZE) / 2));
     }
 
     public void SpawnEnemy(Vector2Int index, Piece piecePrefab)

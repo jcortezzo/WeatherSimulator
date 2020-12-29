@@ -44,8 +44,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   globalTimer: 0
-  BOARD_SIZE: 10
+  BOARD_SIZE: 11
   enemyNumbers: 0
+  chest: {fileID: 0}
   TIC_TIME: 2
   gameBoard: {fileID: 5513934484955198149, guid: d88ae4da01d40ee47a6a3ab68f9470db,
     type: 3}
@@ -58,3 +59,4 @@ MonoBehaviour:
     type: 3}
   cam: {fileID: 0}
   youLose: {fileID: 3260080413810454894, guid: 058a67558333c4e4abb50e985c00bbde, type: 3}
+  player: {fileID: 0}

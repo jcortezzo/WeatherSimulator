@@ -16,6 +16,7 @@ public class UiWeather : MonoBehaviour
     private Vector3 ogPos;
     private Vector3 selectPos;
     private GameObject img;
+    private Button button;
 
     void Start()
     {
@@ -36,5 +37,9 @@ public class UiWeather : MonoBehaviour
         rectTrans.localPosition = selected ? selectPos : ogPos;
     }
 
+    public void Select()
+    {
+        GlobalManager.Instance.player.selectedWeather = weather;
+    }
 
 }

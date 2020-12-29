@@ -521,7 +521,7 @@ PrefabInstance:
     - target: {fileID: 7079708824893556536, guid: ddde0c6d2d14e0f478cb29146bd0abd1,
         type: 3}
       propertyPath: godMode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7079708824893556537, guid: ddde0c6d2d14e0f478cb29146bd0abd1,
         type: 3}
@@ -606,7 +606,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 904396480, guid: 72dcb2404486c9d49ad91d6639a89271, type: 3}
       propertyPath: sfxs.Array.size
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 904396480, guid: 72dcb2404486c9d49ad91d6639a89271, type: 3}
       propertyPath: sfxs.Array.data[9].clip
@@ -615,6 +615,14 @@ PrefabInstance:
     - target: {fileID: 904396480, guid: 72dcb2404486c9d49ad91d6639a89271, type: 3}
       propertyPath: sfxs.Array.data[9].name
       value: UIChange
+      objectReference: {fileID: 0}
+    - target: {fileID: 904396480, guid: 72dcb2404486c9d49ad91d6639a89271, type: 3}
+      propertyPath: sfxs.Array.data[10].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 0569b1a7d305c334da9c2c54dd45bb8d, type: 3}
+    - target: {fileID: 904396480, guid: 72dcb2404486c9d49ad91d6639a89271, type: 3}
+      propertyPath: sfxs.Array.data[10].name
+      value: LightningHard
       objectReference: {fileID: 0}
     - target: {fileID: 227728298595459265, guid: 72dcb2404486c9d49ad91d6639a89271,
         type: 3}

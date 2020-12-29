@@ -84,7 +84,7 @@ public class GlobalManager : MonoBehaviour
             {
                 //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                 hasLost = false;
-                SceneManager.LoadScene("AbdulScene");
+                SceneManager.LoadScene("Abdul2Scene");
             }
         }
 

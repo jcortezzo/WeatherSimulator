@@ -272,6 +272,24 @@ public abstract class Piece : MonoBehaviour, Ticable
             //moveCoroutine = StartCoroutine(
             //    TornadoMove(t.position, GetLocation() + t.tornadoDir)
             //);
+            Vector2Int? nextMove = GlobalManager.Instance.GameBoard.GetCoordsFromTile(t) + 3 * t.tornadoDir;
+            Vector3 newPos = GlobalManager.Instance.GetWorldPos(nextMove != null ? nextMove.Value : Vector2Int.zero);  // cursed af
+
+            
+            if (nextMove != null && !GlobalManager.Instance.GameBoard.IsValidTile(nextMove.Value))
+            {
+                KillPiece(this.gameObject, 1f);
+            }
+
+            Debug.Log(nextMove);
+            if (!coroutineRunning)
+            {
+                StartCoroutine(MovePiece(newPos, true));
+                if (arrow != null) Destroy(arrow.gameObject);
+                UpdatePiecePosition(nextMove != null ? nextMove.Value : Vector2Int.zero);  // cursed af
+
+            }
+            cancelTic = true;
         }
         else if (info.effect == TileEffect.FIRE)
         {

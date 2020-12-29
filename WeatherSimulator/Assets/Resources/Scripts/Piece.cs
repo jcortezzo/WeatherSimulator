@@ -35,6 +35,10 @@ public abstract class Piece : MonoBehaviour, Ticable
     // Update is called once per frame
     protected virtual void Update()
     {
+        if (GlobalManager.Instance.IsPaused())
+        {
+            return;
+        }
         IList<Tile> shallowCopy = new List<Tile>(tileMap);
         for (int i = 0; i < shallowCopy.Count; i++)
         {

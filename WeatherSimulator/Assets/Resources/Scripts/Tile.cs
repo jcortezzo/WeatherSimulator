@@ -177,6 +177,16 @@ public class Tile : MonoBehaviour, Ticable
             type = TileType.WATER;
             sr.sprite = tileSprites[TileType.WATER];
             typeResetTic = -1;
+            ISet<Tile> neighbors = GlobalManager.Instance.GameBoard.GetNeighbors(this);
+            foreach (Tile t in neighbors)
+            {
+                var info = t.DescribeTile();
+                if (t.type == TileType.WATER && t.effect == TileEffect.ELECTRIC)
+                {
+                    this.effect = TileEffect.ELECTRIC;
+                    this.effectResetTic = t.effectResetTic;
+                }
+            }
             Jukebox.Instance.PlaySFX("Rain", .25f, 1f);
         }
         else if(weather == Weather.SNOW)
